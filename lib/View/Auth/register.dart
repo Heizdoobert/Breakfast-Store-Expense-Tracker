@@ -1,99 +1,57 @@
+import 'package:extractorapplication/Model/User.dart';
+import 'package:extractorapplication/Controller/AuthController.dart';
 import 'package:extractorapplication/View/Auth/ForgotPassword.dart';
-import 'package:extractorapplication/View/Auth/register.dart';
-import 'package:extractorapplication/View/Kitchen/home.dart';
-import 'package:extractorapplication/View/Manager/home.dart';
-import 'package:extractorapplication/View/Owner/home.dart';
-import 'package:extractorapplication/View/Staff/home.dart';
+import 'package:extractorapplication/View/Auth/login.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../Controller/AuthController.dart';
-import '../../Model/User.dart';
 
-class LoginPage extends StatefulWidget {
-  @override
-  _LoginPageState createState() => _LoginPageState();
+class RegisterPage extends StatefulWidget {
+@override
+  _RegisterPageState createState() => _RegisterPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
-  final TextEditingController _usernameController = TextEditingController();
+class _RegisterPageState extends State<RegisterPage> {
+ final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _passwordConfirmController = TextEditingController();
   final AuthController _authController = AuthController();
+
+  void _handleRegister() async {
+    User? user = await _authController.register(
+      _usernameController.text,
+      _passwordController.text,
+    );
+
+    if (user != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Đăng ký thành công, ${user.username}")),
+      );
+    } else {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text("Đăng ký thất bại")));
+    }
+  }
+
+  void _handleLogin() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+    );
+  }
+
+  void _handleForgotPassword() async {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
+    );
+  }
 
   @override
   void dispose() {
     _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
-  }
-
-  void _handleLogin() async {
-    User? user = await _authController.login(
-      _usernameController.text,
-      _passwordController.text,
-    );
-
-    if (user != null) {
-      print(">>> Đăng nhập thành công");
-      print(">>> Username: ${user.username}");
-      print(">>> Role: ${user.role}");
-      print(">>> isOwner: ${user.isOwner()}");
-      print(">>> isManager: ${user.isManager()}");
-      print(">>> isStaff: ${user.isStaff()}");
-      print(">>> isKitchen: ${user.isKitchen()}");
-
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Đăng nhập thành công, ${user.username} - Role: ${user.role}")),
-      );
-
-      // Điều hướng theo role
-      if (user.isOwner()) {
-        print(">>> Điều hướng sang OwnerHomePage");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => OwnerHomePage()),
-        );
-      } else if (user.isManager()) {
-        print(">>> Điều hướng sang ManagerHomePage");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => ManagerHomePage()),
-        );
-      } else if (user.isStaff()) {
-        print(">>> Điều hướng sang StaffHomePage");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => StaffHomePage()),
-        );
-      } else if (user.isKitchen()) {
-        print(">>> Điều hướng sang KitchenHomePage");
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => KitchenHomePage()),
-        );
-      } else {
-        print(">>> Role không xác định, không điều hướng được!");
-      }
-    } else {
-      print(">>> Đăng nhập thất bại");
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Đăng nhập thất bại")),
-      );
-    }
-  }
-
-  void _handleRegister() async {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RegisterPage()),
-    );
-  }
-
-  void _handleForgotPassword() async {
-    //dieu huong sang trang quên mật khẩu
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => ForgotPasswordPage()),
-    );
   }
 
   @override
@@ -115,21 +73,23 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  Icon(Icons.lock, size: 80, color: Colors.white),
+                  //icon
+                  Icon(Icons.app_registration, size: 80, color: Colors.white),
                   const SizedBox(height: 30),
 
+                  //intro
                   Text(
-                    'Chào mừng 👋',
+                    'Đăng ký mới',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontWeight: FontWeight.bold,
-                      fontSize: 28,
+                      fontSize: 32,
                       color: Colors.white,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 10),
                   Text(
-                    'Đăng nhập để tiếp tục',
+                    'Đăng ký để tiếp tục',
                     style: TextStyle(
                       fontFamily: 'Poppins',
                       fontSize: 16,
@@ -138,15 +98,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 40),
 
-                  // Username
+                  //username filed
                   TextField(
                     controller: _usernameController,
                     decoration: InputDecoration(
-                      hintText: 'Tên đăng nhập',
                       prefixIcon: Icon(Icons.person, color: Colors.grey[700]),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      labelText: 'Tên đăng nhập',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -155,16 +114,32 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Password
+                  //password filed
                   TextField(
                     controller: _passwordController,
                     obscureText: true,
                     decoration: InputDecoration(
-                      hintText: 'Mật khẩu',
                       prefixIcon: Icon(Icons.lock, color: Colors.grey[700]),
                       filled: true,
                       fillColor: Colors.white,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      labelText: 'Mật khẩu',
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+
+                  //confirm password field button
+                  TextField(
+                    controller: _passwordConfirmController,
+                    obscureText: true,
+                    decoration: InputDecoration(
+                      prefixIcon: Icon(Icons.lock, color: Colors.grey[700]),
+                      filled: true,
+                      fillColor: Colors.white,
+                      labelText: 'Nhập lại mật khẩu',
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(16),
                         borderSide: BorderSide.none,
@@ -173,14 +148,15 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 30),
 
-                  // Login Button
+                  //register button
                   SizedBox(
                     width: double.infinity,
                     height: 55,
                     child: ElevatedButton(
-                      onPressed: _handleLogin,
+                      onPressed: _handleRegister,
                       style: ElevatedButton.styleFrom(
                         padding: EdgeInsets.zero,
+                        backgroundColor: Color(0xFF3B62FF),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(16),
                         ),
@@ -197,7 +173,7 @@ class _LoginPageState extends State<LoginPage> {
                         child: Container(
                           alignment: Alignment.center,
                           child: Text(
-                            "Đăng Nhập",
+                            "Đăng ký",
                             style: TextStyle(
                               fontFamily: 'Poppins',
                               fontWeight: FontWeight.bold,
@@ -211,7 +187,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 16),
 
-                  // Forgot password & Register
+                  //back to login and forgot password
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -220,17 +196,17 @@ class _LoginPageState extends State<LoginPage> {
                         child: Text("Quên mật khẩu?", style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold, fontSize: 20)),
                       ),
                       TextButton(
-                        onPressed: _handleRegister,
-                        child: Text("Đăng ký", style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold, fontSize: 20)),
+                        onPressed: _handleLogin,
+                        child: Text("Đăng nhập", style: TextStyle(color: Colors.white, fontFamily: 'Poppins', fontWeight: FontWeight.bold, fontSize: 20)),
                       ),
                     ],
                   )
                 ],
               ),
-            ),
-          ),
+            )
+          )
         ),
-      ),
+      )
     );
   }
 }

@@ -1,4 +1,4 @@
-class Notification{
+class AppNotification{
   final int? notification_id;
   final int? user_id;
   final String? message;
@@ -6,7 +6,7 @@ class Notification{
   final bool? is_read;
   final DateTime? created_at;
 
-  Notification({
+  AppNotification({
     this.notification_id,
     this.user_id,
     this.message,
@@ -16,8 +16,8 @@ class Notification{
   });
 
   //mapping
-  factory Notification.fromMap(Map<String, dynamic> map){
-    return Notification(
+  factory AppNotification.fromMap(Map<String, dynamic> map){
+    return AppNotification(
       notification_id: map['notification_id'],
       user_id: map['user_id'],
       message: map['message'],

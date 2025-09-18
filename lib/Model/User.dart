@@ -29,8 +29,8 @@ class User{
        password_hash: map['password_hash'],
        full_name: map['full_name'],
        role: map['role'],
-       created_at: map['created_at'],
-       updated_at: map['updated_at'],
+       created_at: map['created_at'] != null ? DateTime.parse(map['created_at']) : null,
+       updated_at: map['updated_at'] != null ? DateTime.parse(map['updated_at']) : null,
    );
   }
 
@@ -45,4 +45,11 @@ class User{
       'role': role,
     };
   }
+}
+
+extension UserRole on User {
+  bool isOwner() => role == 'owner';
+  bool isManager() => role == 'manager';
+  bool isStaff() => role == 'staff';
+  bool isKitchen() => role == 'kitchen';
 }

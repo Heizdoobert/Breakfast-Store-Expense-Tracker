@@ -1,235 +1,237 @@
-import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
-
-//dua model vao
+import 'package:path/path.dart';
 import '../Model/User.dart';
-import '../Model/Expense.dart';
-import '../Model/Group.dart';
-import '../Model/GroupMember.dart';
-import '../Model/Budget.dart';
-import '../Model/Debt.dart';
-import '../Model/SavingPlan.dart';
-import '../Model/Notification.dart';
 
-class DBHelper{
-  //tao connection
-  static final DBHelper _instance = DBHelper.internal();
+class DBHelper {
+  static final DBHelper _instance = DBHelper._internal();
   factory DBHelper() => _instance;
-  DBHelper.internal();
+  DBHelper._internal();
 
   static Database? _db;
 
-  //luu tru connection
-  Future<Database?> get db async {
-    if(_db != null) {
-      return _db;
-    }
-    _db = await initDb();
-    return _db;;
+  Future<Database> get db async {
+    if (_db != null) return _db!;
+    _db = await _initDb();
+    return _db!;
   }
 
-  //tao bang
-  Future<Database> initDb() async {
-    String path = await getDatabasesPath() + 'mydb.db';
+  Future<Database> _initDb() async {
+    String path = join(await getDatabasesPath(), 'warehouse.db');
     return await openDatabase(
       path,
       version: 1,
-      onCreate: (Database db, int version) async {
-        await db.execute(
-          '''CREATE TABLE users(
-          user_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          username VARCHAR(255), 
-          email VARCHAR(255),
-          password_hash VARCHAR(255),
-          full_name VARCHAR(255),
-          role ENUM('owner','manager', 'staff', 'kitchen'),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP 
-          ),
-          CREATE TABLE groups(
-          group_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          group_name VARCHAR(255),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-          ),
-          CREATE TABLE group_members(
-          group_member_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          group_id INTEGER FOREIGN KEY REFERENCES groups(group_id),
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          ),
-          CREATE TABLE expense(
-          expense_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          group_id INTEGER FOREIGN KEY REFERENCES groups(group_id),
-          title TEXT NOT NULL,
-          amount REAL NOT NULL,
-          category TEXT,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          ),
-          CREATE TABLE budgets(
-          budget_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          group_id INTEGER FOREIGN KEY REFERENCES groups(group_id),
-          category TEXT NOT NULL,
-          limit_amount REAL NOT NULL,
-          start_date DATE NOT NULL,
-          end_date DATE NOT NULL,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          ),
-          CREATE TABLE debts(
-          debt_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          lender TEXT NOT NULL,
-          amount REAL NOT NULL,
-          due_date TEXT,
-          status TEXT DEFAULT 'unpaid', --unpaid, paid, overdue
-          ),
-          CREATE TABLE saving_plans(
-          plan_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          goal TEXT NOT NULL,
-          target_amount REAL NOT NULL,
-          current_amount REAL NOT NULL,
-          deadline TEXT NOT NULL,
-          ),
-          CREATE TABLE notifications(
-          notification_id INTEGER PRIMARY KEY AUTOINCREMENT,
-          user_id INTEGER FOREIGN KEY REFERENCES users(user_id),
-          message TEXT NOT NULL,
-          type TEXT,  --alert, reminder, info
-          is_read BOOLEAN DEFAULT FALSE,
-          created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-          ),
-          '''
-        );
-      },
+      onCreate: _onCreate,
     );
   }
 
-  //chen vao bang
-  //user
+  Future<void> _onCreate(Database db, int version) async {
+    var batch = db.batch();
+
+    // Bảng users
+    batch.execute('''
+      CREATE TABLE users(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT NOT NULL UNIQUE,
+        email TEXT,
+        password_hash TEXT NOT NULL,
+        full_name TEXT,
+        role TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        updated_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+
+    // Bảng groups
+    batch.execute('''
+      CREATE TABLE groups(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+      )
+    ''');
+
+    // Bảng group_members
+    batch.execute('''
+      CREATE TABLE group_members(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER,
+        user_id INTEGER,
+        FOREIGN KEY (group_id) REFERENCES groups(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )
+    ''');
+
+    // Bảng expenses
+    batch.execute('''
+      CREATE TABLE expenses(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER,
+        user_id INTEGER,
+        amount REAL NOT NULL,
+        description TEXT,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (group_id) REFERENCES groups(id),
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )
+    ''');
+
+    // Bảng budgets
+    batch.execute('''
+      CREATE TABLE budgets(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER,
+        amount REAL NOT NULL,
+        month INTEGER,
+        year INTEGER,
+        FOREIGN KEY (group_id) REFERENCES groups(id)
+      )
+    ''');
+
+    // Bảng debts
+    batch.execute('''
+      CREATE TABLE debts(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        from_user_id INTEGER,
+        to_user_id INTEGER,
+        amount REAL NOT NULL,
+        is_settled INTEGER DEFAULT 0,
+        FOREIGN KEY (from_user_id) REFERENCES users(id),
+        FOREIGN KEY (to_user_id) REFERENCES users(id)
+      )
+    ''');
+
+    // Bảng saving_plans
+    batch.execute('''
+      CREATE TABLE saving_plans(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        group_id INTEGER,
+        target_amount REAL NOT NULL,
+        saved_amount REAL DEFAULT 0,
+        deadline TEXT,
+        FOREIGN KEY (group_id) REFERENCES groups(id)
+      )
+    ''');
+
+    // Bảng notifications
+    batch.execute('''
+      CREATE TABLE notifications(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        message TEXT NOT NULL,
+        is_read INTEGER DEFAULT 0,
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id)
+      )
+    ''');
+
+    // --- Thêm 4 user mặc định ---
+    batch.insert('users', {
+      'username': 'super_owner',
+      'email': 'owner@example.com',
+      'password_hash': '123456',
+      'full_name': 'Owner Account',
+      'role': 'owner',
+    });
+
+    batch.insert('users', {
+      'username': 'super_admin',
+      'email': 'admin@example.com',
+      'password_hash': '123456',
+      'full_name': 'Admin Account',
+      'role': 'admin',
+    });
+
+    batch.insert('users', {
+      'username': 'manager',
+      'email': 'manager@example.com',
+      'password_hash': '123456',
+      'full_name': 'Manager Account',
+      'role': 'manager',
+    });
+
+    batch.insert('users', {
+      'username': 'staff',
+      'email': 'staff@example.com',
+      'password_hash': '123456',
+      'full_name': 'Staff Account',
+      'role': 'staff',
+    });
+
+    await batch.commit();
+  }
+
+  // ================= CRUD USERS =================
   Future<int> insertUser(User user) async {
-    var conn = await db;
-    return await conn!.insert("user", user.toMap());
+    final dbClient = await db;
+    return await dbClient.insert('users', user.toMap());
   }
 
-  //groups
-  Future<int> insertGroup(Group group) async {
-    var conn = await db;
-    return await conn!.insert("group", group.toMap());
-  }
-  //group_members
-  Future<int> insertGroupMember(GroupMember groupMember) async {
-    var conn = await db;
-    return await conn!.insert("group_member", groupMember.toMap());
-  }
-  //budget
-  Future<int> insertBudget(Budget budget) async {
-    var conn = await db;
-    return await conn!.insert("budget", budget.toMap());
-  }
-  //debt
-  Future<int> insertDebt(Debt debt) async {
-    var conn = await db;
-    return await conn!.insert("debt", debt.toMap());
-  }
-  //expense
-  Future<int> insertExpense(Expense expense) async {
-    var conn = await db;
-    return await conn!.insert("expense", expense.toMap());
-  }
-  //notification
-  Future<int> insertNotification(Notification notification) async {
-    var conn = await db;
-    return await conn!.insert("notification", notification.toMap());
-  }
-  //saving_plans
-  Future<int> insertSavingPlan(SavingPlan savingPlan) async {
-    var conn = await db;
-    return await conn!.insert("saving_plan", savingPlan.toMap());
+  Future<User?> getUserByUsername(String username) async {
+    final dbClient = await db;
+    final res = await dbClient.query(
+      'users',
+      where: 'username = ?',
+      whereArgs: [username],
+    );
+    return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
 
-  //hien thi bang
-  //user
-  Future<List<User>> getUser() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('user');
-
-    return List.generate(maps.length, (i) {
-      return User.fromMap(maps[i]);
-    });
+  Future<List<User>> getAllUsers() async {
+    final dbClient = await db;
+    final res = await dbClient.query('users');
+    return res.map((map) => User.fromMap(map)).toList();
   }
 
-  //groups
-  Future<List<Group>> getGroup() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('group');
-
-    return List.generate(maps.length, (i) {
-      return Group.fromMap(maps[i]);
-    });
+  Future<int> deleteUser(int id) async {
+    final dbClient = await db;
+    return await dbClient.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
-  //group_members
-  Future<List<GroupMember>> getGroupMember() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('group_member');
-    return List.generate(maps.length, (i) {
-      return GroupMember.fromMap(maps[i]);
-    });
+  // ================= CRUD EXPENSE =================
+  Future<int> insertExpense(Map<String, dynamic> expense) async {
+    final dbClient = await db;
+    return await dbClient.insert('expenses', expense);
   }
 
-  //expense
-  Future<List<Expense>> getExpense() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('expense');
-    return List.generate(maps.length, (i) {
-      return Expense.fromMap(maps[i]);
-    });
+  Future<List<Map<String, dynamic>>> getExpenses() async {
+    final dbClient = await db;
+    return await dbClient.query('expenses');
   }
 
-  //budget
-  Future<List<Budget>> getBudget() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('budget');
-    return List.generate(maps.length, (i) {
-      return Budget.fromMap(maps[i]);
-    });
+  // ================= CRUD GROUP =================
+  Future<int> insertGroup(Map<String, dynamic> group) async {
+    final dbClient = await db;
+    return await dbClient.insert('groups', group);
   }
 
-  //debt
-  Future<List<Debt>> getDebt() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('debt');
-    return List.generate(maps.length, (i) {
-      return Debt.fromMap(maps[i]);
-    });
+  Future<List<Map<String, dynamic>>> getGroups() async {
+    final dbClient = await db;
+    return await dbClient.query('groups');
   }
 
-  //saving_plans
-  Future<List<SavingPlan>> getSavingPlan() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('saving_plan');
-    return List.generate(maps.length, (i) {
-      return SavingPlan.fromMap(maps[i]);
-    });
+  // ================= CRUD SAVING PLAN =================
+  Future<int> insertSavingPlan(Map<String, dynamic> plan) async {
+    final dbClient = await db;
+    return await dbClient.insert('saving_plans', plan);
   }
 
-  //notifications
-  Future<List<Notification>> getNotification() async {
-    var conn = await db;
-    final List<Map<String, dynamic>> maps = await conn!.query('notification');
-    return List.generate(maps.length, (i) {
-      return Notification.fromMap(maps[i]);
-    });
+  Future<List<Map<String, dynamic>>> getSavingPlans() async {
+    final dbClient = await db;
+    return await dbClient.query('saving_plans');
   }
 
+  // ================= CRUD NOTIFICATION =================
+  Future<int> insertNotification(Map<String, dynamic> notification) async {
+    final dbClient = await db;
+    return await dbClient.insert('notifications', notification);
+  }
 
-  //xoa bang theo id
-  Future<int> delete(String table, int id) async {
-    var conn = await db;
-    return await conn!.delete(table, where: 'id = ?', whereArgs: [id]);
+  Future<List<Map<String, dynamic>>> getNotifications(int userId) async {
+    final dbClient = await db;
+    return await dbClient.query(
+      'notifications',
+      where: 'user_id = ?',
+      whereArgs: [userId],
+    );
   }
 }
