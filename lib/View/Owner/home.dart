@@ -1,7 +1,11 @@
 import 'package:extractorapplication/Controller/AuthController.dart';
 import 'package:extractorapplication/Model/User.dart';
 import 'package:extractorapplication/View/Components/custom_navbar.dart';
+import 'package:extractorapplication/View/Owner/pages/finance/finance_home_page.dart';
+import 'package:extractorapplication/View/Owner/pages/inventory/inventory_home_page.dart';
 import 'package:extractorapplication/View/Owner/pages/main_page.dart';
+import 'package:extractorapplication/View/Owner/pages/more/main_more.dart';
+import 'package:extractorapplication/View/Owner/pages/staff/staff_list_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -24,11 +28,10 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
   //load page in navbottombar
   final List<Widget> _pages = [
     MainPage(),
-    //điều hướng các trang con
-    // Center(child: Text("page 1")),
-    // Center(child: Text("page 2")),
-    // Center(child: Text("page 3")),
-    // Center(child: Text("More")),
+    FinanceHomePage(),
+    InventoryHomePage(),
+    StaffHomePage(),
+    MoreHomePage(),
   ];
 
   @override
