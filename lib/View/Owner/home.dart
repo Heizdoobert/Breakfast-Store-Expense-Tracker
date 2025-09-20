@@ -23,8 +23,14 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
       bottomNavigationBar: BottomNavigationBar(
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Trang chủ"),
-          BottomNavigationBarItem(icon: Icon(Icons.list_alt), label: "Đơn hàng"),
-          BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: "Báo cáo"),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.list_alt),
+            label: "Đơn hàng",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.bar_chart),
+            label: "Báo cáo",
+          ),
           BottomNavigationBarItem(icon: Icon(Icons.person), label: "Tài khoản"),
         ],
       ),
@@ -53,10 +59,19 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
 
               /// Thẻ tài chính
               Container(
+                width: double.infinity,
                 padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: Colors.teal.shade700,
                   borderRadius: BorderRadius.circular(12),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      spreadRadius: 2,
+                      blurRadius: 5,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
                 ),
                 child: const Text(
                   "📊 Tóm tắt tài chính hôm nay",
@@ -66,14 +81,43 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
               const SizedBox(height: 20),
 
               /// Thống kê nhanh
-              Row(
-                children: const [
-                  Expanded(child: StatCard(title: "Đơn hàng", value: "25")),
-                  SizedBox(width: 12),
-                  Expanded(child: StatCard(title: "Khách mới", value: "8")),
+            Container(
+              padding: const EdgeInsets.all(16),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(16),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.05),
+                    blurRadius: 6,
+                    offset: const Offset(0, 3),
+                  ),
                 ],
               ),
-              const SizedBox(height: 20),
+              child: Row(
+                children: const [
+                  Expanded(
+                    child: MiniStatCard(
+                      icon: Icons.rocket_launch,
+                      value: "\$100",
+                      subtitle: "Purchase power",
+                      color: Colors.blue,
+                    ),
+                  ),
+                  SizedBox(width: 12),
+                  Expanded(
+                    child: MiniStatCard(
+                      icon: Icons.account_balance_wallet,
+                      value: "\$000.00",
+                      subtitle: "Nothing to pay",
+                      color: Colors.green,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
 
               /// Chức năng nhanh
               Row(
@@ -87,8 +131,10 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
               ),
               const SizedBox(height: 20),
 
-              const Text("Top sản phẩm bán chạy",
-                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+              const Text(
+                "Top sản phẩm bán chạy",
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              ),
               const SizedBox(height: 10),
 
               Row(
