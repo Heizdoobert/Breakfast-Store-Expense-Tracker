@@ -17,11 +17,7 @@ class DBHelper {
 
   Future<Database> _initDb() async {
     String path = join(await getDatabasesPath(), 'warehouse.db');
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -122,6 +118,21 @@ class DBHelper {
         created_at TEXT DEFAULT CURRENT_TIMESTAMP,
         FOREIGN KEY (user_id) REFERENCES users(id)
       )
+    ''');
+
+    batch.execute('''
+    CREATE TABLE notes(
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      user_id INTEGER,
+      title TEXT NOT NULL,
+      content TEXT,
+      category TEXT,
+      priority TEXT,
+      is_completed INTEGER DEFAULT 0,
+      created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      updated_at TEXT DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (user_id) REFERENCES users(id)
+     )
     ''');
 
     // --- Thêm 4 user mặc định ---

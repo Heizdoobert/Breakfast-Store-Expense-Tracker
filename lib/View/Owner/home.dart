@@ -1,6 +1,10 @@
 import 'package:extractorapplication/Controller/AuthController.dart';
+import 'package:extractorapplication/Controller/NoteController.dart';
+import 'package:extractorapplication/Model/Note.dart';
 import 'package:extractorapplication/Model/User.dart';
+import 'package:extractorapplication/View/Components/add_button.dart';
 import 'package:extractorapplication/View/Components/custom_navbar.dart';
+import 'package:extractorapplication/View/Note/AddNoteDialog.dart';
 import 'package:extractorapplication/View/Owner/pages/finance/finance_home_page.dart';
 import 'package:extractorapplication/View/Owner/pages/inventory/inventory_home_page.dart';
 import 'package:extractorapplication/View/Owner/pages/main_page.dart';
@@ -46,6 +50,46 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
           });
         },
       ),
+      floatingActionButton: _currentIndex !=4? NoteFab(
+        onPressed: () {
+          _showAddNoteDialog(context);
+        },
+      ) :null,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+    );
+  }
+
+  void _showAddNoteDialog(BuildContext context) {
+    AddNoteDialog.show(
+      context,
+      onSave: (noteData) async {
+        try {
+          NoteController noteController = NoteController();
+          Note? newNote = await noteController.addNote(
+            noteData['title'],
+            noteData['content'],
+            noteData['category'],
+            noteData['priority'],
+          );
+          if (newNote != null) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text('Ghi chú mới đã được thêm'),
+                backgroundColor: Colors.green,
+              ),
+            );
+          } else {
+            throw Exception('Không thể thêm ghi chú mới');
+          }
+        } catch (e) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
     );
   }
 }

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:extractorapplication/View/Components/header.dart';
+import 'package:extractorapplication/View/Components/stat_card.dart';
 
 class FinanceHomePage extends StatelessWidget {
   const FinanceHomePage({super.key});
@@ -6,108 +8,208 @@ class FinanceHomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("📊 Quản lý tài chính"),
-        backgroundColor: Colors.teal,
-        elevation: 4,
-      ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
+      backgroundColor: Colors.grey[50],
+      body: SafeArea(
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            /// Tổng quan hôm nay
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: Colors.teal.shade600,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 8,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-              child: const Text(
-                "Tổng quan hôm nay (đợi dữ liệu...)",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            const SizedBox(height: 24),
+            /// Header
+            Header(),
+            const SizedBox(height: 16),
 
-            /// Chi tiêu hôm nay
-            const Text(
-              "📝 Chi tiêu hôm nay",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.orange.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.orange.shade200),
-              ),
-              child: const Text(
-                "Danh sách chi tiêu sẽ hiển thị tại đây...",
-                style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-              ),
-            ),
-            const SizedBox(height: 24),
+            /// Nội dung chính
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    /// Tổng quan tài chính
+                    const Text(
+                      "📊 Tổng quan tài chính",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
 
-            /// Ghi chú
-            const Text(
-              "🗒️ Ghi chú",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.blue.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade200),
-              ),
-              child: const Text(
-                "Danh sách ghi chú sẽ hiển thị tại đây...",
-                style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
-              ),
-            ),
-            const SizedBox(height: 24),
+                    /// Thống kê nhanh - Placeholder cho dữ liệu từ DB
+                    Row(
+                      children: [
+                        Expanded(
+                          child: MiniStatCard(
+                            icon: Icons.arrow_downward_rounded,
+                            value: "0đ", // Placeholder
+                            subtitle: "Thu nhập",
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: MiniStatCard(
+                            icon: Icons.arrow_upward_rounded,
+                            value: "0đ", // Placeholder
+                            subtitle: "Chi tiêu",
+                            color: Colors.red,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
 
-            /// Thống kê chi tiết
-            const Text(
-              "📈 Thống kê chi tiết",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 12),
-            Container(
-              height: 200,
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.05),
-                    blurRadius: 6,
-                    offset: const Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: const Center(
-                child: Text(
-                  "Biểu đồ / thống kê sẽ hiển thị tại đây...",
-                  style: TextStyle(fontStyle: FontStyle.italic),
+                    MiniStatCard(
+                      icon: Icons.account_balance_wallet_rounded,
+                      value: "0đ", // Placeholder
+                      subtitle: "Số dư hiện tại",
+                      color: Colors.blue,
+                    ),
+                    const SizedBox(height: 24),
+
+                    /// Chi tiết chi tiêu - Placeholder cho dữ liệu từ DB
+                    StatCard(
+                      title: "Chi tiêu hôm nay",
+                      value: "0đ", // Placeholder
+                      icon: Icons.shopping_cart_rounded,
+                      color: Colors.orange,
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Chi tiết chi tiêu",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Placeholder - sẽ thay bằng dữ liệu từ DB
+                          const Center(
+                            child: Text(
+                              "Dữ liệu chi tiêu sẽ hiển thị tại đây",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    /// Ghi chú - Placeholder cho dữ liệu từ DB
+                    StatCard(
+                      title: "Ghi chú công việc",
+                      value: "0 ghi chú", // Placeholder
+                      icon: Icons.note_rounded,
+                      color: Colors.purple,
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Danh sách ghi chú",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Placeholder - sẽ thay bằng dữ liệu từ DB
+                          const Center(
+                            child: Text(
+                              "Danh sách ghi chú sẽ hiển thị tại đây",
+                              style: TextStyle(
+                                color: Colors.grey,
+                                fontStyle: FontStyle.italic,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+
+                    /// Thống kê chi tiết - Placeholder cho dữ liệu từ DB
+                    const Text(
+                      "📈 Thống kê chi tiết",
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Colors.deepPurple,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+
+                    Container(
+                      height: 200,
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Icon(
+                            Icons.bar_chart_rounded,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
+                          SizedBox(height: 16),
+                          Text(
+                            "Biểu đồ thống kê sẽ hiển thị tại đây",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontStyle: FontStyle.italic,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
                 ),
               ),
             ),
