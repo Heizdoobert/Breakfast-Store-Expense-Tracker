@@ -1,8 +1,16 @@
+import 'package:extractorapplication/Controller/ExpenseController.dart';
+import 'package:extractorapplication/Controller/NoteController.dart';
+import 'package:extractorapplication/Database/db_help.dart';
+import 'package:extractorapplication/View/Note/AddNoteDialog.dart';
+import 'package:extractorapplication/View/Note/add_expanse_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:extractorapplication/View/Components/header.dart';
 
+import '../../../Model/Note.dart';
+
 class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+  MainPage({super.key});
+  final NoteController noteController = NoteController();
 
   @override
   Widget build(BuildContext context) {
@@ -18,105 +26,141 @@ class MainPage extends StatelessWidget {
               Header(),
               const SizedBox(height: 24),
 
-              /// Chi tiêu hôm nay
-              const Padding(
-                padding: EdgeInsets.only(left: 4.0),
-                child: Text(
-                  "📝 Chi tiêu hôm nay",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade50,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.orange.shade200, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.orange.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Tổng chi: 0đ", // Placeholder for total expense
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.deepOrange,
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(20),
+                  decoration: BoxDecoration(
+                    color: Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(16),
+                    border: Border.all(color: Colors.orange.shade200, width: 1.5),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.orange.withOpacity(0.1),
+                        blurRadius: 8,
+                        offset: const Offset(0, 4),
                       ),
-                    ),
-                    SizedBox(height: 12),
-                    Text(
-                      "- Mua nguyên liệu: 0đ\n" // Placeholder for data
-                          "- Thanh toán điện nước: 0đ\n"
-                          "- Khác: 0đ",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
+                    ],
+                  ),
+                  child: DailyExpenseCard(
+                    controller: ExpenseController(DBHelper()),
+                    groupId: 1,
+                    userId: 1,
+                  ),
                 ),
               ),
               const SizedBox(height: 24),
 
               /// Ghi chú
-              const Padding(
-                padding: EdgeInsets.only(left: 4.0),
-                child: Text(
-                  "🗒️ Ghi chú",
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                    color: Colors.deepPurple,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.blue.shade50,
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(color: Colors.blue.shade200, width: 1.5),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
+              FutureBuilder<List<Note>>(
+                future: noteController.getTodayNotes(), // dữ liệu lấy từ controller
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  }
+
+                  final notes = snapshot.data ?? [];
+
+                  return Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: Colors.blue.shade50,
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.blue.shade200, width: 1.5),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.blue.withOpacity(0.1),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-                child: const Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Ghi chú hôm nay", // Title for notes
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
-                        color: Colors.blue,
-                      ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Tiêu đề
+                        const Text(
+                          "📝 Ghi chú hôm nay",
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.deepPurple,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Danh sách ghi chú
+                        if (notes.isEmpty)
+                          const Text(
+                            "Chưa có ghi chú nào hôm nay.",
+                            style: TextStyle(fontSize: 14, fontStyle: FontStyle.italic),
+                          )
+                        else
+                          ...notes.map(
+                                (note) => Padding(
+                              padding: const EdgeInsets.only(bottom: 6),
+                              child: Text("- ${note.title}", style: const TextStyle(fontSize: 14)),
+                            ),
+                          ),
+
+                        const SizedBox(height: 16),
+
+                        // Hàng nút chức năng
+                        Row(
+                          children: [
+                            Expanded(
+                              child: ElevatedButton.icon(
+                                onPressed: () {
+                                  AddNoteDialog.show(
+                                    context,
+                                    onSave: (noteData) async {
+                                      await noteController.addNote(
+                                        noteData['title'],
+                                        noteData['content'],
+                                        noteData['category'] ?? '',
+                                        noteData['priority'] ?? '',
+                                      );
+                                      // Không setState ở đây nữa
+                                      // Việc load lại sẽ do widget cha xử lý
+                                    },
+                                  );
+                                },
+                                icon: const Icon(Icons.add),
+                                label: const Text("Thêm ghi chú"),
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.deepPurple,
+                                  foregroundColor: Colors.white,
+                                  padding: const EdgeInsets.symmetric(vertical: 12),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            OutlinedButton.icon(
+                              onPressed: () {
+                                // Không setState ở đây nữa
+                                // Nếu muốn load lại, gọi hàm reload từ widget cha
+                              },
+                              icon: const Icon(Icons.refresh),
+                              label: const Text("Làm mới"),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                                side: BorderSide(color: Colors.blue.shade300),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
-                    SizedBox(height: 12),
-                    Text(
-                      "- Kiểm tra tồn kho gạo\n" // Placeholder for notes
-                          "- Liên hệ nhà cung cấp trứng\n"
-                          "- Chuẩn bị khuyến mãi cuối tuần",
-                      style: TextStyle(fontSize: 14),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
               const SizedBox(height: 24),
 
