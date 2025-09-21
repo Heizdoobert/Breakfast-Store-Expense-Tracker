@@ -13,24 +13,24 @@ class CustomNavBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      {"icon": Icons.home_rounded, "label": "Home"},
-      {"icon": Icons.bookmark_rounded, "label": "Saved"},
-      {"icon": Icons.pie_chart_rounded, "label": "Money"},
-      {"icon": Icons.notifications_rounded, "label": "Alerts"},
-      {"icon": Icons.more_horiz_rounded, "label": "More"},
+      {"icon": Icons.home_rounded, "label": "Trang chủ"},
+      {"icon": Icons.analytics_sharp, "label": "Tài chính"},
+      {"icon": Icons.pallet, "label": "Kho hàng"},
+      {"icon": Icons.emoji_people_outlined, "label": "Nhân sự"},
+      {"icon": Icons.settings_rounded, "label": "Cài đặt"},
     ];
 
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 4, vertical: 8),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.1),
-            blurRadius: 16,
-            offset: const Offset(0, 4),
+            color: Colors.black.withOpacity(0.15),
+            blurRadius: 20,
+            offset: const Offset(0, 6),
           ),
         ],
       ),
@@ -48,42 +48,38 @@ class CustomNavBar extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
               decoration: BoxDecoration(
                 color: isActive
-                    ? Colors.teal.withOpacity(0.15)
+                    ? Theme.of(context).primaryColor.withOpacity(0.15)
                     : Colors.transparent,
-                borderRadius: BorderRadius.circular(15),
+                borderRadius: BorderRadius.circular(20),
                 gradient: isActive
                     ? LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                   colors: [
-                    Colors.teal.withOpacity(0.2),
-                    Colors.teal.withOpacity(0.05),
+                    Theme.of(context).primaryColor.withOpacity(0.2),
+                    Theme.of(context).primaryColor.withOpacity(0.05),
                   ],
                 )
                     : null,
               ),
-              child: Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    curve: Curves.fastOutSlowIn,
-                    transform: Matrix4.identity()..scale(isActive ? 1.15 : 1.0),
-                    child: Icon(
-                      item["icon"] as IconData,
-                      size: 24,
-                      color: isActive
-                          ? Colors.teal.shade700
-                          : Colors.grey.shade600,
-                    ),
+                  Icon(
+                    item["icon"] as IconData,
+                    size: 24,
+                    color: isActive
+                        ? Theme.of(context).primaryColor
+                        : Colors.grey.shade600,
                   ),
                   if (isActive) ...[
-                    const SizedBox(width: 8),
+                    const SizedBox(height: 4),
                     Text(
                       item["label"] as String,
                       style: TextStyle(
-                        color: Colors.teal.shade700,
+                        fontSize: 11,
                         fontWeight: FontWeight.w600,
-                        fontSize: 14,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ]
