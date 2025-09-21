@@ -74,7 +74,7 @@ class _OwnerHomePageState extends State<OwnerHomePage> {
           if (newNote != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text('Ghi chú mới đã được thêm'),
+                content: Text('Ghi chú mới đã được thêm: ${newNote.title}'),
                 backgroundColor: Colors.green,
               ),
             );

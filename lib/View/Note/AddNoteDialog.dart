@@ -6,7 +6,10 @@ class AddNoteDialog extends StatefulWidget {
   const AddNoteDialog({super.key, required this.onSave});
 
   // Phương thức show được chuyển vào đây
-  static void show(BuildContext context, {required Function(Map<String, dynamic>) onSave}) {
+  static void show(
+    BuildContext context, {
+    required Function(Map<String, dynamic>) onSave,
+  }) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -51,14 +54,14 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
     'Tài chính',
     'Nhân sự',
     'Kho hàng',
-    'Khác'
+    'Khác',
   ];
 
   final List<String> _priorities = [
     'Rất quan trọng',
     'Quan trọng',
     'Bình thường',
-    'Không quan trọng'
+    'Không quan trọng',
   ];
 
   @override
@@ -115,7 +118,10 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: Colors.teal, width: 2),
+                          borderSide: const BorderSide(
+                            color: Colors.teal,
+                            width: 2,
+                          ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -144,7 +150,10 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(16),
-                          borderSide: const BorderSide(color: Colors.teal, width: 2),
+                          borderSide: const BorderSide(
+                            color: Colors.teal,
+                            width: 2,
+                          ),
                         ),
                         contentPadding: const EdgeInsets.symmetric(
                           horizontal: 16,
@@ -175,15 +184,23 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
                         child: DropdownButton<String>(
                           value: _selectedCategory,
                           isExpanded: true,
-                          icon: const Icon(Icons.arrow_drop_down, color: Colors.teal),
+                          icon: const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.teal,
+                          ),
                           elevation: 8,
-                          style: const TextStyle(color: Colors.black, fontSize: 16),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
                           onChanged: (String? newValue) {
                             setState(() {
                               _selectedCategory = newValue!;
                             });
                           },
-                          items: _categories.map<DropdownMenuItem<String>>((String value) {
+                          items: _categories.map<DropdownMenuItem<String>>((
+                            String value,
+                          ) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Row(
@@ -215,15 +232,23 @@ class _AddNoteDialogState extends State<AddNoteDialog> {
                         child: DropdownButton<String>(
                           value: _selectedPriority,
                           isExpanded: true,
-                          icon: const Icon(Icons.arrow_drop_down, color: Colors.teal),
+                          icon: const Icon(
+                            Icons.arrow_drop_down,
+                            color: Colors.teal,
+                          ),
                           elevation: 8,
-                          style: const TextStyle(color: Colors.black, fontSize: 16),
+                          style: const TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
                           onChanged: (String? newValue) {
                             setState(() {
                               _selectedPriority = newValue!;
                             });
                           },
-                          items: _priorities.map<DropdownMenuItem<String>>((String value) {
+                          items: _priorities.map<DropdownMenuItem<String>>((
+                            String value,
+                          ) {
                             return DropdownMenuItem<String>(
                               value: value,
                               child: Row(
