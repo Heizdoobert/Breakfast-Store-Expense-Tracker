@@ -1,5 +1,7 @@
+import 'package:extractorapplication/Controller/AuthController.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../Model/Note.dart';
 import '../Model/User.dart';
 
 class DBHelper {
@@ -14,6 +16,8 @@ class DBHelper {
     _db = await _initDb();
     return _db!;
   }
+
+  get rows => null;
 
   Future<Database> _initDb() async {
     String path = join(await getDatabasesPath(), 'warehouse.db');
@@ -269,4 +273,87 @@ class DBHelper {
       whereArgs: [userId],
     );
   }
+
+  //note for sum of today account
+  Future<List<Map<String, dynamic>>> getTodayExpenseDetails({required int groupId}) async {
+    final dbClient = await db;
+    final now = DateTime.now();
+    final todayStart = DateTime(now.year, now.month, now.day);
+    final todayEnd = todayStart.add(const Duration(days: 1));
+    return await dbClient.query(
+      'expenses',
+      where: 'group_id = ? AND created_at BETWEEN ? AND ?',
+      whereArgs: [groupId, todayStart.toIso8601String(), todayEnd.toIso8601String()]);
+  }
+
+  Future<double> getTodayTotalExpense({required int groupId}) async {
+    final dbClient = await db;
+    final now       = DateTime.now();
+    final startOfDay     = DateTime(now.year, now.month, now.day).toIso8601String();
+    final startOfTomorrow= DateTime(now.year, now.month, now.day)
+        .add(const Duration(days: 1))
+        .toIso8601String();
+
+    // Chạy query
+    final result = await dbClient.rawQuery('''
+    SELECT SUM(amount) AS total
+    FROM expenses
+    WHERE group_id = ? AND created_at >= ? AND created_at < ?
+  ''', [groupId, startOfDay, startOfTomorrow]);
+
+    // Xử lý kết quả
+    if (result.isNotEmpty) {
+      final totalValue = result.first['total'];
+      if (totalValue != null) {
+        return (totalValue as num).toDouble();
+      }
+    }
+    return 0.0;
+  }
+
+  //lay note theo ngay hom nay
+  // Lấy ghi chú của user hiện tại trong ngày hôm nay
+  Future<List<Note>> getTodayNotes() async {
+    final db = await DBHelper._instance.db;
+    final currentUser = AuthController().currentUser;
+
+    if (currentUser == null) {
+      return [];
+    }
+
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day).toIso8601String();
+    final startOfTomorrow = DateTime(now.year, now.month, now.day)
+        .add(const Duration(days: 1))
+        .toIso8601String();
+
+    var res = await db!.query(
+      'notes',
+      where: 'user_id = ? AND created_at >= ? AND created_at < ?',
+      whereArgs: [currentUser.id, startOfDay, startOfTomorrow],
+      orderBy: 'created_at DESC',
+    );
+
+    return res.map((noteMap) => Note.fromMap(noteMap)).toList();
+  }
+
+  // Future<int> getTodayNotes({required int userId}) async {
+  //   final dbClient = await db;
+  //   final startOfDay      = DateTime.now().toIso8601String();
+  //   final startOfTomorrow = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day)
+  //       .add(const Duration(days: 1))
+  //       .toIso8601String();
+  //   // Chạy query
+  //   final result = await dbClient.rawQuery('''
+  //   SELECT COUNT(*) AS total
+  //   FROM notes
+  //   WHERE user_id = ? AND created_at >= ? AND created_at < ?
+  // ''', [userId, startOfDay, startOfTomorrow]);
+  //
+  //   if (result.isNotEmpty) {
+  //     return (result.first['total'] as int?) ?? 0;
+  //   }
+  //   return 0;
+  //
+  // }
 }

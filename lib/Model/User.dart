@@ -37,6 +37,8 @@ class User {
     );
   }
 
+  get id => null;
+
   //chuyen tu map sang sqlite
   Map<String, dynamic> toMap() {
     return {
