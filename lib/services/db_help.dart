@@ -187,6 +187,30 @@ class DBHelper {
     return res.isNotEmpty ? User.fromMap(res.first) : null;
   }
 
+  Future<User?> updateUser(User user) async {
+    final dbClient = await db;
+    final res = await dbClient.update(
+      'users',
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.user_id],
+    );
+    return res > 0 ? user : null;
+  }
+
+  Future<User> checkUser(User user) async {
+    final dbClient = await db;
+    List<Map<String, dynamic>> result = await dbClient.query("User", where: "username = ? AND password = ?", whereArgs: [user.username, user.password_hash]);
+
+    print(result);
+
+    for(var row in result){
+      return new Future<User>.value(User.fromMap(row));
+    }
+
+    return new Future<User>.error("User not found");
+  }
+
   Future<List<User>> getAllUsers() async {
     final dbClient = await db;
     final res = await dbClient.query('users');

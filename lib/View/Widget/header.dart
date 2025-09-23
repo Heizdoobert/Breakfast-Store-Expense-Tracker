@@ -1,9 +1,11 @@
+import 'package:extractorapplication/services/auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:extractorapplication/Controller/AuthController.dart';
+import 'package:get/get.dart';
 
 class Header extends StatelessWidget {
   Header({super.key});
-  final auth = AuthController();
+  final auth = Get.find<AuthServices>();
 
   @override
   Widget build(BuildContext context) {

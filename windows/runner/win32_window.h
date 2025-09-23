@@ -56,7 +56,7 @@ class Win32Window {
   RECT GetClientArea();
 
  protected:
-  // Processes and route salient window messages for mouse handling,
+  // Processes and routes salient window messages for mouse handling,
   // size change and DPI. Delegates handling of these to member overloads that
   // inheriting classes can handle.
   virtual LRESULT MessageHandler(HWND window,
@@ -87,7 +87,7 @@ class Win32Window {
   // Retrieves a class instance pointer for |window|
   static Win32Window* GetThisFromHandle(HWND const window) noexcept;
 
-  // Update the window frame's theme to match the system theme.
+  // Update the window frame's themes to match the system themes.
   static void UpdateTheme(HWND const window);
 
   bool quit_on_close_ = false;

@@ -1,4 +1,4 @@
-import 'package:extractorapplication/View/Auth/ForgotPassword.dart';
+mport 'package:extractorapplication/View/Auth/ForgotPassword.dart';
 import 'package:extractorapplication/View/Auth/register.dart';
 import 'package:extractorapplication/View/Kitchen/home.dart';
 import 'package:extractorapplication/View/Manager/home.dart';
