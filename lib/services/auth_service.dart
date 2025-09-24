@@ -65,4 +65,12 @@ class AuthService extends GetxService {
       return AuthResult.error('Đăng ký thất bại: $e');
     }
   }
+
+  Future<bool> checkLoginStatus() async {
+    try {
+      return _isLoggedIn.value;
+    } catch (e) {
+      return false;
+    }
+  }
 }

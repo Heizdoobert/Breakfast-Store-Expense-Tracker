@@ -85,4 +85,13 @@ class AuthController extends GetxController {
   void clearError() {
     errorMessage.value = '';
   }
+
+  Future<bool> checkLoginStatus() async {
+    try {
+      final authService = Get.find<AuthService>();
+      return await authService.checkLoginStatus();
+    } catch (e) {
+      return false;
+    }
+  }
 }
