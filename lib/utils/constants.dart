@@ -46,7 +46,9 @@ class AppIcons {
   static const IconData info = Icons.info;
 
   // ============ CUSTOM ICONS (Nếu có) ============
-  static const IconData customLogo = Icons.account_balance; // Ví dụ
+  static const IconData customLogo = Icons.account_balance;
+
+  static const IconData group = Icons.group;
 }
 
 class AppColors {
@@ -81,4 +83,9 @@ class AppColors {
   static const Color grey700 = Color(0xFF374151);
   static const Color grey800 = Color(0xFF1F2937);
   static const Color grey900 = Color(0xFF111827);
+}
+
+class AppStrings {
+  static String get appName => 'Quản lý tài chính';
+
 }
