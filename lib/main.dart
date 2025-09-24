@@ -1,30 +1,29 @@
-import 'package:extractorapplication/View/Auth/login.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'routes/app_route.dart';
+import 'routes/route_generator.dart';
+import 'services/auth_service.dart';
+import 'services/db_help.dart';
 
 void main() {
-  ErrorWidget.builder = (FlutterErrorDetails details) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          'Something went wrong!',
-          style: TextStyle(fontSize: 24),
-        ),
-      ),
-    );
-  };
   runApp(MyApp());
-
 }
 
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Login 2025',
+    return GetMaterialApp(
+      title: 'Login System',
       theme: ThemeData(
         primarySwatch: Colors.blue,
+        useMaterial3: true,
       ),
-      home: LoginPage(),
+      initialRoute: AppRoutes.login,
+      onGenerateRoute: RouteGenerator.generateRoute,
+      initialBinding: BindingsBuilder(() {
+        Get.put(DatabaseHelper());
+        Get.put(AuthService());
+      }),
       debugShowCheckedModeBanner: false,
     );
   }

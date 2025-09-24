@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 
 class GroupMember {
   final int? group_member_id;
