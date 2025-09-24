@@ -87,5 +87,4 @@ class AppColors {
 
 class AppStrings {
   static String get appName => 'Quản lý tài chính';
-
 }
