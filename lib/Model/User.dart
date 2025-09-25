@@ -22,7 +22,7 @@ class User {
   //chuyen doi thanh map
   factory User.fromMap(Map<String, dynamic> map) {
     return User(
-      userId: map['userId'],
+      userId: map['id'],
       userName: map['userName'],
       email: map['email'],
       passwordHash: map['passwordHash'],
@@ -37,7 +37,7 @@ class User {
     );
   }
 
-  get id => null;
+  int? get id => userId;
 
   //chuyen tu map sang sqlite
   Map<String, dynamic> toMap() {

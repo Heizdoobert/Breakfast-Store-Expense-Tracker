@@ -1,16 +1,20 @@
 import 'package:extractorapplication/Model/User.dart';
 import 'package:extractorapplication/services/auth_service.dart';
+import 'package:extractorapplication/services/saveSession.dart';
 import 'package:get/get.dart';
 
 import '../utils/validators.dart';
+import '../views/owner/ownerDashboard.dart';
+import 'owner/ownerController.dart';
 
 class AuthController extends GetxController {
   final AuthService authService;
+  final UserStorage userStorage;
 
   final RxBool isLoading = false.obs;
   final RxString errorMessage = ''.obs;
 
-  AuthController(this.authService);
+  AuthController(this.authService, this.userStorage);
 
   Future<void> login(String username, String password) async {
     try {
@@ -30,6 +34,10 @@ class AuthController extends GetxController {
 
       if (result.success) {
         errorMessage.value = '';
+        await UserStorage.saveUserSession(result.user!);
+        final controller = OwnerController(currentUser: result.user!);
+        Get.offAll(() => OwnerDashboardView(controller: controller));
+
         // Điều hướng đến dashboard dựa trên role
         _redirectBasedOnRole(result.user!);
       } else {
