@@ -1,13 +1,5 @@
-import 'package:extractorapplication/Controller/kitchen/kitchenController.dart';
-import 'package:extractorapplication/views/owner/profilePage/profilePage.dart';
-import 'package:extractorapplication/views/owner/settingsPage/settingsPage.dart';
 import 'package:flutter/material.dart';
-import '../../Controller/owner/ownerController.dart';
-import '../../views/share/navBarBottom.dart';
-import '../../views/share/appBar.dart';
-import '../owner/ownerHome/homePage.dart';
-import 'expensePage/expensePage.dart';
-import 'notesPage/notesPage.dart';
+import '../../Controller/kitchen/kitchenController.dart';
 
 class KitchenDashboardView extends StatefulWidget {
   final KitchenController controller;
@@ -18,25 +10,28 @@ class KitchenDashboardView extends StatefulWidget {
 }
 
 class _KitchenDashboardViewState extends State<KitchenDashboardView> {
-  late KitchenController ownerController;
+  late KitchenController kitchenController;
 
+  // --- Định nghĩa các trang cho Kitchen Dashboard ---
+  // Bạn cần tạo các file tương ứng cho các trang này.
+  // Ví dụ:
   final List<Widget> _pages = [
-    HomePage(),
-    NotesPage(),
-    ExpensesPage(),
-    ProfilePage(),
-    SettingsPage(),
+    Center(child: Text('Kitchen Home')),
+    Center(child: Text('Kitchen Orders')),
+    Center(child: Text('Kitchen Inventory')),
+    Center(child: Text('Kitchen Profile')),
+    Center(child: Text('Kitchen Settings')),
   ];
 
   @override
   void initState() {
     super.initState();
-    ownerController = widget.controller;
+    kitchenController = widget.controller;
   }
 
   @override
   void dispose() {
-    ownerController.dispose();
+    kitchenController.dispose();
     super.dispose();
   }
 
@@ -44,20 +39,33 @@ class _KitchenDashboardViewState extends State<KitchenDashboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TopBarWidget(
-          username: ownerController.currentUser.fullName!,
-          imageUrl: 'https://via.placeholder.com/150',
-          hasNotification: true,
-        ),
+        // Giả định có TopBarWidget giống Owner
+        // title: TopBarWidget(
+        //   username: kitchenController.currentUser.fullName!,
+        //   imageUrl: 'https://via.placeholder.com/150',
+        //   hasNotification: true,
+        // ),
+        title: Text('Kitchen Dashboard'), // Placeholder AppBar
       ),
 
       body: ValueListenableBuilder<int>(
-        valueListenable: ownerController.tabController,
+        valueListenable: kitchenController.tabController,
         builder: (context, index, _) => _pages[index],
       ),
-      bottomNavigationBar: NavbarBottom(
-        tabController: ownerController.tabController,
-      ),
+      // bottomNavigationBar: NavbarBottom(
+      //   tabController: kitchenController.tabController,
+      // ),
+      bottomNavigationBar: BottomNavigationBar(
+         currentIndex: kitchenController.tabController.value,
+         onTap: kitchenController.changeTab,
+         items: const [
+           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+           BottomNavigationBarItem(icon: Icon(Icons.receipt), label: 'Orders'),
+           BottomNavigationBarItem(icon: Icon(Icons.inventory_2), label: 'Inventory'),
+           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+         ],
+      ), // Placeholder BottomNavigationBar
     );
   }
 }

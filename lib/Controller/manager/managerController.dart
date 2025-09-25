@@ -1,7 +1,6 @@
-import 'package:extractorapplication/Model/User.dart';
-import 'package:extractorapplication/utils/valueNotifier.dart';
 import 'package:flutter/material.dart';
-
+import '../../Model/User.dart';
+import '../../utils/valueNotifier.dart'; // Giả định có User model
 
 class ManagerController {
   final TabNotifier tabController = TabNotifier();
