@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
+import 'package:get/get.dart';
 
-import '../../../../services/db_help.dart';
+import '../../../share/add_note_view.dart';
 
 class FinancialOverviewCard extends StatelessWidget {
   final double availableBalance;
@@ -52,8 +53,8 @@ class FinancialOverviewCard extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text('Available Balance', style: TextStyle(fontSize: 16)),
-                TextButton(onPressed: () {}, child: const Text('Details >')),
+                const Text('Tổng số dư', style: TextStyle(fontSize: 16)),
+                TextButton(onPressed: () {}, child: const Text('Chi tiết >')),
               ],
             ),
             Text(
@@ -77,7 +78,7 @@ class FinancialOverviewCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          '$daysLeft more days - \$${dailyBudget.toStringAsFixed(2)} per day. Left',
+                          '$daysLeft ngày còn lại - \$${dailyBudget.toStringAsFixed(2)} mỗi ngày. Còn lại',
                           style: const TextStyle(fontSize: 14),
                         ),
                         const SizedBox(height: 4),
@@ -91,7 +92,35 @@ class FinancialOverviewCard extends StatelessWidget {
                       ],
                     ),
                   ),
-                  const Icon(Icons.info_outline, color: Colors.grey),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (context) => AlertDialog(
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                          title: const Text('Chi tiết ngân sách'),
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text('Tổng ngân sách: \$${totalBudget.toStringAsFixed(2)}'),
+                              Text('Đã chi tiêu: \$${spentAmount.toStringAsFixed(2)}'),
+                              Text('Còn lại: \$${remainingBudget.toStringAsFixed(2)}'),
+                              Text('Số ngày còn lại: $daysLeft'),
+                              Text('Ngân sách mỗi ngày: \$${dailyBudget.toStringAsFixed(2)}'),
+                            ],
+                          ),
+                          actions: [
+                            TextButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: const Text('Đóng'),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    child: const Icon(Icons.info_outline, color: Colors.grey),
+                  ),
                 ],
               ),
             ),
@@ -103,7 +132,7 @@ class FinancialOverviewCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 const Text(
-                  'Total Net Worth',
+                  'Tổng tài sản',
                   style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                 ),
                 DropdownButton<String>(
@@ -195,6 +224,66 @@ class FinancialOverviewCard extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+//add button
+class AddOptionsButton extends StatelessWidget {
+  const AddOptionsButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FloatingActionButton(
+      backgroundColor: Colors.blueAccent,
+      onPressed: () {
+        showModalBottomSheet(
+          context: context,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+          ),
+          builder: (context) => Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(Icons.note_add, color: Colors.blueAccent),
+                  title: const Text('Thêm ghi chú'),
+                  onTap: () {
+                    Navigator.pop(context); // đóng sheet hiện tại
+                    showModalBottomSheet(
+                      context: context,
+                      isScrollControlled: true,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                      ),
+                      builder: (context) => const AddNoteView(),
+                    );
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.attach_money, color: Colors.green),
+                  title: const Text('Thêm chi phí'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed('/add-expense'); // vẫn dùng route nếu đã đăng ký
+                  },
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person_add, color: Colors.orange),
+                  title: const Text('Thêm staff mới'),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Get.toNamed('/add-staff');
+                  },
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+      child: const Icon(Icons.add),
     );
   }
 }

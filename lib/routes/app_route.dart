@@ -8,6 +8,7 @@ class AppRoutes {
 
   //owner
   static const String ownerDashboard = '/owner-dashboard';
+  static const String ownerAddNote = '/add_note_view';
 
   //kitchen
   static const String kitchenDashboard = '/kitchen-dashboard';

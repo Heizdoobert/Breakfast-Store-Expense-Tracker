@@ -43,7 +43,7 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TopBarWidget(
+        title: CustomAppBar(
           username: ownerController.currentUser.fullName!,
           imageUrl: 'https://via.placeholder.com/150',
           hasNotification: true,
