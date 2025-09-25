@@ -1,3 +1,4 @@
+import 'package:extractorapplication/Controller/owner/ownerController.dart';
 import 'package:extractorapplication/views/owner/ownerDashboard.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,7 +18,8 @@ class RouteGenerator {
       case AppRoutes.forgotPassword:
         return GetPageRoute(page: () => ForgotPasswordView());
       case AppRoutes.ownerDashboard:
-        return GetPageRoute(page: () => OwnerDashboardView());
+        final controller = settings.arguments as OwnerController;
+        return GetPageRoute(page: () => OwnerDashboardView(controller: controller));
       default:
         return GetPageRoute(
           page: () => Scaffold(

@@ -1,4 +1,5 @@
 import 'package:extractorapplication/Controller/AuthController.dart';
+import 'package:extractorapplication/services/saveSession.dart';
 import 'package:extractorapplication/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -6,7 +7,7 @@ import '../../services/auth_service.dart';
 import 'package:get/get.dart';
 
 class LoginView extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController(Get.find<AuthService>()));
+  final AuthController authController = Get.put(AuthController(Get.find<AuthService>(), UserStorage()));
   final TextEditingController usernameController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
