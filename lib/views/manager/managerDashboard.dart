@@ -1,13 +1,5 @@
-import 'package:extractorapplication/views/owner/profilePage/profilePage.dart';
-import 'package:extractorapplication/views/owner/settingsPage/settingsPage.dart';
 import 'package:flutter/material.dart';
 import '../../Controller/manager/managerController.dart';
-import '../../Controller/owner/ownerController.dart';
-import '../../views/share/navBarBottom.dart';
-import '../../views/share/appBar.dart';
-import '../owner/ownerHome/homePage.dart';
-import 'expensePage/expensePage.dart';
-import 'notesPage/notesPage.dart';
 
 class ManagerDashboardView extends StatefulWidget {
   final ManagerController controller;
@@ -18,25 +10,28 @@ class ManagerDashboardView extends StatefulWidget {
 }
 
 class _ManagerDashboardViewState extends State<ManagerDashboardView> {
-  late ManagerController ownerController;
+  late ManagerController managerController;
 
+  // --- Định nghĩa các trang cho Manager Dashboard ---
+  // Bạn cần tạo các file tương ứng cho các trang này.
+  // Ví dụ:
   final List<Widget> _pages = [
-    HomePage(),
-    NotesPage(),
-    ExpensesPage(),
-    ProfilePage(),
-    SettingsPage(),
+    Center(child: Text('Manager Home')),
+    Center(child: Text('Manager Reports')),
+    Center(child: Text('Manager Team')),
+    Center(child: Text('Manager Profile')),
+    Center(child: Text('Manager Settings')),
   ];
 
   @override
   void initState() {
     super.initState();
-    ownerController = widget.controller;
+    managerController = widget.controller;
   }
 
   @override
   void dispose() {
-    ownerController.dispose();
+    managerController.dispose();
     super.dispose();
   }
 
@@ -44,20 +39,33 @@ class _ManagerDashboardViewState extends State<ManagerDashboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TopBarWidget(
-          username: ownerController.currentUser.fullName!,
-          imageUrl: 'https://via.placeholder.com/150',
-          hasNotification: true,
-        ),
+        // Giả định có TopBarWidget giống Owner
+        // title: TopBarWidget(
+        //   username: managerController.currentUser.fullName!,
+        //   imageUrl: 'https://via.placeholder.com/150',
+        //   hasNotification: true,
+        // ),
+        title: Text('Manager Dashboard'), // Placeholder AppBar
       ),
 
       body: ValueListenableBuilder<int>(
-        valueListenable: ownerController.tabController,
+        valueListenable: managerController.tabController,
         builder: (context, index, _) => _pages[index],
       ),
-      bottomNavigationBar: NavbarBottom(
-        tabController: ownerController.tabController,
-      ),
+      // bottomNavigationBar: NavbarBottom(
+      //   tabController: managerController.tabController,
+      // ),
+      bottomNavigationBar: BottomNavigationBar(
+         currentIndex: managerController.tabController.value,
+         onTap: managerController.changeTab,
+         items: const [
+           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+           BottomNavigationBarItem(icon: Icon(Icons.bar_chart), label: 'Reports'),
+           BottomNavigationBarItem(icon: Icon(Icons.people), label: 'Team'),
+           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+         ],
+      ), // Placeholder BottomNavigationBar
     );
   }
 }

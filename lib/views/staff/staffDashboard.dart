@@ -1,13 +1,5 @@
-import 'package:extractorapplication/Controller/staff/staffController.dart';
-import 'package:extractorapplication/views/owner/profilePage/profilePage.dart';
-import 'package:extractorapplication/views/owner/settingsPage/settingsPage.dart';
 import 'package:flutter/material.dart';
-import '../../Controller/owner/ownerController.dart';
-import '../../views/share/navBarBottom.dart';
-import '../../views/share/appBar.dart';
-import '../owner/ownerHome/homePage.dart';
-import 'expensePage/expensePage.dart';
-import 'notesPage/notesPage.dart';
+import '../../Controller/staff/staffController.dart';
 
 class StaffDashboardView extends StatefulWidget {
   final StaffController controller;
@@ -18,25 +10,28 @@ class StaffDashboardView extends StatefulWidget {
 }
 
 class _StaffDashboardViewState extends State<StaffDashboardView> {
-  late StaffController ownerController;
+  late StaffController staffController;
 
+  // --- Định nghĩa các trang cho Staff Dashboard ---
+  // Bạn cần tạo các file tương ứng cho các trang này.
+  // Ví dụ:
   final List<Widget> _pages = [
-    HomePage(),
-    NotesPage(),
-    ExpensesPage(),
-    ProfilePage(),
-    SettingsPage(),
+    Center(child: Text('Staff Home')),
+    Center(child: Text('Staff Tasks')),
+    Center(child: Text('Staff Schedule')),
+    Center(child: Text('Staff Profile')),
+    Center(child: Text('Staff Settings')),
   ];
 
   @override
   void initState() {
     super.initState();
-    ownerController = widget.controller;
+    staffController = widget.controller;
   }
 
   @override
   void dispose() {
-    ownerController.dispose();
+    staffController.dispose();
     super.dispose();
   }
 
@@ -44,20 +39,33 @@ class _StaffDashboardViewState extends State<StaffDashboardView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: TopBarWidget(
-          username: ownerController.currentUser.fullName!,
-          imageUrl: 'https://via.placeholder.com/150',
-          hasNotification: true,
-        ),
+        // Giả định có TopBarWidget giống Owner
+        // title: TopBarWidget(
+        //   username: staffController.currentUser.fullName!,
+        //   imageUrl: 'https://via.placeholder.com/150',
+        //   hasNotification: true,
+        // ),
+        title: Text('Staff Dashboard'), // Placeholder AppBar
       ),
 
       body: ValueListenableBuilder<int>(
-        valueListenable: ownerController.tabController,
+        valueListenable: staffController.tabController,
         builder: (context, index, _) => _pages[index],
       ),
-      bottomNavigationBar: NavbarBottom(
-        tabController: ownerController.tabController,
-      ),
+      // bottomNavigationBar: NavbarBottom(
+      //   tabController: staffController.tabController,
+      // ),
+      bottomNavigationBar: BottomNavigationBar(
+         currentIndex: staffController.tabController.value,
+         onTap: staffController.changeTab,
+         items: const [
+           BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+           BottomNavigationBarItem(icon: Icon(Icons.assignment), label: 'Tasks'),
+           BottomNavigationBarItem(icon: Icon(Icons.calendar_today), label: 'Schedule'),
+           BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+           BottomNavigationBarItem(icon: Icon(Icons.settings), label: 'Settings'),
+         ],
+      ), // Placeholder BottomNavigationBar
     );
   }
 }
