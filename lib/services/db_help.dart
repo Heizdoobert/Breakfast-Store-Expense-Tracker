@@ -320,4 +320,6 @@ class DatabaseHelper {
 
     return spots;
   }
+
+  //CURD note
 }
