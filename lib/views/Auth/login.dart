@@ -25,10 +25,9 @@ class LoginView extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 _buildLogo(),
-                const SizedBox(height: 40),
+                const SizedBox(height: 32),
                 _buildLoginForm(),
-                const SizedBox(height: 20),
-                // _buildFooter(),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -40,34 +39,49 @@ class LoginView extends StatelessWidget {
   Widget _buildLogo() {
     return Column(
       children: [
-        Icon(
-          Icons.account_circle,
-          size: 80,
-          color: AppColors.primary,
+        Container(
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            gradient: const LinearGradient(
+              colors: [Colors.blueAccent, Colors.lightBlueAccent],
+            ),
+          ),
+          padding: const EdgeInsets.all(12),
+          child: const Icon(Icons.account_circle, size: 64, color: Colors.white),
         ),
-        const SizedBox(height: 16),
+        const SizedBox(height: 12),
         Text(
           AppStrings.appName,
           style: const TextStyle(
-            fontSize: 28,
+            fontSize: 26,
             fontWeight: FontWeight.bold,
-            color: AppColors.primary,
+            color: Colors.blueAccent,
           ),
         ),
+        const SizedBox(height: 4),
         Text(
           'Đăng nhập vào tài khoản của bạn',
-          style: TextStyle(
-            fontSize: 16,
-            color: Colors.grey[600],
-          ),
+          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
         ),
       ],
     );
   }
 
   Widget _buildLoginForm() {
-    return Card(
-      elevation: 4,
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        gradient: const LinearGradient(
+          colors: [Colors.white, Color(0xFFF0F8FF)],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.blueAccent.withOpacity(0.1),
+            blurRadius: 12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -149,30 +163,32 @@ class LoginView extends StatelessWidget {
       alignment: Alignment.centerRight,
       child: TextButton(
         onPressed: () => Get.toNamed('/forgot-password'),
-        child: const Text('Quên mật khẩu?'),
+        child: const Text('Quên mật khẩu?', style: TextStyle(color: Colors.blueAccent)),
       ),
     );
   }
 
+
   Widget _buildLoginButton() {
     return Obx(() => SizedBox(
       width: double.infinity,
-      height: 50,
+      height: 48,
       child: ElevatedButton(
         onPressed: authController.isLoading.value ? null : _login,
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primary,
+          backgroundColor: Colors.blueAccent,
           foregroundColor: Colors.white,
           shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
+            borderRadius: BorderRadius.circular(12),
           ),
         ),
         child: authController.isLoading.value
-            ? const CircularProgressIndicator(color: Colors.white)
-            : const Text(
-          'Đăng nhập',
-          style: TextStyle(fontSize: 16),
-        ),
+            ? const SizedBox(
+          width: 24,
+          height: 24,
+          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+        )
+            : const Text('Đăng nhập', style: TextStyle(fontSize: 16)),
       ),
     ));
   }
@@ -184,11 +200,12 @@ class LoginView extends StatelessWidget {
         const Text('Chưa có tài khoản?'),
         TextButton(
           onPressed: () => Get.toNamed('/register'),
-          child: const Text('Đăng ký ngay'),
+          child: const Text('Đăng ký ngay', style: TextStyle(color: Colors.blueAccent)),
         ),
       ],
     );
   }
+
 
   void _login() {
     authController.login(

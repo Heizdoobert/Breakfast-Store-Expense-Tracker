@@ -1,62 +1,78 @@
 import 'package:flutter/material.dart';
 
-class TopBarWidget extends StatelessWidget {
+// Đổi tên file thành custom_app_bar.dart sẽ giải quyết cảnh báo tên file.
+
+class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String username;
   final String imageUrl;
   final bool hasNotification;
+  final VoidCallback? onNotificationPressed;
+  final List<Widget>? actions;
 
-  const TopBarWidget({
-    super.key,
+  const CustomAppBar({
+    super.key, // Thêm super.key
     required this.username,
     required this.imageUrl,
     this.hasNotification = false,
+    this.onNotificationPressed,
+    this.actions,
   });
 
   @override
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Kích thước AppBar mặc định
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Colors.blueAccent, Colors.lightBlueAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.2),
-            blurRadius: 8,
-            offset: const Offset(0, 4),
+    // Trả về một AppBar tùy chỉnh của Flutter
+    return AppBar(
+      titleSpacing: 0.0, 
+      backgroundColor: Colors.transparent, // Để gradient của flexibleSpace hiển thị
+      elevation: 0, // Loại bỏ bóng đổ mặc định
+      flexibleSpace: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            // Sử dụng một tông màu xanh dương làm chủ đạo
+            colors: [Color(0xFF007BFF), Color(0xFF0056b3)], // Một sắc độ của blueAccent và một màu xanh đậm hơn
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
           ),
-        ],
+        ),
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Padding cho nội dung bên trong AppBar title
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar bo góc và giới hạn kích thước
+            // Avatar
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
                 imageUrl,
-                width: 48,
-                height: 48,
+                width: 40,
+                height: 40,
                 fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) => const Icon(Icons.person, size: 48, color: Colors.white),
+                errorBuilder: (context, error, stackTrace) => Container(
+                  width: 40,
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[300],
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.person, size: 24, color: Colors.grey),
+                ),
               ),
             ),
             const SizedBox(width: 12),
 
-            // Greeting and name (giới hạn bằng Expanded)
+            // Greeting and name
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
                     'Xin chào',
-                    style: TextStyle(fontSize: 12, color: Colors.white),
+                    style: TextStyle(fontSize: 12, color: Colors.black),
                     overflow: TextOverflow.ellipsis,
                   ),
                   Text(
@@ -64,7 +80,7 @@ class TopBarWidget extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: Colors.black,
                     ),
                     overflow: TextOverflow.ellipsis,
                     maxLines: 1,
@@ -73,30 +89,39 @@ class TopBarWidget extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: 8),
-
-            // Notification bell
-            Stack(
-              children: [
-                const Icon(Icons.notifications_none, size: 26, color: Colors.white),
-                if (hasNotification)
-                  Positioned(
-                    right: 0,
-                    top: 0,
-                    child: Container(
-                      width: 8,
-                      height: 8,
-                      decoration: const BoxDecoration(
-                        color: Colors.redAccent,
-                        shape: BoxShape.circle,
-                      ),
-                    ),
-                  ),
-              ],
-            ),
+            // Notification icon (nếu không có actions khác)
+            if (actions == null && hasNotification) _buildNotificationIcon(),
+            // Handle other actions if provided
+            if (actions != null)
+              ...?actions,
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildNotificationIcon() {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        IconButton(
+          icon: const Icon(Icons.notifications_none, size: 26, color: Colors.black),
+          onPressed: onNotificationPressed,
+        ),
+        if (hasNotification)
+          Positioned(
+            right: -2,
+            top: -2,
+            child: Container(
+              width: 10,
+              height: 10,
+              decoration: const BoxDecoration(
+                color: Colors.redAccent,
+                shape: BoxShape.circle,
+              ),
+            ),
+          ),
+      ],
     );
   }
 }

@@ -14,6 +14,11 @@ class UserStorage {
     await prefs.setInt('userId', user.id!);
   }
 
+  static Future<int?> getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('userId');
+  }
+
   static Future<String?> getFullName() async {
     final prefs = await SharedPreferences.getInstance();
     return prefs.getString('fullName');
