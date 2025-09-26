@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import '../Model/Expense.dart';
 import '../Model/User.dart';
 
 class DatabaseHelper {
@@ -321,5 +322,32 @@ class DatabaseHelper {
     return spots;
   }
 
-  //CURD note
+  //============CRUD Expense===================
+  Future<List<Map<String, dynamic>>> query(
+      String tableName,
+      {required String where, required List<int> whereArgs}
+      ) async {
+    final db = await database;
+    return await db.query(tableName, where: where, whereArgs: whereArgs);
+  }
+
+  Future<int> insert(String s, Map<String, dynamic> map) async {
+    final db = await database;
+    return await db.insert(s, map);
+  }
+
+  Future<int> update(String s, Map<String, dynamic> map, {required String where, required List<int> whereArgs}) async {
+    final db = await database;
+    return await db.update(s, map, where: where, whereArgs: whereArgs);
+  }
+
+  Future<int> delete(String s, {required String where, required List<int> whereArgs}) async {
+    final db = await database;
+    return await db.delete(s, where: where, whereArgs: whereArgs);
+  }
+
+  Future<int> addExpense(Expense expense) async {
+    final db = await database;
+    return await db.insert('expenses', expense.toMap());
+  }
 }

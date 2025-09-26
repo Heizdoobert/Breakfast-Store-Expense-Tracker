@@ -17,6 +17,10 @@ import 'services/auth_service.dart';
 import 'services/db_help.dart';
 
 void main() {
+  FlutterError.onError = (FlutterErrorDetails details) {
+    print('[FlutterError] ${details.exception}');
+  };
+
   runApp(MyApp());
 }
 

@@ -1,9 +1,12 @@
+import 'package:get/get.dart';
+
 import '../Model/Note.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class NoteController {
   static const String _tableName = 'notes';
+  var notes = <Note>[];
 
   Future<Database> get database async {
     final dbPath = await getDatabasesPath();
@@ -64,5 +67,14 @@ class NoteController {
       where: 'id = ?',
       whereArgs: [id],
     );
+  }
+  Future<void> fetchNotes(int userId) async {
+    final result = await getAllNotes();
+    notes.assignAll(result);
+  }
+
+  Future<void> deleteNoteAndRefresh(int id, int userId) async {
+    await deleteNote(id);
+    await fetchNotes(userId);
   }
 }

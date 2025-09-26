@@ -1,3 +1,4 @@
+import 'package:extractorapplication/views/owner/expensePage/expensePage.dart';
 import 'package:extractorapplication/views/owner/profilePage/profilePage.dart';
 import 'package:extractorapplication/views/owner/settingsPage/settingsPage.dart';
 import 'package:flutter/material.dart';
@@ -5,7 +6,6 @@ import '../../Controller/owner/ownerController.dart';
 import '../../views/share/navBarBottom.dart';
 import '../../views/share/appBar.dart';
 import '../owner/ownerHome/homePage.dart';
-import 'expensePage/expensePage.dart';
 import 'notesPage/notesPage.dart';
 
 class OwnerDashboardView extends StatefulWidget {
@@ -22,7 +22,7 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   final List<Widget> _pages = [
     HomePage(),
     NotesPage(),
-    ExpensesPage(),
+    ExpensePage(),
     ProfilePage(),
     SettingsPage(),
   ];
