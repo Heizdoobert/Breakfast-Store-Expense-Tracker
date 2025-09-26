@@ -1,5 +1,6 @@
 // lib/views/owner/ownerHome/home_page.dart
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:fl_chart/fl_chart.dart';
 import '../../../Controller/financialController.dart';
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       Expanded(
                                         child: Text(
-                                          note.title ?? 'Không có tiêu đề',
+                                          note.title,
                                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
                                           overflow: TextOverflow.ellipsis,
                                           maxLines: 1,
@@ -145,13 +146,37 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       // Icon xóa
                                       IconButton(
-                                        icon: const Icon(Icons.delete_outline, color: Colors.red, size: 22), // Icon xóa
-                                        onPressed: () {
-                                          // TODO: Implement delete functionality for notes here if needed
-                                          print('Delete note tapped: ${note.id}');
-                                        },
+                                        icon: const Icon(Icons.delete_outline, color: Colors.red, size: 22),
                                         tooltip: 'Xóa ghi chú',
+                                        onPressed: () async {
+                                          final confirm = await showDialog<bool>(
+                                            context: context,
+                                            builder: (context) => AlertDialog(
+                                              title: const Text('Xác nhận xóa'),
+                                              content: const Text('Bạn có chắc muốn xóa ghi chú này?'),
+                                              actions: [
+                                                TextButton(onPressed: () => Navigator.pop(context, false), child: const Text('Hủy')),
+                                                TextButton(onPressed: () => Navigator.pop(context, true), child: const Text('Xóa')),
+                                              ],
+                                            ),
+                                          );
+
+                                          if (confirm == true) {
+                                            await _noteController.deleteNote(note.id!);
+                                            ScaffoldMessenger.of(context).showSnackBar(
+                                              const SnackBar(content: Text('Đã xóa ghi chú')),
+                                            );
+
+                                            Obx(() => ListView.builder(
+                                              itemCount: _noteController.notes.length,
+                                              itemBuilder: (context, index) {
+                                                final note = _noteController.notes[index];
+                                              }
+                                            ));
+                                          }
+                                        },
                                       ),
+
                                     ],
                                   ),
                                   const SizedBox(height: 8),
@@ -170,7 +195,7 @@ class _HomePageState extends State<HomePage> {
                                     children: [
                                       if (note.category != null && note.category!.isNotEmpty)
                                         Chip(label: Text(note.category!), backgroundColor: Colors.blue.shade100, padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
-                                      if (note.priority != null && note.priority!.isNotEmpty)
+                                      if (note.priority.isNotEmpty)
                                         Chip(label: Text(note.priority!), backgroundColor: _getPriorityColor(note.priority), padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2)),
                                     ],
                                   ),

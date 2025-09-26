@@ -1,47 +1,48 @@
 
 class Expense {
-  final int? expense_id;
-  final int? user_id;
-  final int? group_id;
+  final int? expenseId;
+  final int? userId;
+  final int? groupId;
   final String? title;
   final double? amount;
   final String? category;
-  final DateTime? created_at;
+  final DateTime? createdAt;
 
   Expense(
   {
-    this.expense_id,
-    this.user_id,
-    this.group_id,
+    this.expenseId,
+    this.userId,
+    this.groupId,
     this.title,
     this.amount,
     this.category,
-    this.created_at,
+    this.createdAt,
   });
 
   //mapping
   factory Expense.fromMap(Map<String, dynamic> map){
+    print('[Expense.fromMap] Map nhan duoc: $map');
     return Expense(
-      expense_id: map['expense_id'],
-      user_id: map['user_id'],
-      group_id: map['group_id'],
+      expenseId: map['expenseId'],
+      userId: map['userId'],
+      groupId: map['groupId'],
       title: map['title'],
-      amount: map['amount'],
+      amount: map['amount'] is int ? map['amount'].toDouble() : map['amount'],
       category: map['category'],
-      created_at: map['created_at'],
+      createdAt: map['createdAt'] != null ? DateTime.parse(map['createdAt']) : null,
     );
   }
 
   //mapping->sql
   Map<String, dynamic> toMap(){
     return {
-      'expense_id': expense_id,
-      'user_id': user_id,
-      'group_id': group_id,
+      'expenseId': expenseId,
+      'userId': userId,
+      'groupId': groupId,
       'title': title,
       'amount': amount,
       'category': category,
-      'created_at': created_at,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 }

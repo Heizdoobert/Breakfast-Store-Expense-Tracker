@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:extractorapplication/Model/Note.dart';
 import 'package:extractorapplication/views/owner/notesPage/widget/note_detail_page.dart';
 
-import '../../../Controller/owner/notes_page_controller.dart'; // Import trang chi tiết
+import '../../../Controller/owner/notes_page_controller.dart';
+import '../../share/add_note_view.dart'; // Import trang chi tiết
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -63,25 +64,36 @@ class _NotesPageState extends State<NotesPage> {
       appBar: AppBar(
         title: const Text('Danh sách ghi chú'),
         // Tùy chỉnh AppBar nếu muốn
-        // backgroundColor: Colors.transparent,
-        // flexibleSpace: Container(
-        //   decoration: const BoxDecoration(
-        //     gradient: LinearGradient(
-        //       colors: [Color(0xFF007BFF), Color(0xFF0056b3)],
-        //       begin: Alignment.topLeft,
-        //       end: Alignment.bottomRight,
-        //     ),
-        //   ),
-        // ),
+        backgroundColor: Colors.transparent,
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            gradient: LinearGradient(
+            colors: [Color(0xFF007BFF), Color(0xFF0056b3)],
+              begin: Alignment.topLeft,
+           end: Alignment.bottomRight,
+             ),
+           ),
+         ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: _buildContent(), // Sử dụng hàm build content để hiển thị
+        child: _buildContent(),
       ),
-      // floatingActionButton: FloatingActionButton(
-      //   onPressed: () { /* Điều hướng đến trang thêm ghi chú */ },
-      //   child: const Icon(Icons.add),
-      // ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true,
+            shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24.0)),
+            ),
+            builder: (BuildContext bc) {
+              return const AddNoteView();
+            },
+          );
+        },
+        child: const Icon(Icons.add),
+      ),
     );
   }
 
