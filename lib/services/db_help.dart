@@ -1,6 +1,7 @@
 import 'package:fl_chart/fl_chart.dart';
-import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
+
 import '../Model/Expense.dart';
 import '../Model/User.dart';
 
@@ -20,11 +21,7 @@ class DatabaseHelper {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'myExpenseDatabase.db');
 
-    return await openDatabase(
-      path,
-      version: 1,
-      onCreate: _onCreate,
-    );
+    return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
   Future<void> _onCreate(Database db, int version) async {
@@ -148,7 +145,7 @@ class DatabaseHelper {
       'email': 'owner@example.com',
       'passwordHash': '123456',
       'fullName': 'Owner Account',
-      'role' : 'owner',
+      'role': 'owner',
     });
 
     batch.insert('users', {
@@ -192,6 +189,15 @@ class DatabaseHelper {
     return null;
   }
 
+  Future<User?> getUserById(int id) async {
+    final db = await database;
+    final maps = await db.query('users', where: 'id = ?', whereArgs: [id]);
+    if (maps.isNotEmpty) {
+      return User.fromMap(maps.first);
+    }
+    return null;
+  }
+
   Future<int> insertUser(User user) async {
     final db = await database;
     return await db.insert('users', user.toMap());
@@ -201,6 +207,11 @@ class DatabaseHelper {
     final db = await database;
     final maps = await db.query('users');
     return maps.map((map) => User.fromMap(map)).toList();
+  }
+
+  Future<void> deleteUser(int id) async {
+    final db = await database;
+    await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
   //financial overview
@@ -243,7 +254,6 @@ class DatabaseHelper {
       [userId],
     );
     return result.first['total'] as double? ?? 0;
-
   }
 
   Future<double> getRemainingBudget(int userId) async {
@@ -266,13 +276,16 @@ class DatabaseHelper {
 
   Future<List<String>> getDateLabels(int userId) async {
     final db = await database;
-    final result = await db.rawQuery('''
+    final result = await db.rawQuery(
+      '''
       SELECT DATE(createdAt) as date
       FROM expenses
       WHERE userId = ?
       GROUP BY DATE(createdAt)
       ORDER BY DATE(createdAt)
-    ''', [userId]);
+    ''',
+      [userId],
+    );
     return result.map((row) => row['date'] as String).toList();
   }
 
@@ -304,13 +317,16 @@ class DatabaseHelper {
   Future<List<FlSpot>> getNetWorthTrend(int userId) async {
     final db = await database;
 
-    final result = await db.rawQuery('''
+    final result = await db.rawQuery(
+      '''
     SELECT DATE(createdAt) as date, SUM(amount) as total
     FROM expenses
     WHERE userId = ?
     GROUP BY DATE(createdAt)
     ORDER BY DATE(createdAt)
-  ''', [userId]);
+  ''',
+      [userId],
+    );
 
     List<FlSpot> spots = [];
     for (int i = 0; i < result.length; i++) {
@@ -324,9 +340,10 @@ class DatabaseHelper {
 
   //============CRUD Expense===================
   Future<List<Map<String, dynamic>>> query(
-      String tableName,
-      {required String where, required List<int> whereArgs}
-      ) async {
+    String tableName, {
+    required String where,
+    required List<int> whereArgs,
+  }) async {
     final db = await database;
     return await db.query(tableName, where: where, whereArgs: whereArgs);
   }
@@ -336,12 +353,21 @@ class DatabaseHelper {
     return await db.insert(s, map);
   }
 
-  Future<int> update(String s, Map<String, dynamic> map, {required String where, required List<int> whereArgs}) async {
+  Future<int> update(
+    String s,
+    Map<String, dynamic> map, {
+    required String where,
+    required List<int> whereArgs,
+  }) async {
     final db = await database;
     return await db.update(s, map, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> delete(String s, {required String where, required List<int> whereArgs}) async {
+  Future<int> delete(
+    String s, {
+    required String where,
+    required List<int> whereArgs,
+  }) async {
     final db = await database;
     return await db.delete(s, where: where, whereArgs: whereArgs);
   }
