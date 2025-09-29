@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:extractorapplication/Controller/manager/managerController.dart';
 import 'package:extractorapplication/Controller/staff/staffController.dart';
 import 'package:extractorapplication/services/saveSession.dart';
@@ -11,16 +13,24 @@ import 'package:get/get.dart';
 import 'Controller/kitchen/kitchenController.dart';
 import 'Controller/owner/ownerController.dart';
 import 'Model/User.dart';
+import 'exception/show_error.dart';
 import 'routes/app_route.dart';
 import 'routes/route_generator.dart';
 import 'services/auth_service.dart';
 import 'services/db_help.dart';
 
 void main() {
-  FlutterError.onError = (FlutterErrorDetails details) {
-    print('[FlutterError] ${details.exception}');
+  //bat loi toan cuc
+  FlutterError.onError = (details) async {
+    await showError(details.exception.toString(), details.stack.toString());
   };
 
+  runZonedGuarded(() => GetMaterialApp(home: MyApp()), (
+    Object error,
+    StackTrace stack,
+  ) async {
+    await showError(error.toString(), stack.toString());
+  });
   runApp(MyApp());
 }
 
@@ -32,10 +42,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return GetMaterialApp(
       title: 'Login System',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        useMaterial3: true,
-      ),
+      theme: ThemeData(primarySwatch: Colors.blue, useMaterial3: true),
       initialRoute: AppRoutes.login,
       home: FutureBuilder(
         future: authService.checkLoginStatus(),
