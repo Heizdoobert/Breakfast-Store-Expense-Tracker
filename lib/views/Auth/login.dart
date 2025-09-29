@@ -1,216 +1,79 @@
-import 'package:extractorapplication/Controller/AuthController.dart';
-import 'package:extractorapplication/services/saveSession.dart';
-import 'package:extractorapplication/utils/constants.dart';
+import 'package:extractorapplication/views/Auth/register.dart';
+import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
+import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../services/auth_service.dart';
-import 'package:get/get.dart';
+import '../../themes/app_theme.dart';
 
-class LoginView extends StatelessWidget {
-  final AuthController authController = Get.put(AuthController(Get.find<AuthService>(), UserStorage()));
-  final TextEditingController usernameController = TextEditingController();
-  final TextEditingController passwordController = TextEditingController();
+class LoginPage extends StatefulWidget {
+  static route() => MaterialPageRoute(
+    builder: (context) => const LoginPage(),
+  );
+  const LoginPage({super.key});
 
-  LoginView({Key? key}) : super(key: key);
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  // thuc thi khi dang nhap thanh cong
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // formKey.currentState?.validate();
     return Scaffold(
-      backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Center(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                _buildLogo(),
-                const SizedBox(height: 32),
-                _buildLoginForm(),
-                const SizedBox(height: 16),
-              ],
-            ),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Text('Login', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 30),
+              AuthField(hintText: 'Username', controller: usernameController),
+              const SizedBox(height: 15),
+              AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
+              const SizedBox(height: 20),
+              AuthGradientButton(
+                buttonText: 'Login',
+              ),
+              const SizedBox(height: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(context, RegisterPage.route());
+                },
+                child: RichText(
+                  text: TextSpan(
+                    text: 'Don\'t have an account? ',
+                    style: Theme.of(context).textTheme.titleMedium,
+                    children: [
+                      TextSpan(
+                        text: 'Sign Up',
+                        style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppPallete.gradient2,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      )
+                    ]
+                  )
+                ),
+              )
+            ]
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildLogo() {
-    return Column(
-      children: [
-        Container(
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            gradient: const LinearGradient(
-              colors: [Colors.blueAccent, Colors.lightBlueAccent],
-            ),
-          ),
-          padding: const EdgeInsets.all(12),
-          child: const Icon(Icons.account_circle, size: 64, color: Colors.white),
-        ),
-        const SizedBox(height: 12),
-        Text(
-          AppStrings.appName,
-          style: const TextStyle(
-            fontSize: 26,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueAccent,
-          ),
-        ),
-        const SizedBox(height: 4),
-        Text(
-          'Đăng nhập vào tài khoản của bạn',
-          style: TextStyle(fontSize: 14, color: Colors.grey[600]),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildLoginForm() {
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: const LinearGradient(
-          colors: [Colors.white, Color(0xFFF0F8FF)],
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.blueAccent.withOpacity(0.1),
-            blurRadius: 12,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(24.0),
-        child: Column(
-          children: [
-            Obx(() => _buildErrorMessage()),
-            const SizedBox(height: 16),
-            _buildUsernameField(),
-            const SizedBox(height: 16),
-            _buildPasswordField(),
-            const SizedBox(height: 8),
-            _buildForgotPassword(),
-            const SizedBox(height: 24),
-            _buildLoginButton(),
-            const SizedBox(height: 16),
-            _buildRegisterLink(),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildErrorMessage() {
-    if (authController.errorMessage.isEmpty) return const SizedBox();
-
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.red[50],
-        borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.red[200]!),
-      ),
-      child: Row(
-        children: [
-          Icon(Icons.error, color: Colors.red[600]),
-          const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              authController.errorMessage.value,
-              style: TextStyle(color: Colors.red[600]),
-            ),
-          ),
-          IconButton(
-            icon: Icon(Icons.close, size: 16, color: Colors.red[600]),
-            onPressed: authController.clearError,
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildUsernameField() {
-    return TextFormField(
-      controller: usernameController,
-      decoration: const InputDecoration(
-        labelText: 'Tên đăng nhập',
-        prefixIcon: Icon(Icons.person),
-        border: OutlineInputBorder(),
-      ),
-      onChanged: (_) => authController.clearError(),
-    );
-  }
-
-  Widget _buildPasswordField() {
-    return TextFormField(
-      controller: passwordController,
-      obscureText: true,
-      decoration: const InputDecoration(
-        labelText: 'Mật khẩu',
-        prefixIcon: Icon(Icons.lock),
-        border: OutlineInputBorder(),
-      ),
-      onChanged: (_) => authController.clearError(),
-      onFieldSubmitted: (_) => _login(),
-    );
-  }
-
-  Widget _buildForgotPassword() {
-    return Align(
-      alignment: Alignment.centerRight,
-      child: TextButton(
-        onPressed: () => Get.toNamed('/forgot-password'),
-        child: const Text('Quên mật khẩu?', style: TextStyle(color: Colors.blueAccent)),
-      ),
-    );
-  }
-
-
-  Widget _buildLoginButton() {
-    return Obx(() => SizedBox(
-      width: double.infinity,
-      height: 48,
-      child: ElevatedButton(
-        onPressed: authController.isLoading.value ? null : _login,
-        style: ElevatedButton.styleFrom(
-          backgroundColor: Colors.blueAccent,
-          foregroundColor: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12),
-          ),
-        ),
-        child: authController.isLoading.value
-            ? const SizedBox(
-          width: 24,
-          height: 24,
-          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-        )
-            : const Text('Đăng nhập', style: TextStyle(fontSize: 16)),
-      ),
-    ));
-  }
-
-  Widget _buildRegisterLink() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        const Text('Chưa có tài khoản?'),
-        TextButton(
-          onPressed: () => Get.toNamed('/register'),
-          child: const Text('Đăng ký ngay', style: TextStyle(color: Colors.blueAccent)),
-        ),
-      ],
-    );
-  }
-
-
-  void _login() {
-    authController.login(
-      usernameController.text.trim(),
-      passwordController.text.trim(),
     );
   }
 }

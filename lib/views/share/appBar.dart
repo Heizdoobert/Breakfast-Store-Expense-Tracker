@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
-// Đổi tên file thành custom_app_bar.dart sẽ giải quyết cảnh báo tên file.
-
+// Widget AppBar tùy chỉnh, có thể dùng thay thế AppBar mặc định của Flutter
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String username;
   final String imageUrl;
@@ -10,7 +9,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final List<Widget>? actions;
 
   const CustomAppBar({
-    super.key, // Thêm super.key
+    super.key,
     required this.username,
     required this.imageUrl,
     this.hasNotification = false,
@@ -18,32 +17,34 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.actions,
   });
 
+  // Thiết lập chiều cao mặc định cho AppBar
   @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight); // Kích thước AppBar mặc định
+  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 
   @override
   Widget build(BuildContext context) {
-    // Trả về một AppBar tùy chỉnh của Flutter
     return AppBar(
-      titleSpacing: 0.0, 
-      backgroundColor: Colors.transparent, // Để gradient của flexibleSpace hiển thị
+      titleSpacing: 0.0,
+      backgroundColor: Colors.transparent, // Cho phép gradient hiển thị
       elevation: 0, // Loại bỏ bóng đổ mặc định
+      // Gradient nền cho AppBar
       flexibleSpace: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            // Sử dụng một tông màu xanh dương làm chủ đạo
-            colors: [Color(0xFF007BFF), Color(0xFF0056b3)], // Một sắc độ của blueAccent và một màu xanh đậm hơn
+            colors: [Color(0xFF007BFF), Color(0xFF0056b3)],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
         ),
       ),
+
+      // Nội dung chính của AppBar
       title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0), // Padding cho nội dung bên trong AppBar title
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            // Avatar
+            // Hiển thị ảnh đại diện người dùng
             ClipRRect(
               borderRadius: BorderRadius.circular(12),
               child: Image.network(
@@ -64,7 +65,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
             ),
             const SizedBox(width: 12),
 
-            // Greeting and name
+            // Lời chào và tên người dùng
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,23 +90,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
               ),
             ),
 
-            // Notification icon (nếu không có actions khác)
+            // Nếu không có actions tùy chỉnh, hiển thị biểu tượng thông báo
             if (actions == null && hasNotification) _buildNotificationIcon(),
-            // Handle other actions if provided
-            if (actions != null)
-              ...?actions,
+
+            // Nếu có actions tùy chỉnh, hiển thị chúng
+            if (actions != null) ...?actions,
           ],
         ),
       ),
     );
   }
 
+  // Widget biểu tượng thông báo có chấm đỏ nếu có thông báo mới
   Widget _buildNotificationIcon() {
     return Stack(
       clipBehavior: Clip.none,
       children: [
         IconButton(
-          icon: const Icon(Icons.notifications_none, size: 26, color: Colors.black),
+          icon: const Icon(
+            Icons.notifications_none,
+            size: 26,
+            color: Colors.black,
+          ),
           onPressed: onNotificationPressed,
         ),
         if (hasNotification)

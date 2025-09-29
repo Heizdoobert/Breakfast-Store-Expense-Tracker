@@ -1,115 +1,103 @@
+import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
+import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-class RegisterView extends StatefulWidget {
-  const RegisterView({super.key});
+import '../../themes/app_theme.dart';
+import 'forgotPassword.dart';
+import 'login.dart';
+
+class RegisterPage extends StatefulWidget {
+  static route() => MaterialPageRoute(
+    builder: (context) => const RegisterPage(),
+  );
+  const RegisterPage({super.key});
 
   @override
-  State<RegisterView> createState() => _RegisterViewState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterViewState extends State<RegisterView> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
-  final _confirmController = TextEditingController();
+class _RegisterPageState extends State<RegisterPage> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
+
+  // thuc thi khi dang nhap thanh cong
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
+    // formKey.currentState?.validate();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Đăng ký'),
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blueAccent.withOpacity(0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      appBar:AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Tạo tài khoản mới',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                const Text('Register', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 30),
+                AuthField(hintText: 'Username', controller: usernameController),
+                const SizedBox(height: 15),
+                AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
+                const SizedBox(height: 15),
+                AuthField(hintText: 'Confirm Password', controller: confirmPasswordController, obscureText: true),
+                const SizedBox(height: 20),
+                AuthGradientButton(
+                  buttonText: 'Register',
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, LoginPage.route());
+                  },
+                  child: RichText(
+                      text: TextSpan(
+                          text: 'Already have an account? ',
+                          style: Theme.of(context).textTheme.titleMedium,
+                          children: [
+                            TextSpan(
+                              text: 'Login',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppPallete.gradient2,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ]
+                      )
                   ),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  'Vui lòng nhập thông tin để đăng ký.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: _usernameController,
-                  decoration: InputDecoration(
-                    labelText: 'Tên đăng nhập',
-                    prefixIcon: const Icon(Icons.person),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, ForgotPasswordPage.route());
+                  },
+                  child: RichText(
+                      text: TextSpan(
+                          text: 'Forgot Password? ',
+                          style: Theme.of(context).textTheme.titleMedium,
+                          children: [
+                            TextSpan(
+                              text: 'Forgot Password',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppPallete.gradient2,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ]
+                      )
                   ),
                 ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Mật khẩu',
-                    prefixIcon: const Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: _confirmController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: 'Xác nhận mật khẩu',
-                    prefixIcon: const Icon(Icons.lock_outline),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Chưa xử lý đăng ký')),
-                      );
-                    },
-                    icon: const Icon(Icons.check),
-                    label: const Text('Đăng ký'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+              ]
           ),
         ),
       ),

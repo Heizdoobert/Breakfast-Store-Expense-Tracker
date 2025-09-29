@@ -6,12 +6,14 @@ import '../Model/Expense.dart';
 import '../Model/User.dart';
 
 class DatabaseHelper {
+  // --- 1. Cấu hình Singleton và Database Initialization ---
   static final DatabaseHelper _instance = DatabaseHelper._internal();
   static Database? _database;
 
   factory DatabaseHelper() => _instance;
 
   DatabaseHelper._internal();
+
   Future<Database> get database async {
     _database ??= await _initDatabase();
     return _database!;
@@ -24,6 +26,7 @@ class DatabaseHelper {
     return await openDatabase(path, version: 1, onCreate: _onCreate);
   }
 
+  // --- 2. Định nghĩa và Khởi tạo Bảng (Database Schema) ---
   Future<void> _onCreate(Database db, int version) async {
     final batch = db.batch();
 
@@ -56,8 +59,8 @@ class DatabaseHelper {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         groupId INTEGER,
         userId INTEGER,
-        FOREIGN KEY (groupId) REFERENCES groups(id),
-        FOREIGN KEY (userId) REFERENCES users(id)
+        FOREIGN KEY (groupId) REFERENCES groups(id) ON DELETE CASCADE,
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
 
@@ -70,8 +73,8 @@ class DatabaseHelper {
         amount REAL NOT NULL,
         description TEXT,
         createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (groupId) REFERENCES groups(id),
-        FOREIGN KEY (userId) REFERENCES users(id)
+        FOREIGN KEY (groupId) REFERENCES groups(id) ON DELETE CASCADE,
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
 
@@ -83,7 +86,7 @@ class DatabaseHelper {
         amount REAL NOT NULL,
         month INTEGER,
         year INTEGER,
-        FOREIGN KEY (groupId) REFERENCES groups(id)
+        FOREIGN KEY (groupId) REFERENCES groups(id) ON DELETE CASCADE
       )
     ''');
 
@@ -95,8 +98,8 @@ class DatabaseHelper {
         toUserId INTEGER,
         amount REAL NOT NULL,
         isSettled INTEGER DEFAULT 0,
-        FOREIGN KEY (fromUserId) REFERENCES users(id),
-        FOREIGN KEY (toUserId) REFERENCES users(id)
+        FOREIGN KEY (fromUserId) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (toUserId) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
 
@@ -108,7 +111,7 @@ class DatabaseHelper {
         targetAmount REAL NOT NULL,
         savedAmount REAL DEFAULT 0,
         deadline TEXT,
-        FOREIGN KEY (groupId) REFERENCES groups(id)
+        FOREIGN KEY (groupId) REFERENCES groups(id) ON DELETE CASCADE
       )
     ''');
 
@@ -120,10 +123,11 @@ class DatabaseHelper {
         message TEXT NOT NULL,
         isRead INTEGER DEFAULT 0,
         createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (userId) REFERENCES users(id)
+        FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
       )
     ''');
 
+    // Bảng notes
     batch.execute('''
     CREATE TABLE notes(
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -135,11 +139,12 @@ class DatabaseHelper {
       isCompleted INTEGER DEFAULT 0,
       createdAt TEXT DEFAULT CURRENT_TIMESTAMP,
       updatedAt TEXT DEFAULT CURRENT_TIMESTAMP,
-      FOREIGN KEY (userId) REFERENCES users(id)
+      FOREIGN KEY (userId) REFERENCES users(id) ON DELETE CASCADE
      )
     ''');
 
-    // --- Thêm 4 user mặc định ---
+    // --- 3. Dữ liệu mặc định (Initial Data) ---
+    // Thêm 4 user mặc định
     batch.insert('users', {
       'userName': 'super_owner',
       'email': 'owner@example.com',
@@ -175,7 +180,9 @@ class DatabaseHelper {
     await batch.commit();
   }
 
-  //============CRUD User===================
+  // ==========================================================
+  // --- 4. Các phương thức CRUD cho thực thể User ---
+  // ==========================================================
   Future<User?> getUserByUserName(String userName) async {
     final db = await database;
     final maps = await db.query(
@@ -198,6 +205,17 @@ class DatabaseHelper {
     return null;
   }
 
+  Future<User?> updateUser(User user) async {
+    final db = await database;
+    await db.update(
+      'users',
+      user.toMap(),
+      where: 'id = ?',
+      whereArgs: [user.id],
+    );
+    return user;
+  }
+
   Future<int> insertUser(User user) async {
     final db = await database;
     return await db.insert('users', user.toMap());
@@ -214,7 +232,33 @@ class DatabaseHelper {
     await db.delete('users', where: 'id = ?', whereArgs: [id]);
   }
 
-  //financial overview
+  // ==========================================================
+  // --- 5. Các phương thức CRUD cho thực thể Expense ---
+  // ==========================================================
+  Future<int> addExpense(Expense expense) async {
+    final db = await database;
+    return await db.insert('expenses', expense.toMap());
+  }
+
+  // (Bạn có thể thêm các phương thức get, update, delete cho Expense ở đây)
+  // Ví dụ:
+  // Future<List<Expense>> getExpensesByUserId(int userId) async {
+  //   final db = await database;
+  //   final maps = await db.query('expenses', where: 'userId = ?', whereArgs: [userId]);
+  //   return maps.map((map) => Expense.fromMap(map)).toList();
+  // }
+  // Future<int> updateExpense(Expense expense) async {
+  //   final db = await database;
+  //   return await db.update('expenses', expense.toMap(), where: 'id = ?', whereArgs: [expense.id]);
+  // }
+  // Future<void> deleteExpenseById(int id) async {
+  //   final db = await database;
+  //   await db.delete('expenses', where: 'id = ?', whereArgs: [id]);
+  // }
+
+  // ==========================================================
+  // --- 6. Các phương thức tổng quan tài chính và phân tích ---
+  // ==========================================================
   Future<double> getAvailableBalance(int userId) async {
     final db = await database;
 
@@ -274,26 +318,6 @@ class DatabaseHelper {
     return totalBudget - totalExpenses;
   }
 
-  Future<List<String>> getDateLabels(int userId) async {
-    final db = await database;
-    final result = await db.rawQuery(
-      '''
-      SELECT DATE(createdAt) as date
-      FROM expenses
-      WHERE userId = ?
-      GROUP BY DATE(createdAt)
-      ORDER BY DATE(createdAt)
-    ''',
-      [userId],
-    );
-    return result.map((row) => row['date'] as String).toList();
-  }
-
-  Future<double> getNetWorthChangePercent(int userId) async {
-    // Tạm thời trả về giá trị cố định, bạn có thể tính theo thời gian
-    return -1.4;
-  }
-
   Future<double> getNetWorth(int userId) async {
     final db = await database;
 
@@ -314,9 +338,31 @@ class DatabaseHelper {
     return savingsTotal + remainingBudget - debtsTotal;
   }
 
+  Future<double> getNetWorthChangePercent(int userId) async {
+    // TODO: Triển khai logic tính toán phần trăm thay đổi tài sản ròng theo thời gian
+    // Tạm thời trả về giá trị cố định
+    return -1.4;
+  }
+
+  Future<List<String>> getDateLabels(int userId) async {
+    final db = await database;
+    final result = await db.rawQuery(
+      '''
+      SELECT DATE(createdAt) as date
+      FROM expenses
+      WHERE userId = ?
+      GROUP BY DATE(createdAt)
+      ORDER BY DATE(createdAt)
+    ''',
+      [userId],
+    );
+    return result.map((row) => row['date'] as String).toList();
+  }
+
   Future<List<FlSpot>> getNetWorthTrend(int userId) async {
     final db = await database;
 
+    // Truy vấn tổng số tiền chi tiêu theo ngày
     final result = await db.rawQuery(
       '''
     SELECT DATE(createdAt) as date, SUM(amount) as total
@@ -332,48 +378,46 @@ class DatabaseHelper {
     for (int i = 0; i < result.length; i++) {
       final row = result[i];
       final amount = row['total'] as double? ?? 0;
-      spots.add(FlSpot(i.toDouble(), amount / 1000)); // scale về đơn vị 'k'
+      // Scale về đơn vị 'k' (nghìn) hoặc đơn vị phù hợp cho biểu đồ
+      spots.add(FlSpot(i.toDouble(), amount / 1000));
     }
 
     return spots;
   }
 
-  //============CRUD Expense===================
+  // ==========================================================
+  // --- 7. Các phương thức tiện ích Database chung (Generic CRUD) ---
+  // ==========================================================
   Future<List<Map<String, dynamic>>> query(
     String tableName, {
-    required String where,
-    required List<int> whereArgs,
+    String? where, // Cho phép where là null
+    List<Object?>? whereArgs, // Cho phép whereArgs là null
   }) async {
     final db = await database;
     return await db.query(tableName, where: where, whereArgs: whereArgs);
   }
 
-  Future<int> insert(String s, Map<String, dynamic> map) async {
+  Future<int> insert(String tableName, Map<String, dynamic> map) async {
     final db = await database;
-    return await db.insert(s, map);
+    return await db.insert(tableName, map);
   }
 
   Future<int> update(
-    String s,
+    String tableName,
     Map<String, dynamic> map, {
     required String where,
-    required List<int> whereArgs,
+    required List<Object?> whereArgs, // Sử dụng Object? cho kiểu linh hoạt hơn
   }) async {
     final db = await database;
-    return await db.update(s, map, where: where, whereArgs: whereArgs);
+    return await db.update(tableName, map, where: where, whereArgs: whereArgs);
   }
 
   Future<int> delete(
-    String s, {
+    String tableName, {
     required String where,
-    required List<int> whereArgs,
+    required List<Object?> whereArgs, // Sử dụng Object? cho kiểu linh hoạt hơn
   }) async {
     final db = await database;
-    return await db.delete(s, where: where, whereArgs: whereArgs);
-  }
-
-  Future<int> addExpense(Expense expense) async {
-    final db = await database;
-    return await db.insert('expenses', expense.toMap());
+    return await db.delete(tableName, where: where, whereArgs: whereArgs);
   }
 }

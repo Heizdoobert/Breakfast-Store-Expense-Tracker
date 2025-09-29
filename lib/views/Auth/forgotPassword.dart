@@ -1,93 +1,81 @@
+import 'package:extractorapplication/views/Auth/login.dart';
+import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
+import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-class ForgotPasswordView extends StatefulWidget {
-  const ForgotPasswordView({super.key});
+import '../../themes/app_theme.dart';
+
+class ForgotPasswordPage extends StatefulWidget {
+  static route() => MaterialPageRoute(
+    builder: (context) => const ForgotPasswordPage(),
+  );
+  const ForgotPasswordPage({super.key});
 
   @override
-  State<ForgotPasswordView> createState() => _ForgotPasswordViewState();
+  State<ForgotPasswordPage> createState() => _ForgotPasswordPageState();
 }
 
-class _ForgotPasswordViewState extends State<ForgotPasswordView> {
-  final _emailController = TextEditingController();
+class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
+  final usernameController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmPasswordController = TextEditingController();
+  final formKey = GlobalKey<FormState>();
 
-  void _handleSubmit() {
-    // Chưa xử lý logic, chỉ hiển thị thông báo
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Yêu cầu khôi phục đã được gửi')),
-    );
+  // thuc thi khi dang nhap thanh cong
+  @override
+  void dispose() {
+    usernameController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // formKey.currentState?.validate();
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Quên mật khẩu'),
-        backgroundColor: Colors.blueAccent,
-        elevation: 0,
-      ),
-      body: Center(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(24.0),
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.blueAccent.withOpacity(0.1),
-                  blurRadius: 12,
-                  offset: const Offset(0, 6),
-                ),
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+      appBar: AppBar(),
+      body: Padding(
+        padding: const EdgeInsets.all(15.0),
+        child: Form(
+          key: formKey,
+          child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Khôi phục mật khẩu',
-                  style: TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.blueAccent,
+                const Text('Forgot Password', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+                ),
+                const SizedBox(height: 30),
+                AuthField(hintText: 'Username', controller: usernameController),
+                const SizedBox(height: 15),
+                AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
+                const SizedBox(height: 15),
+                AuthField(hintText: 'Confirm Password', controller: confirmPasswordController, obscureText: true),
+                const SizedBox(height: 20),
+                AuthGradientButton(
+                  buttonText: 'Forgot Password',
+                ),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(context, LoginPage.route());
+                  },
+                  child: RichText(
+                      text: TextSpan(
+                          text: 'Already have an account? ',
+                          style: Theme.of(context).textTheme.titleMedium,
+                          children: [
+                            TextSpan(
+                              text: 'Login',
+                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                                color: AppPallete.gradient2,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            )
+                          ]
+                      )
                   ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Nhập email của bạn để nhận hướng dẫn đặt lại mật khẩu.',
-                  style: TextStyle(fontSize: 14, color: Colors.grey[700]),
-                ),
-                const SizedBox(height: 24),
-                TextField(
-                  controller: _emailController,
-                  decoration: InputDecoration(
-                    labelText: 'Email',
-                    prefixIcon: const Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                const SizedBox(height: 32),
-                SizedBox(
-                  width: double.infinity,
-                  height: 48,
-                  child: ElevatedButton.icon(
-                    onPressed: _handleSubmit,
-                    icon: const Icon(Icons.send),
-                    label: const Text('Gửi yêu cầu'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                )
+              ]
           ),
         ),
       ),
