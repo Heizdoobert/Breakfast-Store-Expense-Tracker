@@ -1,16 +1,11 @@
 class RoleRouter {
-  String getRouteByRole(String role) {
+  static String getRouteByRole(String role) {
     switch (role) {
-      case "owner":
-        return "/owner";
-      case "manager":
-        return "/manager";
-      case "kitchen":
-        return "/kitchen";
-      case "staff":
-        return "/staff";
-      default:
-        return '/login';
+      case 'owner': return '/owner-dashboard';
+      case 'kitchen': return '/kitchen-dashboard';
+      case 'manager': return '/manager-dashboard';
+      case 'staff': return '/staff-dashboard';
+      default: return '/login';
     }
   }
 }

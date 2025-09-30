@@ -4,11 +4,9 @@ import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
+import '../../routes/app_route.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
-  static route() => MaterialPageRoute(
-    builder: (context) => const ForgotPasswordPage(),
-  );
   const ForgotPasswordPage({super.key});
 
   @override
@@ -47,9 +45,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   buttonText: 'Forgot Password',
                 ),
                 const SizedBox(height: 20),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(context, LoginPage.route());
+                TextButton(
+                  onPressed: () {
+                    Navigator.pushNamed(context, AppRoutes.login);
                   },
                   child: RichText(
                       text: TextSpan(

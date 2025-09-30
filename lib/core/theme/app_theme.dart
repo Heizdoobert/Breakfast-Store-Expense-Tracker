@@ -10,5 +10,6 @@ class AppPallete {
   static const Color whiteColor = Colors.white;
   static const Color greyColor = Colors.grey;
   static const Color errorColor = Colors.redAccent;
+  static const Color blackOpColor = Colors.black54;
   static const Color transparentColor = Colors.transparent;
 }

@@ -1,22 +1,20 @@
-import 'package:flutter/material.dart';
-
 class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
-  static const String dashboard = '/dashboard';
 
-  //owner
+  //==========Owner================
   static const String ownerDashboard = '/owner-dashboard';
-  static const String ownerAddNote = '/add_note_view';
-  static const String ownerExpensePage = '/expense_page';
-
-  //kitchen
-  static const String kitchenDashboard = '/kitchen-dashboard';
-
-  //manager
-  static const String managerDashboard = '/manager-dashboard';
-
-  //staff
-  static const String staffDashboard = '/staff-dashboard';
+  //user in owner
+    static const String userLists = '/user-lists';
+    static const String addUser = '/add-user';
+    static const String editUser = '/edit-user';
+  //financial in owner
+    static const String financialLists = '/financial-lists';
+    static const String addFinancial = '/add-financial';
+    static const String editFinancial = '/edit-financial';
+  //system in owner
+    static const String systemLists = '/system-lists';
+    static const String addSystem = '/add-system';
+    static const String editSystem = '/edit-system';
 }
