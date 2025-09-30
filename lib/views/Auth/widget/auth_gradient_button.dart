@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../themes/app_theme.dart';
+import '../../../core/theme/app_theme.dart';
 
 class AuthGradientButton extends StatelessWidget {
   final String buttonText;

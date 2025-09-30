@@ -3,7 +3,7 @@ import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../themes/app_theme.dart';
+import '../../core/theme/app_theme.dart';
 
 class LoginPage extends StatefulWidget {
   static route() => MaterialPageRoute(
@@ -16,14 +16,14 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   // thuc thi khi dang nhap thanh cong
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     super.dispose();
   }
@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
               const Text('Login', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 30),
-              AuthField(hintText: 'Username', controller: usernameController),
+              AuthField(hintText: 'Email', controller: emailController),
               const SizedBox(height: 15),
               AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
               const SizedBox(height: 20),

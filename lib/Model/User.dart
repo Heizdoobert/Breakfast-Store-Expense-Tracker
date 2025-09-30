@@ -1,3 +1,18 @@
+import 'package:extractorapplication/services/domain/repository/auth_repository.dart';
+import 'package:fpdart/fpdart.dart';
+
+import '../exception/failures.dart';
+
+// class UserSignUp implements UserCase<String, User> {
+//   final AuthRepository authRepository;
+//   const UserSignUp({required this.authRepository});
+//
+//   @override
+//   Future<Either<Failures, String>> call(User params) async {
+//     return authRepository.signUpWithUsernamePassword(email: email, password: password)
+//   });
+// }
+
 class User {
   final int? userId;
   final String? userName;
@@ -11,7 +26,7 @@ class User {
   User({
     this.userId,
     required this.userName,
-    this.email,
+     required this.email,
     this.fullName,
     required this.passwordHash,
     this.role,

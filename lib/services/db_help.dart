@@ -19,6 +19,19 @@ class DatabaseHelper {
     return _database!;
   }
 
+  static Future<void> initialize() async {
+    final dbHelper = DatabaseHelper();
+    final path = join(await getDatabasesPath(), 'myExpenseDatabase.db');
+
+    await openDatabase(
+      path,
+      version: 1,
+      onCreate: (db, version) async {
+        await dbHelper._onCreate(db, version);
+      },
+    );
+  }
+
   Future<Database> _initDatabase() async {
     final databasePath = await getDatabasesPath();
     final path = join(databasePath, 'myExpenseDatabase.db');
