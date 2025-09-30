@@ -1,17 +1,15 @@
-import 'dart:async';
-
-import 'package:extractorapplication/core/secrets/app_secrets.dart';
 import 'package:extractorapplication/core/theme/theme.dart';
-import 'package:extractorapplication/views/Auth/login.dart';
+import 'package:extractorapplication/routes/app_route.dart';
+import 'package:extractorapplication/routes/route_generator.dart';
+import 'package:extractorapplication/supabase/supabase_client.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
 
 
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final supabase = await Supabase.initialize(url: AppSecrets.supabaseUrl, anonKey: AppSecrets.supabaseAnnonkey);
+  await SupabaseManager.initialize();
   runApp(MyApp());
 }
 
@@ -24,7 +22,8 @@ class MyApp extends StatelessWidget{
       debugShowCheckedModeBanner: false,
       title: 'Quản lý chi tiêu',
       theme: AppTheme.darkThemeMode,
-      home: const LoginPage(),
+      initialRoute: AppRoutes.login,
+      onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
 }

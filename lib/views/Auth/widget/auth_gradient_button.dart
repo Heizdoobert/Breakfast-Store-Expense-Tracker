@@ -4,7 +4,9 @@ import '../../../core/theme/app_theme.dart';
 
 class AuthGradientButton extends StatelessWidget {
   final String buttonText;
-  const AuthGradientButton({super.key, required this.buttonText});
+  final VoidCallback? onPressed;
+  final bool isLoading;
+  const AuthGradientButton({super.key, required this.buttonText, this.onPressed, this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
