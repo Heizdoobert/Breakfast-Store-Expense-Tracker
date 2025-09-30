@@ -3,3 +3,8 @@ class LoginException implements Exception {
   @override
   String toString() => "Password should not be 123";
 }
+
+class ServerException implements Exception {
+  final String message;
+  const ServerException(this.message);
+}

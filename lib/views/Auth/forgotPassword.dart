@@ -3,7 +3,7 @@ import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../themes/app_theme.dart';
+import '../../core/theme/app_theme.dart';
 
 class ForgotPasswordPage extends StatefulWidget {
   static route() => MaterialPageRoute(
@@ -16,17 +16,13 @@ class ForgotPasswordPage extends StatefulWidget {
 }
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
-  final usernameController = TextEditingController();
-  final passwordController = TextEditingController();
-  final confirmPasswordController = TextEditingController();
+  final emailController = TextEditingController();
   final formKey = GlobalKey<FormState>();
 
   // thuc thi khi dang nhap thanh cong
   @override
   void dispose() {
-    usernameController.dispose();
-    passwordController.dispose();
-    confirmPasswordController.dispose();
+    emailController.dispose();
     super.dispose();
   }
 
@@ -45,11 +41,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 const Text('Forgot Password', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
-                AuthField(hintText: 'Username', controller: usernameController),
-                const SizedBox(height: 15),
-                AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
-                const SizedBox(height: 15),
-                AuthField(hintText: 'Confirm Password', controller: confirmPasswordController, obscureText: true),
+                AuthField(hintText: 'Email', controller: emailController),
                 const SizedBox(height: 20),
                 AuthGradientButton(
                   buttonText: 'Forgot Password',

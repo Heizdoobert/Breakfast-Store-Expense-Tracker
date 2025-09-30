@@ -117,6 +117,7 @@ class UserStorage {
   static Future<User?> loadUserFromSession() async {
     final prefs = await SharedPreferences.getInstance();
     final userId = prefs.getInt('userId');
+    final email = prefs.getString('email');
     final fullName = prefs.getString('fullName');
     final role = prefs.getString('role');
 
@@ -128,6 +129,7 @@ class UserStorage {
       return User(
         userId: userId,
         fullName: fullName,
+        email : email,
         role: role,
         // Các trường khác cần được lấy từ database nếu muốn đối tượng User đầy đủ
         userName: 'sessionUser', // Giá trị giả định

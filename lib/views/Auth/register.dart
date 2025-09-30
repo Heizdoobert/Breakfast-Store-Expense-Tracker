@@ -2,7 +2,7 @@ import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
 
-import '../../themes/app_theme.dart';
+import '../../core/theme/app_theme.dart';
 import 'forgotPassword.dart';
 import 'login.dart';
 
@@ -17,7 +17,7 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final usernameController = TextEditingController();
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final confirmPasswordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
@@ -25,7 +25,7 @@ class _RegisterPageState extends State<RegisterPage> {
   // thuc thi khi dang nhap thanh cong
   @override
   void dispose() {
-    usernameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
     confirmPasswordController.dispose();
     super.dispose();
@@ -46,11 +46,9 @@ class _RegisterPageState extends State<RegisterPage> {
                 const Text('Register', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 30),
-                AuthField(hintText: 'Username', controller: usernameController),
+                AuthField(hintText: 'Email', controller: emailController),
                 const SizedBox(height: 15),
                 AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
-                const SizedBox(height: 15),
-                AuthField(hintText: 'Confirm Password', controller: confirmPasswordController, obscureText: true),
                 const SizedBox(height: 20),
                 AuthGradientButton(
                   buttonText: 'Register',
