@@ -10,6 +10,13 @@ class OwnerDashboardView extends StatefulWidget {
 class _OwnerDashboardViewState extends State<OwnerDashboardView>{
   @override
   Widget build(BuildContext context) {
-    throw UnimplementedError();
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Owner Dashboard'),
+      ),
+      body: const Center(
+        child: Text('Welcome to the Owner Dashboard'),
+      ),
+    );
   }
 }

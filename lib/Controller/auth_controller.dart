@@ -14,11 +14,23 @@ class AuthController{
     required VoidCallback onSuccess,
   }) async {
     try {
+      print('📩 Đang đăng nhập với email: $email');
       final user = await _authService.login(email, password);
+      print('🔐 user: $user');
+
       if (user != null) {
         final role = await _authService.getUserRole(user.id);
-        Navigator.pushReplacementNamed(context, RoleRouter.getRouteByRole(role));
-        onSuccess();
+        print('👤 Role: $role');
+        final route = RoleRouter.getRouteByRole(role);
+        print('➡️ Route: $route');
+
+        if (route != null) {
+          Navigator.pushReplacementNamed(context, route);
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Tài khoản không hợp lệ')),
+          );
+        }
       } else {
         throw ServerException('Tài khoản hoặc mật khẩu không đúng');
       }

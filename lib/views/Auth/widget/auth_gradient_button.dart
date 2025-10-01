@@ -22,7 +22,7 @@ class AuthGradientButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
       ),
       child: ElevatedButton(
-        onPressed: () {},
+        onPressed: isLoading ?  null : onPressed,
         style: ElevatedButton.styleFrom(fixedSize: Size(400, 50), backgroundColor: AppPallete.transparentColor, shadowColor: AppPallete.transparentColor),
         child: Text(
           buttonText,
