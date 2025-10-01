@@ -10,11 +10,16 @@ class OwnerDashboardController {
   bool isLoading = true;
 
   Future<void> loadDashboardData() async {
-    isLoading = true;
-    totalUsers = await OwnerUserService().getUserCount();
-    totalRevenue = await OwnerFinancialService().getTotalRevenue();
-    systemHealth = await OwnerSystemService().getSystemHealth();
-    recentActivities = await OwnerUserService().getRecentActivities();
-    isLoading = false;
+    try {
+      isLoading = true;
+      totalUsers = await OwnerUserService().getUserCount();
+      totalRevenue = await OwnerFinancialService().getTotalRevenue();
+      systemHealth = await OwnerSystemService().getSystemHealth();
+      recentActivities = await OwnerUserService().getRecentActivities();
+      isLoading = false;
+    }catch (e) {
+      isLoading = false;
+      throw Exception('Error loading dashboard data: $e');
+    }
   }
 }
