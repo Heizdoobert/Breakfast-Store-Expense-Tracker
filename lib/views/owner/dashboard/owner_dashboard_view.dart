@@ -1,4 +1,9 @@
+import 'package:extractorapplication/views/owner/dashboard/widgets/recent_activity.dart';
+import 'package:extractorapplication/views/owner/dashboard/widgets/stats_card.dart';
+import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
+
+import '../../../Controller/owner/owner_dashboard_controller.dart';
 
 class OwnerDashboardView extends StatefulWidget {
   const OwnerDashboardView({super.key});
@@ -7,16 +12,35 @@ class OwnerDashboardView extends StatefulWidget {
   State<OwnerDashboardView> createState() => _OwnerDashboardViewState();
 }
 
-class _OwnerDashboardViewState extends State<OwnerDashboardView>{
+class _OwnerDashboardViewState extends State<OwnerDashboardView> {
+  final controller = OwnerDashboardController();
+
+  @override
+  void initState() {
+    super.initState();
+    controller.loadDashboardData().then((_) => setState(() {}));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Owner Dashboard'),
-      ),
-      body: const Center(
-        child: Text('Welcome to the Owner Dashboard'),
-      ),
+      appBar: AppBar(title: const Text('📊 Owner Dashboard')),
+      body: controller.isLoading
+          ? const LoadingIndicator(fullscreen: true, message: 'Loading...')
+          : SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                children: [
+                  StatsCard(
+                    totalUsers: controller.totalUsers,
+                    totalRevenue: controller.totalRevenue,
+                    systemHealth: controller.systemHealth,
+                  ),
+                  const SizedBox(height: 20),
+                  RecentActivity(activities: controller.recentActivities),
+                ],
+              ),
+            ),
     );
   }
 }

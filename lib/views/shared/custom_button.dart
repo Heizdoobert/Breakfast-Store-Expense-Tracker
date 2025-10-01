@@ -57,7 +57,7 @@ class CustomButton extends StatelessWidget {
       style: ElevatedButton.styleFrom(
         fixedSize: Size(width, height),
         backgroundColor: isGradient ? AppPallete.transparentColor : bgColor,
-        shadowColor: Colors.transparent,
+        shadowColor: AppPallete.transparentColor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(borderRadius),
         ),
