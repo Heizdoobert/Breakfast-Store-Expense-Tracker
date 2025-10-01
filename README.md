@@ -1,32 +1,31 @@
-# extractorapplication
+# 📱 Extractor Application
 
-A app extractor money for mini restaurant
+**Ứng dụng quản lý và trích xuất giao dịch tài chính cho nhà hàng mini**
 
-## Getting Started
+## 🎯 Mục tiêu dự án
 
-This project is a starting point for a Flutter application.
+Phát triển ứng dụng Flutter hỗ trợ các nhà hàng nhỏ trong việc quản lý chi tiêu, theo dõi giao dịch và tối ưu hóa hoạt động tài chính hàng ngày.
 
-A few resources to get you started if this is your first Flutter project:
+## 🚀 Công nghệ sử dụng
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+- **Flutter**: Xây dựng giao diện người dùng mượt mà, đa nền tảng (Android/iOS).
+- **Firebase/Auth**: Đăng ký, đăng nhập và bảo mật tài khoản người dùng.
+- **Provider**: Quản lý trạng thái ứng dụng hiệu quả.
+- **Local Storage**: Lưu trữ dữ liệu chi tiêu cục bộ.
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## 🛠️ Tính năng chính
 
-## About
+- Đăng ký và đăng nhập người dùng
+- Ghi nhận và phân loại các khoản chi tiêu
+- Hiển thị báo cáo tổng quan tài chính
+- Giao diện thân thiện, dễ sử dụng cho người không chuyên
 
-This application is designed to extract and manage financial transactions for mini restaurants.
+## 📦 Hướng dẫn sử dụng
 
-## How to Use
+1. **Cài đặt môi trường Flutter**
+2. Clone dự án và chạy `flutter pub get`
+3. Khởi chạy ứng dụng bằng `flutter run`
 
-1. **Setup:** Ensure you have Flutter installed. Clone the repository and run `flutter pub get`.
-2. **Running the app:** Execute `flutter run` in your terminal within the project directory.
-3. **Features:** The app allows users to register, log in, and manage expenses.
+## 📌 Phiên bản
 
-## Version
-
-Current version: 1.0.0
-
-For more detailed information, please refer to the project's documentation or contact the development team.
+**v1.0.0** – Dự án cá nhân phục vụ học tập và thực hành kỹ năng lập trình Flutter.
