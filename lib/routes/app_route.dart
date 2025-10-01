@@ -6,10 +6,10 @@ class AppRoutes {
 
   //==========Owner================
   static const String ownerDashboard = '/owner-dashboard';
+  static const String ownerNavigationView = '/owner-navigation-view';
   //user in owner
-    static const String userLists = '/user-lists';
-    static const String addUser = '/add-user';
-    static const String editUser = '/edit-user';
+    static const String userListView = '/user-list-view';
+    static const String userDetailView = '/user-detail-view';
   //financial in owner
     static const String financialLists = '/financial-lists';
     static const String addFinancial = '/add-financial';

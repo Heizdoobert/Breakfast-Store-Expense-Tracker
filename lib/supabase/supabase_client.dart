@@ -13,6 +13,4 @@ class SupabaseManager {
   }
 
   static SupabaseClient get client => Supabase.instance.client;
-
-  from(String s) {}
 }

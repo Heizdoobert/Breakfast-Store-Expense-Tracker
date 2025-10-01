@@ -42,7 +42,7 @@ class _LoginPageState extends State<LoginPage> {
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
           onSuccess: () {
-            Navigator.pushReplacementNamed(context, AppRoutes.ownerDashboard);
+            Navigator.pushReplacementNamed(context, AppRoutes.ownerNavigationView);
           },
         );
       } on ServerException catch (e) {

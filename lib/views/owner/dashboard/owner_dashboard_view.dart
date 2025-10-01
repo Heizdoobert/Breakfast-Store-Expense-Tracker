@@ -1,9 +1,11 @@
+import 'package:extractorapplication/utils/constants.dart';
 import 'package:extractorapplication/views/owner/dashboard/widgets/recent_activity.dart';
 import 'package:extractorapplication/views/owner/dashboard/widgets/stats_card.dart';
 import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Controller/owner/owner_dashboard_controller.dart';
+import '../../../routes/app_route.dart';
 
 class OwnerDashboardView extends StatefulWidget {
   const OwnerDashboardView({super.key});
@@ -24,7 +26,15 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('📊 Owner Dashboard')),
+      appBar: AppBar(
+        title: Row(
+          children: [
+            const Icon(AppIcons.analytics),
+            const SizedBox(width: 8),
+            const Text('Thống kê Tong quan'),
+          ],
+        ),
+      ),
       body: controller.isLoading
           ? const LoadingIndicator(fullscreen: true, message: 'Loading...')
           : SingleChildScrollView(
