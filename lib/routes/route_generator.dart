@@ -4,6 +4,7 @@ import '../views/Auth/forgotPassword.dart';
 import '../views/Auth/login.dart';
 import '../views/Auth/register.dart';
 import '../views/owner/dashboard/owner_dashboard_view.dart';
+import '../views/splash_screen.dart';
 import 'app_route.dart';
 
 class RouteGenerator {
@@ -17,6 +18,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const ForgotPasswordPage());
       case AppRoutes.ownerDashboard:
         return MaterialPageRoute(builder: (_) => const OwnerDashboardView());
+      case AppRoutes.splash:
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
+
         default:
           return MaterialPageRoute(
           builder: (_) => const Scaffold(
