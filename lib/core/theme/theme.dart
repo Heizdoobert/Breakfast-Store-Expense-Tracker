@@ -14,6 +14,7 @@ class AppTheme {
     scaffoldBackgroundColor: AppPallete.backgroundColor,
     appBarTheme: const AppBarTheme(
       backgroundColor: AppPallete.backgroundColor,
+      shadowColor: AppPallete.transparentColor,
     ),
     inputDecorationTheme: InputDecorationTheme(
       contentPadding: const EdgeInsets.all(27),

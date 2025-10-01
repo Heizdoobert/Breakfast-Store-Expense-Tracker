@@ -1,8 +1,6 @@
-import 'package:extractorapplication/views/Auth/login.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
-
 import '../../core/theme/app_theme.dart';
 import '../../routes/app_route.dart';
 
