@@ -1,31 +1,33 @@
 # 📱 Extractor Application
 
-**Ứng dụng quản lý và trích xuất giao dịch tài chính cho nhà hàng mini**
+**Financial Transaction Management & Extraction App for Mini Restaurants**
 
-## 🎯 Mục tiêu dự án
+## 🎯 Project Objective
 
-Phát triển ứng dụng Flutter hỗ trợ các nhà hàng nhỏ trong việc quản lý chi tiêu, theo dõi giao dịch và tối ưu hóa hoạt động tài chính hàng ngày.
+This project aims to develop a Flutter-based mobile application that helps small restaurants manage their daily financial activities, including expense tracking, transaction logging, and financial reporting.
 
-## 🚀 Công nghệ sử dụng
+## 🚀 Technologies Used
 
-- **Flutter**: Xây dựng giao diện người dùng mượt mà, đa nền tảng (Android/iOS).
-- **Firebase/Auth**: Đăng ký, đăng nhập và bảo mật tài khoản người dùng.
-- **Provider**: Quản lý trạng thái ứng dụng hiệu quả.
-- **Local Storage**: Lưu trữ dữ liệu chi tiêu cục bộ.
+- **Flutter**: Cross-platform UI development (Android/iOS)
+- **Firebase/Auth**: Secure user authentication and account management
+- **Provider**: Efficient state management
+- **Local Storage**: Offline data persistence for expense records
 
-## 🛠️ Tính năng chính
+## 🛠️ Key Features
 
-- Đăng ký và đăng nhập người dùng
-- Ghi nhận và phân loại các khoản chi tiêu
-- Hiển thị báo cáo tổng quan tài chính
-- Giao diện thân thiện, dễ sử dụng cho người không chuyên
+- User registration and login
+- Record and categorize expenses
+- View financial overview reports
+- 
+## 📦  Getting Started
 
-## 📦 Hướng dẫn sử dụng
+1. **Install Flutter SDK**
+2. Clon the repository `flutter pub get`
+3. Run the app `flutter run`
 
-1. **Cài đặt môi trường Flutter**
-2. Clone dự án và chạy `flutter pub get`
-3. Khởi chạy ứng dụng bằng `flutter run`
+## 📌 Version
 
-## 📌 Phiên bản
+**v1.0.0** –  Personal learning project to practice Flutter development and mobile app architecture.
 
-**v1.0.0** – Dự án cá nhân phục vụ học tập và thực hành kỹ năng lập trình Flutter.
+## 📄 License
+- This project is licensed for educational and personal use. Feel free to fork and modify for learning purposes.
