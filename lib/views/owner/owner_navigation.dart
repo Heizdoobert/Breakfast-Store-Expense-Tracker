@@ -1,4 +1,9 @@
+import 'package:extractorapplication/views/owner/dashboard/owner_dashboard_view.dart';
+import 'package:extractorapplication/views/owner/financial/financial_ovwerview_view.dart';
+import 'package:extractorapplication/views/owner/user_management/user_list_view.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import '../../core/theme/app_theme.dart';
 import '../../routes/app_route.dart';
 import '../../utils/constants.dart';
 
@@ -11,42 +16,61 @@ class OwnerNavigationShell extends StatefulWidget {
 }
 
 class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
+  String currentRoute = AppRoutes.ownerDashboard;
 
-  void _navigate(BuildContext context, int index) {
-    final routes = [
-      AppRoutes.ownerDashboard,
-      AppRoutes.userListView,
-      // AppRoutes.systemView,
-      // AppRoutes.financialView,
-    ];
-    Navigator.pushNamed(context, routes[index]);
+  final Map<String, Widget> routeToPage =const {
+    AppRoutes.ownerDashboard: OwnerDashboardView(),
+    AppRoutes.userListView: UserListView(),
+    // AppRoutes.systemLists: ,
+    AppRoutes.financialOverviewView: FinancialOverviewView(),
+  };
+
+  final Map<String, String> routeToTitle = const {
+    AppRoutes.ownerDashboard: '📊 Thống kê tổng quan',
+    AppRoutes.userListView: '👥 Quản lý người dùng',
+    // AppRoutes.ownerSystem: '⚙️ Hệ thống',
+     AppRoutes.financialOverviewView: '💰 Tài chính',
+  };
+
+  void _navigateTo(String route) {
+    setState(() {
+      currentRoute = route;
+    });
   }
-
-
-  final List<String> titles = [
-    '📊 Thống kê tổng quan',
-    '👥 Quản lý người dùng',
-    '⚙️ Hệ thống',
-    '💰 Tài chính',
-  ];
 
   @override
   Widget build(BuildContext context) {
+    final currentIndex = [
+      AppRoutes.ownerDashboard,
+      AppRoutes.userListView,
+      // AppRoutes.ownerSystem,
+      AppRoutes.financialOverviewView,
+    ].indexOf(currentRoute);
     return Scaffold(
-      appBar: AppBar(title: const Text('🏠 Trang chủ Owner')),
-      body: const Center(child: Text('Chọn một mục bên dưới')),
+      appBar: AppBar(title: Text(routeToTitle[currentRoute]??'Khong co tieu de')),
+      body: routeToPage[currentRoute] ?? const Center(child: Text('No page found')),
       bottomNavigationBar: BottomNavigationBar(
-        onTap: (index) => _navigate(context, index),
+        backgroundColor: AppPallete.backgroundColor,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        currentIndex: currentIndex,
+        onTap: (i) => setState(() => _navigateTo([
+              AppRoutes.ownerDashboard,
+              AppRoutes.userListView,
+              AppRoutes.financialOverviewView,
+        ][i])),
         type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).colorScheme.primary,
+        selectedItemColor: AppPallete.gradient1,
+        unselectedItemColor: AppPallete.gradient2,
         items: const [
           BottomNavigationBarItem(icon: Icon(AppIcons.dashboard), label: 'Dashboard'),
           BottomNavigationBarItem(icon: Icon(AppIcons.person), label: 'Người dùng'),
-          BottomNavigationBarItem(icon: Icon(AppIcons.settings), label: 'Hệ thống'),
           BottomNavigationBarItem(icon: Icon(AppIcons.money), label: 'Tài chính'),
+          BottomNavigationBarItem(icon: Icon(AppIcons.settings), label: 'Hệ thống'),
         ],
       ),
     );
   }
+
 
 }

@@ -1,10 +1,40 @@
 import 'package:extractorapplication/supabase/supabase_client.dart';
 
-class OwnerFinancialService {
-  final supabase = SupabaseManager.client;
-  Future<double> getTotalRevenue() async {
-    final response = await supabase.from('expenses').select('amount');
+import '../../Model/expense_model.dart';
 
-    return response.fold<double>(0.0, (sum, item) => sum + (item['amount'] as num).toDouble());
+class OwnerFinancialService {
+  final _supabase = SupabaseManager.client;
+  Future<double> getTotalRevenue() async {
+    try {
+      final response = await _supabase.from('expenses').select('*');
+      final data = response as List;
+      return data.fold<double>(
+          0.0, (sum, item) => sum + (item['amount'] as num).toDouble());
+    } catch (e) {
+      throw Exception('have a bug: $e');
+    }
+  }
+
+  Future<List<Expense>> getMonthlyReport() async {
+    try {
+      final respose = await _supabase.from('expenses').select('*');
+      final data = respose as List;
+      return data.map((e) => Expense.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception('have a bug: $e');
+    }
+  }
+}
+
+class RevenueReportService {
+  final _client = SupabaseManager.client;
+
+  Future<List<Expense>> getRevenueReport() async {
+    try {
+      final response = await _client.from('revenue_report').select().order('month');
+      return response.map((e) => Expense.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception('have a bug: $e');
+    }
   }
 }

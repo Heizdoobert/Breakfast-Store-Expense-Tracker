@@ -23,15 +23,11 @@ class AuthController{
         print('👤 Role: $role');
         final route = RoleRouter.getRouteByRole(role);
         print('➡️ Route: $route');
+        onSuccess();
+        Navigator.pushReplacementNamed(context, route);
 
-        if (route != null) {
-          Navigator.pushReplacementNamed(context, route);
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Tài khoản không hợp lệ')),
-          );
-        }
       } else {
+        print('❌ Tài khoản hoặc mật khẩu không đúng');
         throw ServerException('Tài khoản hoặc mật khẩu không đúng');
       }
     } catch (e) {

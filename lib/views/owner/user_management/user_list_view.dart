@@ -24,7 +24,6 @@ class _UserListViewState extends State<UserListView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('👥 Danh sách người dùng')),
       body: controller.isLoading
           ? const LoadingIndicator(fullscreen: true, message: 'Loading...')
           : ListView.builder(
@@ -33,7 +32,7 @@ class _UserListViewState extends State<UserListView> {
           final user = controller.users[index];
           return ListTile(
             leading: const CircleAvatar(child: Icon(Icons.person)),
-            title: Text(user.fullName),
+            title: Text(user.fullName!),
             subtitle: Text('${user.email} - ${user.role}'),
             trailing: IconButton(
               icon: const Icon(Icons.arrow_forward_ios),

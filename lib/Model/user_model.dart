@@ -1,10 +1,10 @@
 class User {
-  final String id;
-  final String email;
-  final String userName;
-  final String passwordHash;
-  final String fullName;
-  final String role;
+  final String? id;
+  final String? email;
+  final String? userName;
+  final String? passwordHash;
+  final String? fullName;
+  final String? role;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -22,14 +22,18 @@ class User {
   /// tao tu supabase json
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-      id: json['id'],
-      email: json['email'],
-      userName: json['userName'],
-      passwordHash: json['passwordHash'],
-      fullName: json['fullName'],
-      role: json['role'],
-      createdAt: DateTime.parse(json['createdAt']),
-      updatedAt: DateTime.parse(json['updatedAt']),
+      id: json['id'] ?? '',
+      email: json['email'] ?? 'Khong email',
+      userName: json['userName'] ?? 'Khong userName',
+      passwordHash: json['passwordHash'] ?? 'Khong passwordHash',
+      fullName: json['fullName'] ?? 'Khong fullName',
+      role: json['role'] ?? 'Khong role',
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
+      updatedAt: json['updatedAt'] != null
+          ? DateTime.parse(json['updatedAt'])
+          : DateTime.now(),
     );
   }
 

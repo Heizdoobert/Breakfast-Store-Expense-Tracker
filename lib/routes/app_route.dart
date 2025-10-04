@@ -11,7 +11,8 @@ class AppRoutes {
     static const String userListView = '/user-list-view';
     static const String userDetailView = '/user-detail-view';
   //financial in owner
-    static const String financialLists = '/financial-lists';
+    static const String financialOverviewView = '/owner/financial/financial-overview-view';
+    static const String revenueReportView = '/owner/financial/revenue-report-view';
     static const String addFinancial = '/add-financial';
     static const String editFinancial = '/edit-financial';
   //system in owner

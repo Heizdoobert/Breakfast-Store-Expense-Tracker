@@ -9,6 +9,10 @@ class OwnerDashboardController {
   List<String> recentActivities = [];
   bool isLoading = true;
 
+  void dispose() {
+    isLoading = false;
+  }
+
   Future<void> loadDashboardData() async {
     try {
       isLoading = true;

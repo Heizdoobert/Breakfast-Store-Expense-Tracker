@@ -39,6 +39,7 @@ class OwnerUserService {
       return response.map((e) => User.fromJson(e)).toList();
     }
     catch (e) {
+      print('raw user data: $e');
       throw Exception('Error fetching all users: $e');
     }
   }
