@@ -15,16 +15,21 @@ class Expense {
     required this.createdAt,
   });
 
-  factory Expense.fromJson(Map<String, dynamic> json){
+  factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
-      id: json['id'],
-      groupId: json['groupId'],
-      userId: json['userId'],
-      amount: json['amount'],
-      description: json['description'],
-      createdAt: DateTime.parse(json['createdAt']),
+      id: json['id'] ?? '',
+      groupId: json['groupId'] ?? '',
+      userId: json['userId'] ?? '',
+      amount: (json['amount'] is int)
+          ? (json['amount'] as int).toDouble()
+          : (json['amount'] ?? 0.0) as double,
+      description: json['description'] ?? '',
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'])
+          : DateTime.now(),
     );
   }
+
 
   Map<String, dynamic> toJson(){
     return {

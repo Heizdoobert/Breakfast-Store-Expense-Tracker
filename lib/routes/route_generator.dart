@@ -5,6 +5,8 @@ import '../views/Auth/forgotPassword.dart';
 import '../views/Auth/login.dart';
 import '../views/Auth/register.dart';
 import '../views/owner/dashboard/owner_dashboard_view.dart';
+import '../views/owner/financial/financial_ovwerview_view.dart';
+import '../views/owner/financial/revenue_report_view.dart';
 import '../views/owner/user_management/user_list_view.dart';
 import '../views/shared/splash_screen.dart';
 import 'app_route.dart';
@@ -31,6 +33,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const UserListView());
       case AppRoutes.userDetailView:
         return MaterialPageRoute(builder: (_) => const UserListView());
+      case AppRoutes.financialOverviewView:
+        return MaterialPageRoute(builder: (_) => const FinancialOverviewView());
+        case AppRoutes.revenueReportView:
+        return MaterialPageRoute(builder: (_) => RevenueReportView());
+
 
         default:
           return MaterialPageRoute(

@@ -18,23 +18,22 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   final controller = OwnerDashboardController();
 
   @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
-    controller.loadDashboardData().then((_) => setState(() {}));
+    if(mounted) {
+      controller.loadDashboardData().then((_) => setState(() {}));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const Icon(AppIcons.analytics),
-            const SizedBox(width: 8),
-            const Text('Thống kê Tong quan'),
-          ],
-        ),
-      ),
       body: controller.isLoading
           ? const LoadingIndicator(fullscreen: true, message: 'Loading...')
           : SingleChildScrollView(

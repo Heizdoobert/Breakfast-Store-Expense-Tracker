@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:extractorapplication/Model/user_model.dart';
 import 'package:extractorapplication/services/owner/owner_user_service.dart';
 
@@ -8,15 +10,21 @@ class UserManagementController {
   bool isLoading = false;
 
   Future<void> loadUsers({String? role}) async {
-    isLoading = true;
+    try {
+      isLoading = true;
 
-    if (role != null) {
-      users = await _service.getUsersByRole(role);
-    } else {
-      users = await _service.getAllUsers();
+      if (role != null) {
+        users = await _service.getUsersByRole(role);
+      } else {
+        users = await _service.getAllUsers();
+      }
+
+      isLoading = false;
+    } catch (e) {
+      isLoading = false;
+      print('Error loading users: $json');
+      throw Exception('Error loading users: $e');
     }
-
-    isLoading = false;
   }
 
 
