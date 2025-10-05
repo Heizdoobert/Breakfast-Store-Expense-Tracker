@@ -20,8 +20,10 @@ class FinancialController extends ChangeNotifier {
       final revenue = await _service.getTotalRevenue();
       final report = await _service.getMonthlyReport();
 
+
       totalRevenue = revenue;
       monthlyReport = report.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
+      print(monthlyReport);
     } catch (e) {
       debugPrint('❌ Error loading financial data: $e');
     } finally {

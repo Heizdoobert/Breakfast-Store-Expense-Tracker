@@ -1,4 +1,5 @@
 import 'package:extractorapplication/views/owner/owner_navigation.dart';
+import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:flutter/material.dart';
 
 import '../views/Auth/forgotPassword.dart';
@@ -37,6 +38,9 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const FinancialOverviewView());
         case AppRoutes.revenueReportView:
         return MaterialPageRoute(builder: (_) => RevenueReportView());
+        case AppRoutes.systemLists:
+        return MaterialPageRoute(builder: (_) => OwnerSystemOverviewView());
+
 
 
         default:
