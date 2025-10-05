@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Controller/owner/system_controller.dart';
+import '../../../routes/app_route.dart';
 import '../../../utils/date_formatter.dart';
 
 class OwnerSystemOverviewView extends StatelessWidget {
@@ -51,6 +52,7 @@ class OwnerSystemOverviewView extends StatelessWidget {
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
                           // TODO: mở chi tiết người dùng hoặc sửa
+                          Navigator.pushNamed(context, AppRoutes.userDetailView, arguments: user);
                         },
                       ),
                     )),

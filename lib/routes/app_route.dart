@@ -10,6 +10,8 @@ class AppRoutes {
   //user in owner
     static const String userListView = '/user-list-view';
     static const String userDetailView = '/user-detail-view';
+    static const String addUsers = 'owner/user_management/widgets/add-user';
+    static const String editUsers = '/edit-user';
   //financial in owner
     static const String financialOverviewView = '/owner/financial/financial-overview-view';
     static const String revenueReportView = '/owner/financial/revenue-report-view';
