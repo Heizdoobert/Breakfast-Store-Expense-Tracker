@@ -30,7 +30,7 @@ class CustomButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final bgColor = backgroundColor ?? Theme.of(context).primaryColor;
-    final txtColor = textColor ?? Colors.white;
+    // final txtColor = textColor ?? Colors.white;
 
     final buttonChild = isLoading
         ? const SizedBox(
@@ -39,15 +39,37 @@ class CustomButton extends StatelessWidget {
       child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
     )
         : Row(
-      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
       children: [
-        if (icon != null) ...[
-          Icon(icon, size: 20, color: txtColor),
-          const SizedBox(width: 8),
-        ],
-        Text(
-          label,
-          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: txtColor),
+        CustomButton(
+          label: ('➕ Thêm'),
+          icon: Icons.add,
+          onPressed: () {
+            // TODO: mở form thêm mới
+          },
+          isGradient: true,
+          width: 100,
+          height: 40,
+        ),
+        CustomButton(
+          label: '✏️ Sửa',
+          icon: Icons.edit,
+          onPressed: () {
+            // TODO: mở form sửa
+          },
+          backgroundColor: Colors.orange,
+          width: 100,
+          height: 40,
+        ),
+        CustomButton(
+          label: '🗑 Xóa',
+          icon: Icons.delete,
+          onPressed: () {
+            // TODO: xác nhận và xóa
+          },
+          backgroundColor: Colors.red,
+          width: 100,
+          height: 40,
         ),
       ],
     );
@@ -78,7 +100,6 @@ class CustomButton extends StatelessWidget {
         child: button,
       );
     }
-
     return button;
   }
 }

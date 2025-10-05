@@ -1,5 +1,6 @@
 import 'package:extractorapplication/views/owner/owner_navigation.dart';
 import 'package:extractorapplication/views/owner/system/system_list_view.dart';
+import 'package:extractorapplication/views/owner/user_management/widgets/add_new_user.dart';
 import 'package:flutter/material.dart';
 
 import '../views/Auth/forgotPassword.dart';
@@ -23,31 +24,38 @@ class RouteGenerator {
       case AppRoutes.forgotPassword:
         return MaterialPageRoute(builder: (_) => const ForgotPasswordPage());
 
-        ///owner routes
+      ///owner routes
       case AppRoutes.ownerDashboard:
         return MaterialPageRoute(builder: (_) => const OwnerDashboardView());
-        case AppRoutes.ownerNavigationView:
+      case AppRoutes.ownerNavigationView:
         return MaterialPageRoute(builder: (_) => const OwnerNavigationShell());
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+      case AppRoutes.addUsers:
+        return MaterialPageRoute(builder: (_) => const AddNewUser());
+      // case AppRoutes.editUsers:
+      //   return MaterialPageRoute(builder: (_) => const UserListView());
+
+        ///user management routes
       case AppRoutes.userListView:
         return MaterialPageRoute(builder: (_) => const UserListView());
       case AppRoutes.userDetailView:
         return MaterialPageRoute(builder: (_) => const UserListView());
+
+        ///financial routes
       case AppRoutes.financialOverviewView:
         return MaterialPageRoute(builder: (_) => const FinancialOverviewView());
-        case AppRoutes.revenueReportView:
+      case AppRoutes.revenueReportView:
         return MaterialPageRoute(builder: (_) => RevenueReportView());
-        case AppRoutes.systemLists:
+
+        ///system routes
+      case AppRoutes.systemLists:
         return MaterialPageRoute(builder: (_) => OwnerSystemOverviewView());
 
-
-
-        default:
-          return MaterialPageRoute(
-          builder: (_) => const Scaffold(
-            body: Center(child: Text('No route found')),
-          ),
+      default:
+        return MaterialPageRoute(
+          builder: (_) =>
+              const Scaffold(body: Center(child: Text('No route found'))),
         );
     }
   }
