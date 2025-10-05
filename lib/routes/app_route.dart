@@ -16,7 +16,7 @@ class AppRoutes {
     static const String addFinancial = '/add-financial';
     static const String editFinancial = '/edit-financial';
   //system in owner
-    static const String systemLists = '/system-lists';
+    static const String systemLists = '/owner/system/system-overview-view';
     static const String addSystem = '/add-system';
     static const String editSystem = '/edit-system';
 }

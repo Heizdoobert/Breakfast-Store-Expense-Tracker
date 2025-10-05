@@ -1,5 +1,6 @@
 import 'package:extractorapplication/views/owner/dashboard/owner_dashboard_view.dart';
 import 'package:extractorapplication/views/owner/financial/financial_ovwerview_view.dart';
+import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/user_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
@@ -18,18 +19,18 @@ class OwnerNavigationShell extends StatefulWidget {
 class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
   String currentRoute = AppRoutes.ownerDashboard;
 
-  final Map<String, Widget> routeToPage =const {
-    AppRoutes.ownerDashboard: OwnerDashboardView(),
-    AppRoutes.userListView: UserListView(),
-    // AppRoutes.systemLists: ,
-    AppRoutes.financialOverviewView: FinancialOverviewView(),
+  final Map<String, Widget> routeToPage ={
+    AppRoutes.ownerDashboard: const OwnerDashboardView(),
+    AppRoutes.userListView: const UserListView(),
+    AppRoutes.financialOverviewView: const FinancialOverviewView(),
+    AppRoutes.systemLists: OwnerSystemOverviewView(),
   };
 
   final Map<String, String> routeToTitle = const {
     AppRoutes.ownerDashboard: '📊 Thống kê tổng quan',
     AppRoutes.userListView: '👥 Quản lý người dùng',
-    // AppRoutes.ownerSystem: '⚙️ Hệ thống',
      AppRoutes.financialOverviewView: '💰 Tài chính',
+    AppRoutes.systemLists: '⚙️ Hệ thống',
   };
 
   void _navigateTo(String route) {
@@ -43,8 +44,8 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
     final currentIndex = [
       AppRoutes.ownerDashboard,
       AppRoutes.userListView,
-      // AppRoutes.ownerSystem,
       AppRoutes.financialOverviewView,
+      AppRoutes.systemLists,
     ].indexOf(currentRoute);
     return Scaffold(
       appBar: AppBar(title: Text(routeToTitle[currentRoute]??'Khong co tieu de')),
@@ -58,6 +59,7 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
               AppRoutes.ownerDashboard,
               AppRoutes.userListView,
               AppRoutes.financialOverviewView,
+              AppRoutes.systemLists,
         ][i])),
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppPallete.gradient1,
