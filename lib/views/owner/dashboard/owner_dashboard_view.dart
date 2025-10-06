@@ -26,9 +26,11 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   @override
   void initState() {
     super.initState();
-    if(mounted) {
-      controller.loadDashboardData().then((_) => setState(() {}));
-    }
+    controller.loadDashboardData().then((_) {
+      if(mounted) {
+        setState(() {});
+      }
+    });
   }
 
   @override

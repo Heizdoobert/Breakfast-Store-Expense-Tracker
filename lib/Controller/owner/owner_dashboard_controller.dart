@@ -1,3 +1,7 @@
+import 'package:flutter/material.dart';
+import 'package:path/path.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../../routes/app_route.dart';
 import '../../services/owner/owner_financial_service.dart';
 import '../../services/owner/owner_system_service.dart';
 import '../../services/owner/owner_user_service.dart';
@@ -24,6 +28,17 @@ class OwnerDashboardController {
     }catch (e) {
       isLoading = false;
       throw Exception('Error loading dashboard data: $e');
+    }
+  }
+
+  Future<void> navigateUser() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    var status = prefs.getBool('isLoggedIn') ?? false;
+    print(status);
+    if (status) {
+      Navigator.pushReplacementNamed(context as BuildContext, AppRoutes.ownerNavigationView);
+    } else {
+      Navigator.pushReplacementNamed(context as BuildContext, AppRoutes.login);
     }
   }
 }

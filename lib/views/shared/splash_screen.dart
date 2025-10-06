@@ -1,4 +1,5 @@
-
+import 'dart:async';
+import 'package:extractorapplication/Controller/owner/owner_dashboard_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -14,11 +15,27 @@ class SplashScreen extends StatefulWidget {
 }
 
 class _SplashScreenState extends State<SplashScreen> {
+  final OwnerDashboardController controller = OwnerDashboardController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   void initState() {
     super.initState();
+    startTimer();
     _initializeApp();
   }
+
+  void startTimer() {
+    Timer(Duration(seconds: 3), () {
+      controller.navigateUser(); //It will redirect  after 3 seconds
+    });
+  }
+
 
   Future<void> _initializeApp() async {
     try {
