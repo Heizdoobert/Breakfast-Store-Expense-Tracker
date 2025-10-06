@@ -68,4 +68,13 @@ class AuthController{
       throw ServerException('Lỗi hệ thống: ${e.toString()}');
     }
   }
+
+  //logout
+  Future<void> logout() async {
+    try {
+      await _authService.logout();
+    } catch (e) {
+      throw ServerException('Lỗi hệ thống: ${e.toString()}');
+    }
+  }
 }

@@ -4,9 +4,12 @@ import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/user_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
+import '../../Controller/auth_controller.dart';
+import '../../Model/user_model.dart';
 import '../../core/theme/app_theme.dart';
 import '../../routes/app_route.dart';
 import '../../utils/constants.dart';
+import '../shared/custom_button.dart';
 
 
 class OwnerNavigationShell extends StatefulWidget {
@@ -39,6 +42,24 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
     });
   }
 
+  void handleLogout(BuildContext context) async {
+    final authController = AuthController();
+
+    try {
+      await authController.logout(); // Gọi logout từ AuthService nếu có
+
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        AppRoutes.login,
+            (route) => false, // Xóa toàn bộ stack
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Lỗi khi đăng xuất: ${e.toString()}')),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentIndex = [
@@ -48,7 +69,25 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
       AppRoutes.systemLists,
     ].indexOf(currentRoute);
     return Scaffold(
-      appBar: AppBar(title: Text(routeToTitle[currentRoute]??'Khong co tieu de')),
+      appBar: AppBar(
+        title: Text(
+          routeToTitle[currentRoute] ?? 'Không có tiêu đề',
+          style: const TextStyle(fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12),
+            child: LogoutButton(
+              onPressed: () => handleLogout(context),
+              isGradient: true,
+              width: 20,
+              height: 20,
+              borderRadius: 20,
+            ),
+          ),
+        ],
+        elevation: 2,
+      ),
       body: routeToPage[currentRoute] ?? const Center(child: Text('No page found')),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppPallete.backgroundColor,

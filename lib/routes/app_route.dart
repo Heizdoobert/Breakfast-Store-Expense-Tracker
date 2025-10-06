@@ -2,6 +2,7 @@ class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';
   static const String forgotPassword = '/forgot-password';
+  static const String logout = '/logout';
   static const String splash = '/splash';
 
   //==========Owner================
@@ -10,8 +11,8 @@ class AppRoutes {
   //user in owner
     static const String userListView = '/user-list-view';
     static const String userDetailView = '/user-detail-view';
-    static const String addUsers = 'owner/user_management/widgets/add-user';
-    static const String editUsers = '/edit-user';
+    static const String addUsers = '/owner/user_management/widgets/add-user';
+    static const String editUsers = '/owner/user_management/widgets/edit-user';
   //financial in owner
     static const String financialOverviewView = '/owner/financial/financial-overview-view';
     static const String revenueReportView = '/owner/financial/revenue-report-view';
