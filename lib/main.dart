@@ -4,6 +4,7 @@ import 'package:extractorapplication/routes/route_generator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/secrets/app_secrets.dart';
@@ -17,12 +18,16 @@ void main() async {
     anonKey: AppSecrets.supabaseAnonkey,
   );
 
-  runApp(const MyApp());
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  var status =  prefs.getBool('isLoggedIn') ?? false;
+  print(status);
+  runApp(MyApp(isLoggedIn: status));
 }
 
 
 class MyApp extends StatelessWidget{
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +35,7 @@ class MyApp extends StatelessWidget{
       debugShowCheckedModeBanner: false,
       title: 'Quản lý chi tiêu',
       theme: AppTheme.darkThemeMode,
-      initialRoute: AppRoutes.login,
+      initialRoute: isLoggedIn ? AppRoutes.ownerNavigationView : AppRoutes.login,
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
