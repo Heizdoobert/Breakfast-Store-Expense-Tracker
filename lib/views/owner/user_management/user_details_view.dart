@@ -60,6 +60,7 @@ class UserDetailView extends StatelessWidget {
                 ElevatedButton.icon(
                   onPressed: () {
                     //TODO: sua
+                    Navigator.pushNamed(context, AppRoutes.editUsers, arguments: user);
                   },
                   icon: const Icon(Icons.edit),
                   label: const Text('Sửa'),

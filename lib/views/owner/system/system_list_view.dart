@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../Controller/owner/system_controller.dart';
 import '../../../routes/app_route.dart';
 import '../../../utils/date_formatter.dart';
+import '../user_management/user_details_view.dart';
 
 class OwnerSystemOverviewView extends StatelessWidget {
   final formatDate = DateFormatter();
@@ -51,8 +52,15 @@ class OwnerSystemOverviewView extends StatelessWidget {
                         ),
                         trailing: const Icon(Icons.chevron_right),
                         onTap: () {
-                          // TODO: mở chi tiết người dùng hoặc sửa
-                          Navigator.pushNamed(context, AppRoutes.userDetailView, arguments: user);
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => UserDetailView(
+                                user: user,
+                                formatDate: formatDate,
+                              ),
+                            ),
+                          );
                         },
                       ),
                     )),

@@ -1,5 +1,5 @@
-// import 'package:extractorapplication/Model/User.dart';
 // import 'package:shared_preferences/shared_preferences.dart';
+// import '../Model/user_model.dart';
 //
 // // ==========================================================
 // // --- 1. Lớp UserStorage ---
@@ -26,12 +26,12 @@
 //     // hoặc đảm bảo rằng các trường này luôn có giá trị tại thời điểm này.
 //     await prefs.setString('fullName', user.fullName!);
 //     await prefs.setString('role', user.role!);
-//     await prefs.setInt('userId', user.userId!);
+//     await prefs.setString('userId', user.id!);
 //     await prefs.setString('userName', user.userName!);
 //     await prefs.setString('email', user.email!);
 //     await prefs.setString('passwordHash', user.passwordHash!);
-//     await prefs.setString('createdAt', user.createdAt!.toIso8601String());
-//     await prefs.setString('updatedAt', user.updatedAt!.toIso8601String());
+//     await prefs.setString('createdAt', user.createdAt.toIso8601String());
+//     await prefs.setString('updatedAt', user.updatedAt.toIso8601String());
 //
 //     // TODO: Cân nhắc lưu thêm token nếu có (ví dụ: JWT) để xác thực lâu dài
 //     // await prefs.setString('userToken', user.token!);
@@ -68,7 +68,7 @@
 //   /// tra va null neu khong tim thay nguoi dung
 //   static Future<User?> getUser() async {
 //     final prefs = await SharedPreferences.getInstance();
-//     final userId = prefs.getInt('userId');
+//     final userId = prefs.getString('userId');
 //     final fullName = prefs.getString('fullName');
 //     final role = prefs.getString('role');
 //     final userName = prefs.getString('userName');
@@ -82,7 +82,7 @@
 //       // Cần có các trường userName, passwordHash, email, createdAt, updatedAt để User là hoàn chỉnh.
 //       // Nếu không có, bạn có thể chỉ trả về một đối tượng đại diện cho session.
 //       return User(
-//         userId: userId,
+//         id: userId,
 //         fullName: fullName,
 //         role: role,
 //         userName: userName!,
@@ -116,7 +116,7 @@
 //   /// Phương thức này có thể hữu ích để khôi phục session sau khi ứng dụng khởi động lại.
 //   static Future<User?> loadUserFromSession() async {
 //     final prefs = await SharedPreferences.getInstance();
-//     final userId = prefs.getInt('userId');
+//     final userId = prefs.getString('userId');
 //     final email = prefs.getString('email');
 //     final fullName = prefs.getString('fullName');
 //     final role = prefs.getString('role');
@@ -127,13 +127,15 @@
 //       // Cần có các trường userName, passwordHash, email, createdAt, updatedAt để User là hoàn chỉnh.
 //       // Nếu không có, bạn có thể chỉ trả về một đối tượng đại diện cho session.
 //       return User(
-//         userId: userId,
+//         id: userId,
 //         fullName: fullName,
 //         email : email,
 //         role: role,
 //         // Các trường khác cần được lấy từ database nếu muốn đối tượng User đầy đủ
 //         userName: 'sessionUser', // Giá trị giả định
 //         passwordHash: '', // Giá trị giả định
+//         createdAt: DateTime.now(), // Giá trị giả định
+//         updatedAt: DateTime.now(), // Giá trị giả định
 //       );
 //     }
 //     return null;

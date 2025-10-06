@@ -71,6 +71,15 @@ class OwnerUserService {
     }
   }
 
+  //Cap nhat nguoi dung
+  Future<void> updateUser(User user) async {
+    try {
+      await db.update('users', user.id, user.toJson());
+    } catch (e) {
+      throw Exception('Error updating user: $e');
+    }
+  }
+
   ///xoa nguoi dung
   Future<void> deleteUser(String userId) async {
     try {

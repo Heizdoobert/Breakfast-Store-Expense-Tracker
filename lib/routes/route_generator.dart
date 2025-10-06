@@ -1,8 +1,10 @@
 import 'package:extractorapplication/views/owner/owner_navigation.dart';
 import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/widgets/add_new_user.dart';
+import 'package:extractorapplication/views/owner/user_management/widgets/edit_user.dart';
 import 'package:flutter/material.dart';
 
+import '../Model/user_model.dart';
 import '../views/Auth/forgotPassword.dart';
 import '../views/Auth/login.dart';
 import '../views/Auth/register.dart';
@@ -23,6 +25,8 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const RegisterPage());
       case AppRoutes.forgotPassword:
         return MaterialPageRoute(builder: (_) => const ForgotPasswordPage());
+      case AppRoutes.logout:
+        return MaterialPageRoute(builder: (_) => const LoginPage());
 
       ///owner routes
       case AppRoutes.ownerDashboard:
@@ -33,8 +37,11 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const SplashScreen());
       case AppRoutes.addUsers:
         return MaterialPageRoute(builder: (_) => const AddNewUser());
-      // case AppRoutes.editUsers:
-      //   return MaterialPageRoute(builder: (_) => const UserListView());
+      case AppRoutes.editUsers:
+        final user = settings.arguments as User;
+        return MaterialPageRoute(
+          builder: (_) => EditUser(user: user),
+        );
 
         ///user management routes
       case AppRoutes.userListView:

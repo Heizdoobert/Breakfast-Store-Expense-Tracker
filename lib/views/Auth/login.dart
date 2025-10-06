@@ -1,13 +1,11 @@
 import 'package:extractorapplication/Controller/auth_controller.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
-import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../exception/login_exception.dart';
 import '../../routes/app_route.dart';
-import '../../services/auth_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
