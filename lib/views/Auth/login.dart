@@ -2,9 +2,7 @@ import 'package:extractorapplication/Controller/auth_controller.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
-
-import '../../core/theme/app_theme.dart';
-import '../../exception/login_exception.dart';
+import 'package:provider/provider.dart';
 import '../../routes/app_route.dart';
 
 class LoginPage extends StatefulWidget {
@@ -18,10 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final formKey = GlobalKey<FormState>();
-  bool isLoading = false;
-  final AuthController _authController = AuthController();
 
-  // thuc thi khi dang nhap thanh cong
   @override
   void dispose() {
     emailController.dispose();
@@ -29,37 +24,35 @@ class _LoginPageState extends State<LoginPage> {
     super.dispose();
   }
 
-  void handleLogin() async {
-    print('da nhan nut');
-    if (formKey.currentState!.validate()) {
-      setState(() => isLoading = true);
+  void _handleLogin() async {
+    if (formKey.currentState?.validate() != true) {
+      return;
+    }
+    final authController = Provider.of<AuthController>(context, listen: false);
 
-      try {
-        await _authController.login(
-          context: context,
-          email: emailController.text.trim(),
-          password: passwordController.text.trim(),
-          onSuccess: () {
-            Navigator.pushReplacementNamed(context, AppRoutes.ownerNavigationView);
-          },
-        );
-      } on ServerException catch (e) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text(e.message)));
-      } catch (e) {
+    final success = await authController.login(
+      email: emailController.text.trim(),
+      password: passwordController.text.trim(),
+    );
+
+    if (mounted) {
+      if (success) {
+        Navigator.pushReplacementNamed(context, AppRoutes.ownerNavigationView);
+      } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lỗi không xác định: ${e.toString()}')),
+          SnackBar(
+            content: Text(authController.errorMessage ?? 'Lỗi không xác định'),
+            backgroundColor: Colors.red,
+          ),
         );
-      } finally {
-        setState(() => isLoading = false);
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    // formKey.currentState?.validate();
+    final authController = Provider.of<AuthController>(context);
+
     return Scaffold(
       body: Padding(
         padding: const EdgeInsets.all(15.0),
@@ -68,10 +61,7 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text(
-                'Login',
-                style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-              ),
+              const Text('Login', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold)),
               const SizedBox(height: 30),
               AuthField(hintText: 'Email', controller: emailController),
               const SizedBox(height: 15),
@@ -83,29 +73,17 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 20),
               AuthGradientButton(
                 buttonText: 'Login',
-                onPressed: handleLogin,
-                isLoading: isLoading,
+                onPressed: authController.isLoading ? null : _handleLogin,
+                isLoading: authController.isLoading,
               ),
               const SizedBox(height: 20),
               TextButton(
-                onPressed: () {
-                  Navigator.pushNamed(context, AppRoutes.register);
-                },
+                onPressed: () => Navigator.pushNamed(context, AppRoutes.register),
                 child: RichText(
                   text: TextSpan(
                     text: 'Don\'t have an account? ',
                     style: Theme.of(context).textTheme.titleMedium,
-                    children: [
-                      TextSpan(
-                        text: 'Sign Up',
-                        style: Theme.of(context).textTheme.titleMedium
-                            ?.copyWith(
-                              color: AppPallete.gradient2,
-                              fontWeight: FontWeight.bold,
-                            ),
-                      ),
-                    ],
-                  ),
+                  )
                 ),
               ),
             ],

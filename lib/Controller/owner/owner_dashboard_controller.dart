@@ -32,13 +32,21 @@ class OwnerDashboardController {
   }
 
   Future<void> navigateUser() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    var status = prefs.getBool('isLoggedIn') ?? false;
-    print(status);
-    if (status) {
-      Navigator.pushReplacementNamed(context as BuildContext, AppRoutes.ownerNavigationView);
-    } else {
-      Navigator.pushReplacementNamed(context as BuildContext, AppRoutes.login);
+    try {
+      isLoading = true;
+      SharedPreferences prefs = await SharedPreferences.getInstance();
+      var status = prefs.getBool('isLoggedIn') ?? false;
+      // print(status);
+      if (status) {
+        Navigator.pushReplacementNamed(
+            context as BuildContext, AppRoutes.ownerNavigationView);
+      } else {
+        Navigator.pushReplacementNamed(
+            context as BuildContext, AppRoutes.login);
+      }
+    } catch (e) {
+      isLoading = false;
+      throw Exception('Error navigating user: $e');
     }
-  }
+   }
 }

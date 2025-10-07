@@ -2,7 +2,15 @@ import 'package:extractorapplication/supabase/supabase_client.dart';
 
 class OwnerSystemService {
   final supabase = SupabaseManager.client;
+  bool isLoading = false;
   Future<String> getSystemHealth() async {
-    return Future.delayed(const Duration(microseconds: 500), () => 'System work find');
+    try {
+      isLoading = true;
+      return Future.delayed(
+          const Duration(microseconds: 500), () => 'System work find');
+    } catch (e) {
+      isLoading = false;
+      throw Exception('have a bug: $e');
+    }
   }
 }

@@ -1,11 +1,8 @@
-import 'package:extractorapplication/utils/constants.dart';
 import 'package:extractorapplication/views/owner/dashboard/widgets/recent_activity.dart';
 import 'package:extractorapplication/views/owner/dashboard/widgets/stats_card.dart';
 import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
-
 import '../../../Controller/owner/owner_dashboard_controller.dart';
-import '../../../routes/app_route.dart';
 
 class OwnerDashboardView extends StatefulWidget {
   const OwnerDashboardView({super.key});

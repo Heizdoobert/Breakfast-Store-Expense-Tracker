@@ -4,8 +4,6 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 import '../../routes/app_route.dart';
-import 'forgotPassword.dart';
-import 'login.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -48,7 +46,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 15),
                 AuthField(hintText: 'Password', controller: passwordController, obscureText: true),
                 const SizedBox(height: 20),
-                AuthGradientButton(
+                const AuthGradientButton(
                   buttonText: 'Register',
                 ),
                 const SizedBox(height: 20),

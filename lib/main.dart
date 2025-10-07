@@ -1,13 +1,13 @@
-import 'package:extractorapplication/core/theme/theme.dart';
-import 'package:extractorapplication/routes/app_route.dart';
-import 'package:extractorapplication/routes/route_generator.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:extractorapplication/utils/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 import 'core/secrets/app_secrets.dart';
+import 'core/theme/theme.dart';
+import 'routes/route_generator.dart';
+import 'views/Auth/login.dart';
+import 'views/owner/owner_navigation.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -18,16 +18,16 @@ void main() async {
     anonKey: AppSecrets.supabaseAnonkey,
   );
 
-  SharedPreferences prefs = await SharedPreferences.getInstance();
-  var status =  prefs.getBool('isLoggedIn') ?? false;
-  print(status);
-  runApp(MyApp(isLoggedIn: status));
+  runApp(
+    // Bọc toàn bộ app bằng AppProvider
+    AppProvider.build(
+      child: const MyApp(),
+    ),
+  );
 }
 
-
-class MyApp extends StatelessWidget{
-  final bool isLoggedIn;
-  const MyApp({super.key, required this.isLoggedIn});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +35,18 @@ class MyApp extends StatelessWidget{
       debugShowCheckedModeBanner: false,
       title: 'Quản lý chi tiêu',
       theme: AppTheme.darkThemeMode,
-      initialRoute: isLoggedIn ? AppRoutes.ownerNavigationView : AppRoutes.login,
+      home: StreamBuilder(
+        stream: Supabase.instance.client.auth.onAuthStateChange,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+          }
+          if (snapshot.hasData && snapshot.data?.session != null) {
+            return const OwnerNavigationShell();
+          }
+          return const LoginPage();
+        },
+      ),
       onGenerateRoute: RouteGenerator.generateRoute,
     );
   }
