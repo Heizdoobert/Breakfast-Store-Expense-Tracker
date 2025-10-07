@@ -28,18 +28,22 @@ class SystemController extends ChangeNotifier {
 
   Future<void> addUser(String userId, String groupId) async {
     try {
-      await _service.addUser(userId, groupId);
+      isLoading = true;
+      await _service.addUserToGroup(userId, groupId);
       notifyListeners();
     } catch (e) {
+      isLoading = false;
       debugPrint('❌ Error adding user: $e');
     }
   }
 
   Future<void> removeUserFromGroup(String userId, String groupId) async {
     try {
+      isLoading = true;
       await _service.removeUserFromGroup(userId, groupId);
       notifyListeners();
     } catch (e) {
+      isLoading = false;
       debugPrint('❌ Error removing user from group: $e');
     }
   }

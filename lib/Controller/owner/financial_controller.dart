@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:extractorapplication/services/owner/owner_financial_service.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +21,7 @@ class FinancialController extends ChangeNotifier {
 
       totalRevenue = revenue;
       monthlyReport = report.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
-      print(monthlyReport);
+      // print(monthlyReport);
     } catch (e) {
       debugPrint('❌ Error loading financial data: $e');
     } finally {

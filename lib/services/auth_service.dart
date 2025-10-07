@@ -1,70 +1,99 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
+import '../exception/login_exception.dart';
 
 class AuthService {
-  final supabase = Supabase.instance.client;
+  final SupabaseClient _supabase = Supabase.instance.client;
+
+  /// Lấy thông tin người dùng hiện tại
+  User? get currentUser => _supabase.auth.currentUser;
 
   /// Đăng nhập bằng email và password
-  Future<User?> login(String email, String password) async {
-    final response = await supabase.auth.signInWithPassword(
-      email: email,
-      password: password,
-    );
+  /// Trả về một Map chứa user và role
+  /// Ném ra ServerException nếu có lỗi
+  Future<Map<String, dynamic>> login(String email, String password) async {
+    try {
+      final authResponse = await _supabase.auth.signInWithPassword(
+        email: email,
+        password: password,
+      );
 
-    final user = response.user;
-    if (user != null) {
-      final roleData = await supabase
-          .from('users')
-          .select('role')
-          .eq('id', user.id)
-          .single();
+      final user = authResponse.user;
+      if (user == null) {
+        throw const ServerException('Không nhận được thông tin người dùng sau khi đăng nhập.');
+      }
 
-      final role = roleData['role'];
-      // điều hướng theo role
+      final role = await getUserRole(user.id);
+      return {'user': user, 'role': role};
+
+    } on AuthException catch (e) {
+      // Lỗi cụ thể từ Supabase Auth
+      throw ServerException(e.message);
+    } catch (e) {
+      // Các lỗi khác không lường trước được
+      throw ServerException('Đã có lỗi xảy ra: ${e.toString()}');
     }
-    return user;
   }
 
-  /// Đăng ký tài khoản mới
-  Future<User?> register(String email, String password) async {
-    final response = await supabase.auth.signUp(
-      email: email,
-      password: password,
-    );
+  /// Đăng ký tài khoản mới với role tùy chọn
+  Future<User?> register(String email, String password, {String role = 'staff'}) async {
+    try {
+      final authResponse = await _supabase.auth.signUp(
+        email: email,
+        password: password,
+      );
 
-    final user = response.user;
-    if (user != null) {
-      await supabase.from('users').insert({
-        'id': user.id,
-        'email': email,
-        'role': 'staff',
-        'created_at': DateTime.now().toIso8601String(),
-      });
+      final user = authResponse.user;
+      if (user != null) {
+        // Chèn thông tin người dùng mới vào bảng 'users'
+        await _supabase.from('users').insert({
+          'id': user.id,
+          'email': email,
+          'role': role,
+        });
+      }
+      return user;
+
+    } on AuthException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException('Đã có lỗi xảy ra: ${e.toString()}');
     }
-
-    return user;
   }
 
   /// Gửi email khôi phục mật khẩu
   Future<void> sendPasswordReset(String email) async {
-    await supabase.auth.resetPasswordForEmail(email);
+    try {
+      await _supabase.auth.resetPasswordForEmail(email);
+    } on AuthException catch (e) {
+      throw ServerException(e.message);
+    } catch (e) {
+      throw ServerException('Đã có lỗi xảy ra: ${e.toString()}');
+    }
   }
 
   /// Đăng xuất
   Future<void> logout() async {
-    await supabase.auth.signOut();
+    try {
+      await _supabase.auth.signOut();
+    } catch (e) {
+      throw ServerException('Lỗi khi đăng xuất: ${e.toString()}');
+    }
   }
 
   /// Lấy role từ bảng users
   Future<String> getUserRole(String userId) async {
-    final response = await supabase
-        .from('users')
-        .select('role')
-        .eq('id', userId)
-        .single();
+    try {
+      final response = await _supabase
+          .from('users')
+          .select('role')
+          .eq('id', userId)
+          .single();
 
-    return response['role'] ?? 'staff';
+      return response['role'] as String;
+    } on PostgrestException catch (e) {
+      throw ServerException('Không thể lấy được vai trò người dùng: ${e.message}');
+    } catch (e) {
+      throw ServerException('Lỗi không xác định khi lấy vai trò: ${e.toString()}');
+    }
   }
-
-  /// Lấy thông tin người dùng hiện tại
-  User? get currentUser => supabase.auth.currentUser;
 }
