@@ -1,38 +1,64 @@
-name: Flutter CI
+name: Flutter CI/CD
 
+# Kích hoạt workflow khi có push hoặc pull request vào các nhánh chính
 on:
   push:
-    branches: [ "Developer/DuongHuy" ]
+    branches: [ "Developer/DuongHuy", "develop" ] # Thay "Developer/DuongHuy" bằng các nhánh chính
   pull_request:
-    branches: [ "Developer/DuongHuy" ]
+    branches: [ "Developer/DuongHuy", "develop" ]
 
 jobs:
-  build:
+  # Đổi tên job để mô tả rõ hơn: test và build
+  test_and_build:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout source
+      # Bước 1: Lấy mã nguồn
+      - name: Checkout source code
         uses: actions/checkout@v4
 
-      # Cài đặt Flutter SDK (channel stable)
+      # Bước 2: Cài đặt Flutter SDK
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.35.1' # Hoặc version bạn dùng
+          # ✅ Luôn dùng phiên bản Flutter khớp với dự án của bạn
+          flutter-version: '3.22.2' # Ví dụ phiên bản Flutter ổn định gần đây
           channel: 'stable'
-      
-      # Lấy dependencies
+          # ✅ Thêm cache để các lần chạy sau nhanh hơn
+          cache: true
+
+      # Bước 3 (Cải thiện): Lấy dependencies
       - name: Install dependencies
         run: flutter pub get
 
-      # Kiểm tra format code (tùy chọn)
-      - name: Verify formatting
-        run: flutter format --set-exit-if-changed .
+      # Bước 4 (Quan trọng): Xử lý file .env cho Supabase
+      # Bạn cần tạo secrets trong repository GitHub của mình
+      - name: Create .env file
+        run: |
+          echo "SUPABASE_URL=${{ secrets.SUPABASE_URL }}" >> .env
+          echo "SUPABASE_ANON_KEY=${{ secrets.SUPABASE_ANON_KEY }}" >> .env
+          echo "File .env created successfully"
+          cat .env # In nội dung file .env để kiểm tra (tùy chọn)
 
-      # Phân tích static code
+      # Bước 5: Kiểm tra định dạng code
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      # Bước 6: Phân tích code
       - name: Analyze project source
         run: flutter analyze
 
-      # Chạy unit test
+      # Bước 7: Chạy tests
       - name: Run tests
         run: flutter test
+
+      # Bước 8 (Mới): Build file APK để kiểm tra
+      - name: Build APK
+        run: flutter build apk --debug # Tạo bản build debug để test
+
+      # Bước 9 (Mới): Tải lên file APK đã build
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: debug-apk # Tên của file artifact
+          path: build/app/outputs/flutter-apk/app-debug.apk # Đường dẫn tới file APK
