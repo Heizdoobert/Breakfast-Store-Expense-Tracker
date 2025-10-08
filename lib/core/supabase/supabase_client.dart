@@ -1,6 +1,6 @@
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import '../core/secrets/app_secrets.dart';
+import '../secrets/app_secrets.dart';
 
 class SupabaseManager {
   static Future<void> initialize() async {

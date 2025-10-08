@@ -1,111 +1,68 @@
-import 'package:flutter/material.dart';
-import '../../services/auth_service.dart';
+import 'package:extractorapplication/Controller/base_controller.dart';
+import '../core/exception/login_exception.dart';
+import '../core/services/auth_service.dart';
 
-class AuthController with ChangeNotifier {
-  final AuthService _authService = AuthService();
-
-  ///quan ly trang thai va thong bao cho UI
-  bool _isLoading = false;
-  bool get isLoading => _isLoading;
+class AuthController extends BaseController {
+  final AuthService _authService;
+  AuthController(this._authService);
 
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
-
-  void _setLoading(bool value) {
-    _isLoading = value;
-    notifyListeners();
-  }
 
   void _setErrorMessage(String? message) {
     _errorMessage = message;
     notifyListeners();
   }
 
-  /// Đăng nhập
-  /// tra ve true neu thanh cong, false neu that bai
-  /// loi se duoc luu vao errorMessage
-  Future<bool> login({required String email, required String password}) async {
-    _setLoading(true);
+  // ✅ TẠO HÀM HELPER ĐỂ GOM LOGIC CHUNG
+  Future<bool> _handleAuthRequest(Future<dynamic> Function() action) async {
+    setLoading(true);
     _setErrorMessage(null);
-
     try {
-      final result = await _authService.login(email, password);
-
-      ///logic kiem tra result
-      if (result['user'] != null) {
-        print('🔐 result: $result');
-        _setLoading(false);
+      final result = await action();
+      // Kiểm tra kết quả chung, có thể điều chỉnh nếu cần
+      if (result != null && (result is bool ? result : true)) {
+        setLoading(false);
         return true;
       }
-
-      //muc xu ly cho service
-      _setErrorMessage("Dang nhap tht bai");
-      _setLoading(false);
+      setLoading(false);
+      return false; // Mặc định trả về false nếu action không throw lỗi nhưng kết quả null
+    } on ServerException catch (e) { // Bắt lỗi cụ thể của bạn
+      _setErrorMessage(e.message);
+      setLoading(false);
       return false;
-    } catch (e) {
-      //bat loi va cap nhat trang thai loi
-      _setErrorMessage(e.toString());
-      _setLoading(false);
+    } catch (e) { // Bắt các lỗi chung
+      _setErrorMessage('Đã có lỗi không mong muốn xảy ra.');
+      setLoading(false);
       return false;
     }
+  }
+
+
+  /// Đăng nhập
+  Future<bool> login({required String email, required String password}) {
+    return _handleAuthRequest(() async {
+      final result = await _authService.login(email, password);
+      // Logic đặc thù của login: kiểm tra user
+      return result['user'] != null;
+    });
   }
 
   /// Đăng ký
-  Future<bool> register({
-    required String email,
-    required String password,
-  }) async {
-    _setLoading(true);
-    _setErrorMessage(null);
-
-    try {
-      final result = await _authService.register(email, password);
-      if (result != null) {
-        _setLoading(false);
-        return true;
-      }
-      _setErrorMessage("Dang ky that bai");
-      _setLoading(false);
-      return false;
-    } catch (e) {
-      _setErrorMessage(e.toString());
-      _setLoading(false);
-      return false;
-    }
+  Future<bool> register({required String email, required String password}) {
+    // Chỉ cần gọi service, helper sẽ xử lý phần còn lại
+    return _handleAuthRequest(() => _authService.register(email, password));
   }
 
   /// Quên mật khẩu
-  Future<bool> resetPassword({required String email}) async {
-    _setLoading(true);
-    _setErrorMessage(null);
-
-    try {
-      await _authService.sendPasswordReset(email);
-
-      _setErrorMessage("Quen mat khau that bai");
-      _setLoading(false);
-      return false;
-    } catch (e) {
-      _setErrorMessage(e.toString());
-      _setLoading(false);
-      return false;
-    }
+  Future<bool> resetPassword({required String email}) {
+    // ✅ Logic đã được sửa đúng trong helper
+    return _handleAuthRequest(() => _authService.sendPasswordReset(email));
   }
 
-  //logout
-  Future<bool> logout() async {
-    _setLoading(true);
-    _setErrorMessage(null);
-
-    try {
-      await _authService.logout();
-      _setErrorMessage("Dang xuat that bai");
-      _setLoading(false);
-      return true;
-    } catch (e) {
-      _setErrorMessage(e.toString());
-      _setLoading(false);
-      return false;
-    }
+  /// Đăng xuất
+  Future<bool> logout() {
+    // ✅ Logic đã được sửa đúng trong helper
+    return _handleAuthRequest(() => _authService.logout());
   }
 }

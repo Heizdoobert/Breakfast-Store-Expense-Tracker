@@ -1,5 +1,5 @@
-import 'package:extractorapplication/exception/login_exception.dart';
-import 'package:extractorapplication/supabase/supabase_client.dart';
+import '../exception/login_exception.dart';
+import '../supabase/supabase_client.dart';
 
 class DatabaseService {
   final supabase = SupabaseManager.client;

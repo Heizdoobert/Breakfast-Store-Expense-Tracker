@@ -1,5 +1,5 @@
 import 'package:extractorapplication/Model/user_model.dart';
-import 'package:extractorapplication/services/owner/owner_user_service.dart';
+import '../../core/services/owner/owner_user_service.dart';
 
 class UserManagementController {
   final _service = OwnerUserService();

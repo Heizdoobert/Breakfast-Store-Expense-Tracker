@@ -1,5 +1,5 @@
-import '../../Model/group_model.dart';
-import '../../Model/user_model.dart';
+import '../../../Model/group_model.dart';
+import '../../../Model/user_model.dart';
 import '../../supabase/supabase_client.dart';
 
 class SystemService {
