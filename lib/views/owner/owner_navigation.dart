@@ -3,12 +3,10 @@ import 'package:extractorapplication/views/owner/financial/financial_ovwerview_v
 import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/user_list_view.dart';
 import 'package:flutter/material.dart';
-import 'package:path/path.dart';
+import 'package:provider/provider.dart'; // Import Provider
 import '../../Controller/auth_controller.dart';
-import '../../Model/user_model.dart';
 import '../../core/theme/app_theme.dart';
-import '../../routes/app_route.dart';
-import '../../utils/constants.dart';
+import '../../core/utils/constants.dart';
 import '../shared/custom_button.dart';
 
 
@@ -20,65 +18,43 @@ class OwnerNavigationShell extends StatefulWidget {
 }
 
 class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
-  String currentRoute = AppRoutes.ownerDashboard;
+  // Quản lý state bằng index thay vì String
+  int _currentIndex = 0;
 
-  final Map<String, Widget> routeToPage ={
-    AppRoutes.ownerDashboard: const OwnerDashboardView(),
-    AppRoutes.userListView: const UserListView(),
-    AppRoutes.financialOverviewView: const FinancialOverviewView(),
-    AppRoutes.systemLists: OwnerSystemOverviewView(),
-  };
+  // Tối ưu: Chỉ tạo danh sách các trang một lần
+  final List<Widget> _pages = [
+    const OwnerDashboardView(),
+    const UserListView(),
+    const FinancialOverviewView(),
+    OwnerSystemOverviewView(),
+  ];
 
-  final Map<String, String> routeToTitle = const {
-    AppRoutes.ownerDashboard: '📊 Thống kê tổng quan',
-    AppRoutes.userListView: '👥 Quản lý người dùng',
-     AppRoutes.financialOverviewView: '💰 Tài chính',
-    AppRoutes.systemLists: '⚙️ Hệ thống',
-  };
+  final List<String> _pageTitles = const [
+    '📊 Thống kê tổng quan',
+    '👥 Quản lý người dùng',
+    '💰 Tài chính',
+    '⚙️ Hệ thống',
+  ];
 
-  void _navigateTo(String route) {
-    setState(() {
-      currentRoute = route;
-    });
-  }
-
-  void handleLogout(BuildContext context) async {
-    final authController = AuthController();
-
-    try {
-      await authController.logout(); // Gọi logout từ AuthService nếu có
-
-      Navigator.pushNamedAndRemoveUntil(
-        context,
-        AppRoutes.login,
-            (route) => false, // Xóa toàn bộ stack
-      );
-    } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Lỗi khi đăng xuất: ${e.toString()}')),
-      );
-    }
+  void handleLogout() {
+    // Chỉ cần lấy controller và gọi logout.
+    // StreamBuilder sẽ tự động điều hướng.
+    Provider.of<AuthController>(context, listen: false).logout();
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentIndex = [
-      AppRoutes.ownerDashboard,
-      AppRoutes.userListView,
-      AppRoutes.financialOverviewView,
-      AppRoutes.systemLists,
-    ].indexOf(currentRoute);
     return Scaffold(
       appBar: AppBar(
         title: Text(
-          routeToTitle[currentRoute] ?? 'Không có tiêu đề',
+          _pageTitles[_currentIndex],
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
             child: LogoutButton(
-              onPressed: () => handleLogout(context),
+              onPressed: handleLogout,
               isGradient: true,
               width: 20,
               height: 20,
@@ -88,18 +64,17 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
         ],
         elevation: 2,
       ),
-      body: routeToPage[currentRoute] ?? const Center(child: Text('No page found')),
+      // ✅ Tối ưu: Dùng IndexedStack để giữ trạng thái các trang
+      body: IndexedStack(
+        index: _currentIndex,
+        children: _pages,
+      ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppPallete.backgroundColor,
         showSelectedLabels: true,
         showUnselectedLabels: true,
-        currentIndex: currentIndex,
-        onTap: (i) => setState(() => _navigateTo([
-              AppRoutes.ownerDashboard,
-              AppRoutes.userListView,
-              AppRoutes.financialOverviewView,
-              AppRoutes.systemLists,
-        ][i])),
+        currentIndex: _currentIndex,
+        onTap: (index) => setState(() => _currentIndex = index),
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppPallete.gradient1,
         unselectedItemColor: AppPallete.gradient2,
@@ -112,6 +87,4 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
       ),
     );
   }
-
-
 }

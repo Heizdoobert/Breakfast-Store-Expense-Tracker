@@ -2,7 +2,7 @@ import 'package:extractorapplication/Model/group_model.dart';
 import 'package:flutter/cupertino.dart';
 
 import '../../Model/user_model.dart';
-import '../../services/owner/system_service.dart';
+import '../../core/services/owner/system_service.dart';
 
 class SystemController extends ChangeNotifier {
   final _service = SystemService();

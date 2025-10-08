@@ -1,6 +1,5 @@
-import 'package:extractorapplication/supabase/supabase_client.dart';
-
-import '../../Model/expense_model.dart';
+import '../../../Model/expense_model.dart';
+import '../../supabase/supabase_client.dart';
 
 class OwnerFinancialService {
   final _supabase = SupabaseManager.client;

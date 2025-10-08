@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:path/path.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../core/services/owner/owner_financial_service.dart';
+import '../../core/services/owner/owner_system_service.dart';
+import '../../core/services/owner/owner_user_service.dart';
 import '../../routes/app_route.dart';
-import '../../services/owner/owner_financial_service.dart';
-import '../../services/owner/owner_system_service.dart';
-import '../../services/owner/owner_user_service.dart';
 
 class OwnerDashboardController {
   int totalUsers = 0;

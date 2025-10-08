@@ -3,9 +3,9 @@ import 'package:extractorapplication/Controller/owner/owner_dashboard_controller
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:extractorapplication/routes/app_route.dart'; // Assuming this is your login screen
-import 'package:extractorapplication/exception/error_app.dart';
-import 'package:extractorapplication/services/file_service.dart';
+import 'package:extractorapplication/routes/app_route.dart';
+import '../../core/exception/error_app.dart';
+import '../../core/services/file_service.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});

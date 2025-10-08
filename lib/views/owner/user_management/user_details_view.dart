@@ -1,8 +1,8 @@
 import 'package:extractorapplication/Model/user_model.dart';
 import 'package:flutter/material.dart';
 
+import '../../../core/utils/date_formatter.dart';
 import '../../../routes/app_route.dart';
-import '../../../utils/date_formatter.dart';
 
 class UserDetailView extends StatelessWidget {
   final User user;

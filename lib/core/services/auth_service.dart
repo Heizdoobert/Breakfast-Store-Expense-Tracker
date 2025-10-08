@@ -96,4 +96,24 @@ class AuthService {
       throw ServerException('Lỗi không xác định khi lấy vai trò: ${e.toString()}');
     }
   }
+
+  //lay user
+  Future<User?> getUser(String userId) async {
+    try {
+      final response = await _supabase
+          .from('users')
+          .select() // select() sẽ lấy tất cả các cột
+          .eq('id', userId)
+          .single(); // Trả về Map<String, dynamic>
+
+      // ✅ Chuyển đổi Map thành đối tượng User
+      return User.fromJson(response);
+    } on PostgrestException catch (e) {
+      // ✅ Cập nhật thông báo lỗi cho nhất quán
+      throw ServerException('Không thể lấy thông tin người dùng: ${e.message}');
+    } catch (e) {
+      // ✅ Cập nhật thông báo lỗi cho nhất quán
+      throw ServerException('Lỗi không xác định khi lấy người dùng: ${e.toString()}');
+    }
+  }
 }

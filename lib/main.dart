@@ -1,10 +1,9 @@
-import 'package:extractorapplication/utils/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
 import 'core/secrets/app_secrets.dart';
 import 'core/theme/theme.dart';
+import 'core/utils/provider.dart';
 import 'routes/route_generator.dart';
 import 'views/Auth/login.dart';
 import 'views/owner/owner_navigation.dart';

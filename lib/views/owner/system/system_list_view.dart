@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../../Controller/owner/system_controller.dart';
-import '../../../routes/app_route.dart';
-import '../../../utils/date_formatter.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../user_management/user_details_view.dart';
 
 class OwnerSystemOverviewView extends StatelessWidget {

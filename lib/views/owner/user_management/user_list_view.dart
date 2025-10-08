@@ -3,9 +3,7 @@ import 'package:extractorapplication/views/owner/user_management/user_details_vi
 import 'package:flutter/material.dart';
 
 import '../../../Controller/owner/user_management_controller.dart';
-import '../../../routes/app_route.dart';
-import '../../../utils/constants.dart';
-import '../../../utils/date_formatter.dart';
+import '../../../core/utils/date_formatter.dart';
 import '../../shared/loading_indicator.dart';
 
 class UserListView extends StatefulWidget {

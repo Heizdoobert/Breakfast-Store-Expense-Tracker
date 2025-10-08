@@ -1,5 +1,6 @@
-import 'package:extractorapplication/exception/failures.dart';
 import 'package:fpdart/fpdart.dart';
+
+import '../../../exception/failures.dart';
 
 abstract interface class AuthRepository{
   Future<Either<Failures, String>> signUpWithUsernamePassword ({

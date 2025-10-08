@@ -1,4 +1,4 @@
-import 'package:extractorapplication/supabase/supabase_client.dart';
+import '../../supabase/supabase_client.dart';
 
 class OwnerSystemService {
   final supabase = SupabaseManager.client;

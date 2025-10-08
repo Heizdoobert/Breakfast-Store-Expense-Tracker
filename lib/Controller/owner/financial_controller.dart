@@ -1,55 +1,41 @@
-import 'package:extractorapplication/services/owner/owner_financial_service.dart';
-import 'package:flutter/material.dart';
-
+import 'package:extractorapplication/Controller/base_controller.dart';
 import '../../Model/expense_model.dart';
+import '../../core/services/owner/owner_financial_service.dart';
 
-class FinancialController extends ChangeNotifier {
-  final _service = OwnerFinancialService();
-
+class FinancialController extends BaseController {
+  final OwnerFinancialService _service;
+  //nhan service thong quan constructor
+  FinancialController(this._service);
   double totalRevenue = 0.0;
   List<Expense> monthlyReport = [];
-  bool isLoading = false;
+
+  //goi tai logic rieng
+  Future<void> _fetchData() async {
+    final revenue = await _service.getTotalRevenue();
+    final report = await _service.getMonthlyReport();
+
+    totalRevenue = revenue;
+    //service tra ve tranh loi runtime
+    monthlyReport = report.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
+  }
 
   Future<void> loadFinancialData() async {
-    isLoading = true;
-    notifyListeners();
-
-    try {
-      final revenue = await _service.getTotalRevenue();
-      final report = await _service.getMonthlyReport();
-
-
-      totalRevenue = revenue;
-      monthlyReport = report.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
-      // print(monthlyReport);
-    } catch (e) {
-      debugPrint('❌ Error loading financial data: $e');
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+    await loadData(_fetchData);
   }
 }
 
 
-class RevenueReportController extends ChangeNotifier {
-  final _service = RevenueReportService();
-
+class RevenueReportController extends BaseController {
+  final RevenueReportService _service;
+  RevenueReportController(this._service);
   List<Expense> monthlyRevenue = [];
-  bool isLoading = false;
+
+  Future<void> _fetchData() async {
+    final revenue = await _service.getRevenueReport();
+    monthlyRevenue = revenue.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
+  }
 
   Future<void> loadRevenueReport() async {
-    isLoading = true;
-    notifyListeners();
-
-    try {
-      final data = await _service.getRevenueReport();
-      monthlyRevenue = data.map((e) => Expense.fromJson(e as Map<String, dynamic>)).toList();
-    } catch (e) {
-      debugPrint('❌ Error loading revenue report: $e');
-    } finally {
-      isLoading = false;
-      notifyListeners();
-    }
+    await loadData(_fetchData);
   }
 }
