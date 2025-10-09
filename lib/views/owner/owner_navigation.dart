@@ -25,8 +25,8 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
   final List<Widget> _pages = [
     const OwnerDashboardView(),
     const UserListView(),
-    const FinancialOverviewView(),
-    OwnerSystemOverviewView(),
+    const FinancialScreen(),
+    const OwnerSystemOverviewView(),
   ];
 
   final List<String> _pageTitles = const [

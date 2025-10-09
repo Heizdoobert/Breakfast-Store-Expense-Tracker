@@ -1,46 +1,42 @@
+import 'package:extractorapplication/core/exception/login_exception.dart';
+import 'package:extractorapplication/core/services/db_help.dart';
+
 import '../../../Model/expense_model.dart';
-import '../../supabase/supabase_client.dart';
 
 class OwnerFinancialService {
-  final _supabase = SupabaseManager.client;
-  bool isLoading = false;
+  final DatabaseService db;
+  OwnerFinancialService(this.db);
+  
   Future<double> getTotalRevenue() async {
     try {
-      isLoading = true;
-      final response = await _supabase.from('expenses').select('*');
-      final data = response as List;
-      return data.fold<double>(
-          0.0, (sum, item) => sum + (item['amount'] as num).toDouble());
+      return await db.getAggregate(table: 'expenses', column: 'amount');
     } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      throw ServerException('Error call service get total: $e');
     }
   }
 
   Future<List<Expense>> getMonthlyReport() async {
     try {
-      isLoading = true;
-      final respose = await _supabase.from('expenses').select('*');
-      final data = respose as List;
-      return data.map((e) => Expense.fromJson(e)).toList();
+      final response = await db.getAll('expenses');
+      return response.map((e) => Expense.fromJson(e)).toList();
     } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      throw ServerException('Error call report month: $e');
     }
   }
 }
 
 class RevenueReportService {
-  final _client = SupabaseManager.client;
-  bool isLoading = false;
+  final DatabaseService db;
+  RevenueReportService(this.db);
 
   Future<List<Expense>> getRevenueReport() async {
     try {
-      isLoading = true;
-      final response = await _client.from('revenue_report').select().order('month');
+      final now = DateTime.now();
+      final firstDayOfMonth = DateTime(now.year, now.month, 1).toIso8601String();
+      final lastDayOfMonth = DateTime(now.year, now.month + 1, 0).toIso8601String();
+      final response = await db.supabase.from('expenses').select().gte('created_at', firstDayOfMonth).lte('created_at', lastDayOfMonth).order('created_at');
       return response.map((e) => Expense.fromJson(e)).toList();
     } catch (e) {
-      isLoading = false;
       throw Exception('have a bug: $e');
     }
   }

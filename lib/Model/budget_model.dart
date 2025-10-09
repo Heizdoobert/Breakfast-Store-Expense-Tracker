@@ -1,9 +1,9 @@
 class Budget {
   final String id;
   final String groupId;
-  final String amount;
-  final String month;
-  final String year;
+  final double amount;
+  final int month;
+  final int year;
 
   Budget({
     required this.id,
@@ -13,23 +13,38 @@ class Budget {
     required this.year,
   });
 
-  factory Budget.fromJson(Map<String, dynamic> json){
+  factory Budget.fromJson(Map<String, dynamic> json) {
     return Budget(
-      id: json['id'],
-      groupId: json['groupId'],
-      amount: json['amount'],
-      month: json['month'],
-      year: json['year'],
+      id: json['id'].toString(),
+      groupId: json['groupId'].toString(),
+      amount: (json['amount'] as num).toDouble(),
+      month: json['month'] as int,
+      year: json['year'] as int,
     );
   }
 
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'groupId': groupId,
+      'group_id': groupId,
       'amount': amount,
       'month': month,
       'year': year,
     };
+  }
+
+  Budget copyWith({
+    String? id,
+    String? groupId,
+    double? amount,
+    int? month,
+    int? year,
+  }) {
+    return Budget(
+      id: id ?? this.id,
+      groupId: groupId ?? this.groupId,
+      amount: amount ?? this.amount,
+      month: month ?? this.month,
+      year: year ?? this.year,
+    );
   }
 }

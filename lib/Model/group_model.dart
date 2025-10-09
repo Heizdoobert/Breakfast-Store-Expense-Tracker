@@ -11,17 +11,27 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['id'],
-      name: json['name'],
-      createdAt: DateTime.parse(json['createdAt']),
+      id: json['id'].toString(),
+      name: json['name'] as String,
+      createdAt: DateTime.parse(json['createdAt'] as String),
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
       'name': name,
-      'createdAt': createdAt.toIso8601String(),
     };
+  }
+
+  Group copyWith({
+    String? id,
+    String? name,
+    DateTime? createdAt,
+  }) {
+    return Group(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
 }

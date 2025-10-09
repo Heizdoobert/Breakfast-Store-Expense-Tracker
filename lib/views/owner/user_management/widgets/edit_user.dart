@@ -19,7 +19,6 @@ class _EditUserState extends State<EditUser> {
   //khai bao controller nhung chua gan gia tri
   late final TextEditingController fullNameController;
   late final TextEditingController emailController;
-  late final TextEditingController passwordController;
   late final TextEditingController usernameController;
   late String selectedRole;
 
@@ -37,7 +36,6 @@ class _EditUserState extends State<EditUser> {
   void dispose() {
     fullNameController.dispose();
     emailController.dispose();
-    passwordController.dispose();
     usernameController.dispose();
     super.dispose();
   }

@@ -15,6 +15,9 @@ class SystemController extends BaseController {
   List<Group> groups = [];
   List<User> users = [];
 
+  Map<String, List<User>> groupMembers = {};
+  Set<String> loadingGroups = {};
+
   Future<void> _fetchData() async {
     final results = await Future.wait([
       _service.getGroups(),
@@ -54,5 +57,22 @@ class SystemController extends BaseController {
       await _service.removeUserFromGroup(userId, groupId);
       await loadSystemOverview();
     });
+  }
+
+  Future<void> loadMembersForGroup(String groupId) async {
+    if (groupMembers.containsKey(groupId)) return;
+    loadingGroups.add(groupId);
+    notifyListeners();
+
+    try {
+      final members = await _service.getMembersOfGroup(groupId);
+      groupMembers[groupId] = members;
+    } catch (e) {
+      debugPrint('Error loading members for group $groupId: $e');
+      groupMembers[groupId] = [];
+    } finally {
+      loadingGroups.remove(groupId);
+      notifyListeners();
+    }
   }
 }
