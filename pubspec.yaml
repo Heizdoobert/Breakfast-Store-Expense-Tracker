@@ -10,6 +10,9 @@ dependencies:
   flutter:
     sdk: flutter
 
+  #json
+  json_annotation: ^4.9.0
+
   # Core & Backend
   supabase_flutter: ^2.5.8
   flutter_dotenv: ^5.1.0
@@ -42,6 +45,8 @@ dev_dependencies:
     sdk: flutter
 
   flutter_lints: ^4.0.0 # Cập nhật linter
+  build_runner: ^2.4.11
+  json_serializable: ^6.8.0
 
   # 💡 GỢI Ý THÊM: Các gói giúp tự động sinh code cho models
   # build_runner: ^2.4.11

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+///lop controller thuc hien kiem soat thuc thi chuong trinh
+///kiem tra dan xuat cua cac luong du lieu toi
 abstract class BaseController extends ChangeNotifier {
-  bool _isLoading = true;
+  bool _isLoading = false;
   bool get isLoading => _isLoading;
 
   bool _hasLoaded= false;

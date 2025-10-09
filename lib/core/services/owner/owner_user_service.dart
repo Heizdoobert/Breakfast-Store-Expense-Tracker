@@ -2,24 +2,25 @@ import 'package:extractorapplication/Model/user_model.dart';
 
 import '../db_help.dart';
 
+///lop truy cap du lieu, giao tiep voi nguon du lieu (supabase)
+///su dung supabase
+///lop nay se dung de dua du lieu tu controller len db
+///
 class OwnerUserService {
-  final db = DatabaseService();
-  bool isLoading = false;
+  final DatabaseService db;
+  OwnerUserService(this.db);
 
   Future<int> getUserCount() async {
     try {
-      isLoading = true;
       final response = await db.getAll('users');
       return response.length;
     } catch (e) {
-      isLoading = false;
       throw Exception('Error fetching user count: $e');
     }
   }
 
   Future<List<String>> getRecentActivities() async {
     try {
-      isLoading = true;
       final response = await db.queryBuilder(
         table: 'notes',
         column: 'title',
@@ -28,9 +29,8 @@ class OwnerUserService {
         ascending: false,
         limit: 5,
       );
-      return response.map((e) => e['message'] as String).toList();
+      return response.map((e) => e['title'] as String).toList();
     } catch (e) {
-      isLoading = false;
       throw Exception('Error fetching recent activities: $e');
     }
   }
@@ -38,12 +38,10 @@ class OwnerUserService {
   ///lay toan bo nguoi dung
   Future<List<User>> getAllUsers() async {
     try {
-      isLoading = true;
       final response = await db.getAll('users');
       return response.map((e) => User.fromJson(e)).toList();
     } catch (e) {
-      isLoading = false;
-      print('raw user data: $e');
+      // print('raw user data: $e');
       throw Exception('Error fetching all users: $e');
     }
   }
@@ -51,7 +49,6 @@ class OwnerUserService {
   ///lay nguoi dung theo vai tro
   Future<List<User>> getUsersByRole(String role) async {
     try {
-      isLoading = true;
       final response = await db.queryBuilder(
         table: 'users',
         column: 'role',
@@ -62,29 +59,26 @@ class OwnerUserService {
       );
       return response.map((e) => User.fromJson(e)).toList();
     } catch (e) {
-      isLoading = false;
       throw Exception('Error fetching users by role: $e');
     }
   }
 
   ///cap nhat vai tro nguoi dung
-  Future<void> updateUserRole(String userId, String newRole) async {
+  Future<User> updateUserRole(String userId, String newRole) async {
     try {
-      isLoading = true;
-      await db.update('users', userId, {'role': newRole});
+      final responseData = await db.update('users', userId, {'role': newRole});
+      return User.fromJson(responseData);
     } catch (e) {
-      isLoading = false;
       throw Exception('Error updating user role: $e');
     }
   }
 
   //Cap nhat nguoi dung
-  Future<void> updateUser(User user) async {
+  Future<User> updateUser(User user) async {
     try {
-      isLoading = true;
-      await db.update('users', user.id, user.toJson());
+      final responseData = await db.update('users', user.id, user.toJson());
+      return User.fromJson(responseData);
     } catch (e) {
-      isLoading = false;
       throw Exception('Error updating user: $e');
     }
   }
@@ -92,21 +86,18 @@ class OwnerUserService {
   ///xoa nguoi dung
   Future<void> deleteUser(String userId) async {
     try {
-      isLoading = true;
       await db.delete('users', userId);
     } catch (e) {
-      isLoading = false;
       throw Exception('Error deleting user: $e');
     }
   }
 
   ///them nguoi dung moi
-  Future<void> createUser(Map<String, dynamic> userData) async {
+  Future<User> createUser(Map<String, dynamic> userData) async {
     try {
-      isLoading = true;
-      await db.insert('users', userData);
+      final responseData = await db.insert('users', userData);
+      return User.fromJson(responseData);
     } catch (e) {
-      isLoading = false;
       throw Exception('Error creating user: $e');
     }
   }

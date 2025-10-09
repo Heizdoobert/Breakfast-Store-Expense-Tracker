@@ -1,29 +1,27 @@
 import '../exception/login_exception.dart';
 import '../supabase/supabase_client.dart';
 
+///tang thuc thi cau lenh truy van
+///tai day tra ve du lieu hoac loi
+///tiep nhan request tu service de trao doi du lieu len tren db
 class DatabaseService {
   final supabase = SupabaseManager.client;
-  bool isLoading = false;
 
   ///truy van toan bo bang
   Future<List<Map<String, dynamic>>> getAll(String table) async {
     try {
-      isLoading = true;
       return await supabase.from(table).select();
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error fetching data: $e');
+      throw ServerException('Error fetching data from $table: $e');
     }
   }
 
   ///truy van mot dong theo id
   Future<Map<String, dynamic>?> getById(String table, dynamic id) async {
     try {
-      isLoading = true;
       return await supabase.from(table).select().eq('id', id).maybeSingle();
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error fetching data: $e');
+      throw ServerException('Error fetching data from $table by id $id: $e');
     }
   }
 
@@ -36,9 +34,8 @@ class DatabaseService {
     String? orderBy,
     bool ascending = true,
     int? limit,
-  }) {
+  }) async {
     try {
-      isLoading = true;
       final fieldsString = fields != null ? fields.join(',') : '*';
 
       var query = supabase
@@ -48,47 +45,53 @@ class DatabaseService {
           .order(orderBy ?? 'id', ascending: ascending)
           .limit(limit ?? 100);
 
-      return query;
+      return await query;
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error fetching data: $e');
+      throw ServerException('Error fetching data $table: $e');
     }
   }
 
   ///them du lieu
-  Future<void> insert(String table, Map<String, dynamic> data) async {
+  Future<Map<String, dynamic>> insert(String table, Map<String, dynamic> data) async {
     try {
-      isLoading = true;
-      await supabase.from(table).insert(data);
+      return await supabase.from(table).insert(data).select().single();
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error inserting data: $e');
+      throw ServerException('Error inserting data into $table: $e');
     }
   }
 
   ///cap nhat du lieu theo id
-  Future<void> update(
+  Future<Map<String, dynamic>> update(
     String table,
     dynamic id,
     Map<String, dynamic> data,
   ) async {
     try {
-      isLoading = true;
-      await supabase.from(table).update(data).eq('id', id);
+      return await supabase.from(table).update(data).eq('id', id).select().single();
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error updating data: $e');
+      throw ServerException('Error updating $table with id $id: $e');
     }
   }
 
   ///xoa du lieu theo id
   Future<void> delete(String table, dynamic id) async {
     try {
-      isLoading = true;
       await supabase.from(table).delete().eq('id', id);
     } catch (e) {
-      isLoading = false;
-      throw ServerException('Error deleting data: $e');
+      throw ServerException('Error deleting $table with id $id data: $e');
+    }
+  }
+
+  //xoa du lieu tai diem goi
+  Future<void> deleteWhere(String table,Map<String, dynamic> conditions) async {
+    try {
+      var query = supabase.from(table).delete();
+      conditions.forEach((key, value) {
+        query = query.eq(key, value);
+      });
+      await query;
+    } catch (e) {
+      throw ServerException('Error deleting data from $table with conditions: $e');
     }
   }
 }

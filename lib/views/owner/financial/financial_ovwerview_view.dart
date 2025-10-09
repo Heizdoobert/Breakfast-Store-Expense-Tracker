@@ -17,7 +17,9 @@ class FinancialOverviewView extends StatelessWidget {
     // Cách làm này đảm bảo dữ liệu chỉ được load khi cần thiết.
     if (controller.shouldLoadData) {
       print(controller);
-      controller.loadFinancialData();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.loadFinancialData();
+      });
     }
 
     if (controller.isLoading) {

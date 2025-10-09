@@ -3,48 +3,56 @@ import 'package:flutter/cupertino.dart';
 
 import '../../Model/user_model.dart';
 import '../../core/services/owner/system_service.dart';
+import '../base_controller.dart';
 
-class SystemController extends ChangeNotifier {
-  final _service = SystemService();
+///controller su dung provider de lang nghe
+///load system mot lan ma khong can load lai
+///CRUD system
+class SystemController extends BaseController {
+  final SystemService _service;
+  SystemController(this._service);
 
   List<Group> groups = [];
   List<User> users = [];
-  bool isLoading = false;
 
-  Future<void> loadSystemOverview() async{
-    isLoading = true;
-    notifyListeners();
+  Future<void> _fetchData() async {
+    final results = await Future.wait([
+      _service.getGroups(),
+      _service.getUsers(),
+    ]);
+    groups = results[0] as List<Group>;
+    users = results[1] as List<User>;
+  }
 
-    try{
-      groups = await _service.getGroups();
-      users = await _service.getUsers();
+  Future<void> loadSystemOverview() async {
+    await loadData(_fetchData);
+  }
+
+  //check tinh dung dan 1 lan khong can code lai
+  Future<bool> _performAction(Future<void> Function() action) async {
+    setLoading(true);
+    try {
+      await action();
+      return true;
     } catch (e) {
-      debugPrint('❌ Error loading system overview: $e');
+      debugPrint('SystemController Error: $e');
+      return false;
     } finally {
-      isLoading = false;
-      notifyListeners();
+      setLoading(false);
     }
   }
 
-  Future<void> addUser(String userId, String groupId) async {
-    try {
-      isLoading = true;
+  Future<void> addUserToGroup({required String userId, required String groupId}) async {
+    await _performAction(() async {
       await _service.addUserToGroup(userId, groupId);
-      notifyListeners();
-    } catch (e) {
-      isLoading = false;
-      debugPrint('❌ Error adding user: $e');
-    }
+      await loadSystemOverview();
+    });
   }
 
-  Future<void> removeUserFromGroup(String userId, String groupId) async {
-    try {
-      isLoading = true;
+  Future<void> removeUserFromGroup({required String userId,required String groupId}) async {
+    await _performAction(() async {
       await _service.removeUserFromGroup(userId, groupId);
-      notifyListeners();
-    } catch (e) {
-      isLoading = false;
-      debugPrint('❌ Error removing user from group: $e');
-    }
+      await loadSystemOverview();
+    });
   }
 }
