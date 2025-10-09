@@ -1,5 +1,8 @@
+import 'package:extractorapplication/Controller/owner/user_management_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:extractorapplication/model/user_model.dart';
+import 'package:provider/provider.dart';
+//chuyen qua dung provider lang nghe
+//su dung luu tru trang thai de truyen du lieu den controller
 
 class AddNewUser extends StatefulWidget {
   const AddNewUser({super.key});
@@ -14,31 +17,43 @@ class _AddNewUserState extends State<AddNewUser> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
-
-  String selectedRole = 'Người dùng';
-  bool _isLoading = false;
-
-  void _submit() {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-
-    final newUser = User(
-      id: '', // sẽ được gán sau khi lưu vào DB
-      fullName: fullNameController.text.trim(),
-      email: emailController.text.trim(),
-      userName: usernameController.text.trim(),
-      passwordHash: passwordController.text.trim(),
-      role: selectedRole,
-      createdAt: DateTime.now(),
-      updatedAt: DateTime.now(),
-    );
-
-    Navigator.pop(context, newUser);
-  }
+  String _selectedRole = 'staff';
 
   @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    usernameController.dispose();
+    super.dispose();
+  }
+
+  void _submit() async {
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
+
+    final controller = context.read<UserManagementController>();
+    final userData = {
+      'fullName': fullNameController.text,
+      'email': emailController.text,
+      'password': passwordController.text,
+      'username': usernameController.text,
+      'role': _selectedRole,
+    };
+
+    await controller.createUser(userData);
+
+    if(mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Thêm mới thành công')),
+      );
+      Navigator.of(context).pop();
+    }
+  }
+  @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<UserManagementController>().isLoading;
     return Scaffold(
       appBar: AppBar(title: const Text('➕ Thêm mới người dùng')),
       body: Padding(
@@ -78,25 +93,29 @@ class _AddNewUserState extends State<AddNewUser> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                initialValue: selectedRole,
+                initialValue: _selectedRole,
                 decoration: const InputDecoration(labelText: 'Vai trò'),
                 items: const [
-                  DropdownMenuItem(value: 'Người dùng', child: Text('Người dùng')),
-                  DropdownMenuItem(value: 'Quản trị', child: Text('Quản trị')),
-                  DropdownMenuItem(value: 'Chủ sở hữu', child: Text('Chủ sở hữu')),
+                  DropdownMenuItem(value: 'staff', child: Text('Nhân viên (Staff)')),
+                  DropdownMenuItem(value: 'manager', child: Text('Quản Lý (Manager)')),
+                  DropdownMenuItem(value: 'admin', child: Text('Quản trị viên (Admin)')),
                 ],
-                onChanged: (value) => setState(() => selectedRole = value!),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() {
+                      _selectedRole = value;
+                    });
+                  }
+                },
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                onPressed: _isLoading ? null : _submit,
-                icon: _isLoading
-                    ? const SizedBox(
+                onPressed: isLoading ? null : _submit,
+                icon: isLoading ? const SizedBox(
                   width: 16,
                   height: 16,
                   child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                )
-                    : const Icon(Icons.check),
+                ): const Icon(Icons.add),
                 label: const Text('Xác nhận'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),

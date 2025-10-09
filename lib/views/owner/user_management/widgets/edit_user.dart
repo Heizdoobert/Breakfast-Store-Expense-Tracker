@@ -1,7 +1,11 @@
 import 'package:extractorapplication/Model/user_model.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../../Controller/owner/user_management_controller.dart';
 
+///chinh sua du lieu nguoi dung theo id
+///su dung luu tru trang thai de truyen du lieu den controller
+///su dung provider lang nghe
 class EditUser extends StatefulWidget {
   final User user;
   const EditUser({super.key, required this.user});
@@ -11,57 +15,63 @@ class EditUser extends StatefulWidget {
 }
 
 class _EditUserState extends State<EditUser> {
-  late User user;
   final _formKey = GlobalKey<FormState>();
-  final fullNameController = TextEditingController();
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-  final usernameController = TextEditingController();
-  final controller = UserManagementController();
+  //khai bao controller nhung chua gan gia tri
+  late final TextEditingController fullNameController;
+  late final TextEditingController emailController;
+  late final TextEditingController passwordController;
+  late final TextEditingController usernameController;
+  late String selectedRole;
 
-  String selectedRole = 'Người dùng';
-  bool _isLoading = false;
-
+  //dien du lieu cu vao form
   @override
   void initState() {
     super.initState();
-    user = widget.user;
-    fullNameController.text = user.fullName ?? '';
-    emailController.text = user.email ?? '';
-    usernameController.text = user.userName ?? '';
-    passwordController.text = user.passwordHash ?? '';
-    selectedRole = user.role ?? 'user';
+    fullNameController = TextEditingController(text: widget.user.fullName);
+    emailController = TextEditingController(text: widget.user.email);
+    usernameController = TextEditingController(text: widget.user.userName);
+    selectedRole = widget.user.role ?? 'staff';
+  }
+
+  @override
+  void dispose() {
+    fullNameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    usernameController.dispose();
+    super.dispose();
   }
 
   void _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-
-    setState(() => _isLoading = true);
-
-    final updateUser = User(
-      id: user.id, // sẽ được gán sau khi lưu vào DB
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
+    final controller = context.read<UserManagementController>();
+    //tao mot doi tuong user moi voi du lieu cap nhat
+    //giu lai id va cac truong khong thay doi
+    final updatedUser = widget.user.copyWith(
       fullName: fullNameController.text.trim(),
       email: emailController.text.trim(),
       userName: usernameController.text.trim(),
-      passwordHash: passwordController.text.trim(),
       role: selectedRole,
-      createdAt: user.createdAt,
-      updatedAt: DateTime.now(),
     );
 
-    await controller.updateUser(updateUser);
-    if(mounted) {
+    await controller.updateUser(updatedUser);
+    if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Cập nhật thành công')),
+        const SnackBar(content: Text('Sửa thông tin thành công'), backgroundColor: Colors.green,),
       );
+      Navigator.of(context).pop();
     }
-    Navigator.pop(context);
   }
 
   @override
   Widget build(BuildContext context) {
+    //lay trang thai tu controller
+    final isLoading = context.watch<UserManagementController>().isLoading;
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Sửa thông tin người dùng')),
+      appBar: AppBar(title: Text('Sửa thông tin ${widget.user.fullName ?? ''}')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -71,54 +81,55 @@ class _EditUserState extends State<EditUser> {
               TextFormField(
                 controller: fullNameController,
                 decoration: const InputDecoration(labelText: 'Họ tên'),
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Vui lòng nhập họ tên' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập họ tên'
+                    : null,
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: emailController,
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Vui lòng nhập email' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập email'
+                    : null,
               ),
               const SizedBox(height: 8),
               TextFormField(
                 controller: usernameController,
                 decoration: const InputDecoration(labelText: 'Tên đăng nhập'),
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Vui lòng nhập tên đăng nhập' : null,
-              ),
-              const SizedBox(height: 8),
-              TextFormField(
-                controller: passwordController,
-                decoration: const InputDecoration(labelText: 'Mật khẩu'),
-                obscureText: true,
-                validator: (value) =>
-                value == null || value.isEmpty ? 'Vui lòng nhập mật khẩu' : null,
+                validator: (value) => value == null || value.isEmpty
+                    ? 'Vui lòng nhập tên đăng nhập'
+                    : null,
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                initialValue: selectedRole,
+                value: selectedRole,
                 decoration: const InputDecoration(labelText: 'Vai trò'),
                 items: const [
-                  DropdownMenuItem(value: 'user', child: Text('Người dùng')),
-                  DropdownMenuItem(value: 'admin', child: Text('Quản trị')),
-                  DropdownMenuItem(value: 'owner', child: Text('Chủ sở hữu')),
+                  DropdownMenuItem(value: 'staff', child: Text('Nhân viên (Staff)')),
+                  DropdownMenuItem(value: 'admin', child: Text('Quản trị viên (Admin)')),
+                  DropdownMenuItem(value: 'manager', child: Text('Quản lý (Manager)')),
+                  DropdownMenuItem(value: 'owner', child: Text('Chủ sở hữu (Owner)')),
                 ],
-                onChanged: (value) => setState(() => selectedRole = value!),
+                onChanged: (value) {
+                  if (value != null) {
+                    setState(() => selectedRole = value);
+                  }
+                },
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
-                onPressed: _isLoading ? null : _submit,
-                icon: _isLoading
+                onPressed: isLoading ? null : _submit,
+                icon: isLoading
                     ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
-                )
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                            strokeWidth: 2, color: Colors.white),
+                      )
                     : const Icon(Icons.check),
-                label: const Text('Xác nhận'),
+                label: Text(isLoading ? 'Đang cập nhật...' : 'Xác nhận'),
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   backgroundColor: Colors.green,

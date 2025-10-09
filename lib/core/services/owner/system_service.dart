@@ -1,54 +1,47 @@
+import 'package:extractorapplication/core/services/db_help.dart';
+
 import '../../../Model/group_model.dart';
 import '../../../Model/user_model.dart';
-import '../../supabase/supabase_client.dart';
 
+///lop truy cap du lieu, giao tiep voi nguon du leiu (supabase)
+///su dung supabase
+///lop nay se dung de dua du lieu tu controller len db
+///
 class SystemService {
-  final _supabase = SupabaseManager.client;
-  bool isLoading = false;
+  final DatabaseService db;
+  SystemService(this.db);
 
   Future<List<Group>> getGroups() async {
     try {
-      isLoading = true;
-      final response = await _supabase.from('groups').select('*');
-      final data = response as List;
-      return data.map((e) => Group.fromJson(e)).toList();
+      final response = await db.getAll('groups');
+      return response.map((e) => Group.fromJson(e)).toList();
     } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      throw Exception('Loi khi lay danh sach nhom: $e');
     }
 }
 
   Future<List<User>> getUsers() async {
     try {
-      isLoading = true;
-      final response = await _supabase.from('users').select('*');
-      final data = response as List;
-      return data.map((e) => User.fromJson(e)).toList();
-  } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      final response = await db.getAll('users');
+      return response.map((e) =>User.fromJson(e)).toList();
+    } catch (e) {
+      throw Exception('Loi khi lay danh sach nguoi dung: $e');
     }
   }
 
   Future<void> addUserToGroup(String userId, String groupId) async {
     try {
-      isLoading = true;
-      await _supabase.from('user_groups').insert({
-        'userId': userId,
-        'groupId': groupId,
-      });
+      await db.insert('group_members', {'user_id': userId, 'group_id': groupId});
     } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      throw Exception('Loi khi them nguoi dung vao nhom: $e');
     }
   }
+
   Future<void> removeUserFromGroup(String userId, String groupId) async {
     try {
-      isLoading = true;
-      await _supabase.from('user_groups').delete().eq('user_id', userId).eq('group_id', groupId);
+      await db.delete('group_members', {'user_id': userId, 'group_id': groupId});
       } catch (e) {
-      isLoading = false;
-      throw Exception('have a bug: $e');
+      throw Exception('loi khi xoa nguoi dung khoi nhom: $e');
     }
   }
 }

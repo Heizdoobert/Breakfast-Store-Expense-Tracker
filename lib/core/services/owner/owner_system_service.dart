@@ -1,15 +1,18 @@
-import '../../supabase/supabase_client.dart';
+import 'package:extractorapplication/core/services/db_help.dart';
 
+///lop truy cap du lieu, giao tiep voi nguon du leiu (supabase)
+///su dung supabase de lay data cho Owner System
+///lop nay se dung de dua du lieu tu controller len db
+///
 class OwnerSystemService {
-  final supabase = SupabaseManager.client;
-  bool isLoading = false;
+  final DatabaseService db;
+  OwnerSystemService(this.db);
+
   Future<String> getSystemHealth() async {
     try {
-      isLoading = true;
       return Future.delayed(
           const Duration(microseconds: 500), () => 'System work find');
     } catch (e) {
-      isLoading = false;
       throw Exception('have a bug: $e');
     }
   }

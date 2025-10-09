@@ -1,3 +1,4 @@
+import 'package:extractorapplication/views/shared/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -38,7 +39,7 @@ class MyApp extends StatelessWidget {
         stream: Supabase.instance.client.auth.onAuthStateChange,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Scaffold(body: Center(child: CircularProgressIndicator()));
+            return const SplashScreen();
           }
           if (snapshot.hasData && snapshot.data?.session != null) {
             return const OwnerNavigationShell();

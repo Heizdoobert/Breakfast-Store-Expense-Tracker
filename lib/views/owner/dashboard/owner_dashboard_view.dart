@@ -2,36 +2,25 @@ import 'package:extractorapplication/views/owner/dashboard/widgets/recent_activi
 import 'package:extractorapplication/views/owner/dashboard/widgets/stats_card.dart';
 import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import '../../../Controller/owner/owner_dashboard_controller.dart';
 
-class OwnerDashboardView extends StatefulWidget {
+///trang thai view load du lieu -> StateLessWidget
+///lay controller tu provider de xem su thay doi
+///chay widget 1 lan
+/// dung addPostFrameCallback de tranh goi setState trong luc build
+/// xay dung UI dua tren trang thai cua controller
+class OwnerDashboardView extends StatelessWidget {
   const OwnerDashboardView({super.key});
 
   @override
-  State<OwnerDashboardView> createState() => _OwnerDashboardViewState();
-}
-
-class _OwnerDashboardViewState extends State<OwnerDashboardView> {
-  final controller = OwnerDashboardController();
-
-  @override
-  void dispose() {
-    controller.dispose();
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    controller.loadDashboardData().then((_) {
-      if(mounted) {
-        setState(() {});
-      }
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
+    final controller = context.watch<OwnerDashboardController>();
+    if (controller.shouldLoadData) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.loadDashboardData();
+      });
+    }
     return Scaffold(
       body: controller.isLoading
           ? const LoadingIndicator(fullscreen: true, message: 'Loading...')
