@@ -1,3 +1,4 @@
+import 'package:extractorapplication/core/exception/login_exception.dart';
 import 'package:extractorapplication/core/services/db_help.dart';
 
 ///lop truy cap du lieu, giao tiep voi nguon du leiu (supabase)
@@ -13,7 +14,7 @@ class OwnerSystemService {
       return Future.delayed(
           const Duration(microseconds: 500), () => 'System work find');
     } catch (e) {
-      throw Exception('have a bug: $e');
+      throw ServerException('Error call service get system health: $e');
     }
   }
 }

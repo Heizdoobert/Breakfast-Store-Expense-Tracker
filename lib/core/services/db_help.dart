@@ -94,4 +94,28 @@ class DatabaseService {
       throw ServerException('Error deleting data from $table with conditions: $e');
     }
   }
+
+  //tinh so lieu tren db
+  Future<double> getAggregate({
+    required String table, required String column
+}) async {
+    try {
+      final response = await supabase.from(table).select(column);
+
+      if(response.isEmpty){
+        return 0.0;
+      }
+
+      double total = 0.0;
+      for(var row in response){
+        if(row[column] != null )
+          {
+            total += (row[column] as num).toDouble();
+          }
+      }
+      return total;
+    } catch (e) {
+      throw ServerException('Error performing aggregation on $table: $e');
+    }
+  }
 }

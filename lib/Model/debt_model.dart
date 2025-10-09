@@ -15,21 +15,36 @@ class Debt {
 
   factory Debt.fromJson(Map<String, dynamic> json){
     return Debt(
-      id: json['id'],
-      fromUserId: json['fromUserId'],
-      toUserId: json['toUserId'],
-      amount: json['amount'],
-      isSettled: json['isSettled'],
+      id: json['id'].toString(),
+      fromUserId: json['from_user_id'] as String,
+      toUserId: json['to_user_id'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      isSettled: json['is_settled'] as bool,
     );
   }
 
   Map<String, dynamic> toJson(){
     return {
-      'id': id,
-      'fromUserId': fromUserId,
-      'toUserId': toUserId,
+      'from_user_id': fromUserId,
+      'to_user_id': toUserId,
       'amount': amount,
-      'isSettled': isSettled,
+      'is_settled': isSettled,
     };
+  }
+
+  Debt copyWith({
+    String? id,
+    String? fromUserId,
+    String? toUserId,
+    double? amount,
+    bool? isSettled,
+  }) {
+    return Debt(
+      id: id ?? this.id,
+      fromUserId: fromUserId ?? this.fromUserId,
+      toUserId: toUserId ?? this.toUserId,
+      amount: amount ?? this.amount,
+      isSettled: isSettled ?? this.isSettled,
+    );
   }
 }

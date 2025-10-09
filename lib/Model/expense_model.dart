@@ -3,7 +3,7 @@ class Expense {
   final String groupId;
   final String userId;
   final double amount;
-  final String description;
+  final String? description;
   final DateTime createdAt;
 
   Expense({
@@ -11,34 +11,46 @@ class Expense {
     required this.groupId,
     required this.userId,
     required this.amount,
-    required this.description,
+    this.description,
     required this.createdAt,
   });
 
   factory Expense.fromJson(Map<String, dynamic> json) {
     return Expense(
-      id: json['id'] ?? '',
-      groupId: json['groupId'] ?? '',
-      userId: json['userId'] ?? '',
-      amount: (json['amount'] is int)
-          ? (json['amount'] as int).toDouble()
-          : (json['amount'] ?? 0.0) as double,
-      description: json['description'] ?? '',
-      createdAt: json['createdAt'] != null
-          ? DateTime.parse(json['createdAt'])
-          : DateTime.now(),
+      id: json['id'].toString(),
+      groupId: json['group_id'].toString(),
+      userId: json['user_id'] as String,
+      amount: (json['amount'] as num).toDouble(),
+      description: json['description'] as String?,
+      createdAt: DateTime.parse(json['created_at'] as String),
     );
   }
 
 
   Map<String, dynamic> toJson(){
     return {
-      'id': id,
-      'groupId': groupId,
-      'userId': userId,
+      'group_id': groupId,
+      'user_id': userId,
       'amount': amount,
       'description': description,
-      'createdAt': createdAt.toIso8601String(),
     };
+  }
+
+  Expense copyWith({
+    String? id,
+    String? groupId,
+    String? userId,
+    double? amount,
+    String? description,
+    DateTime? createdAt,
+  }) {
+    return Expense(
+      id: id ?? this.id,
+      groupId: groupId ?? this.groupId,
+      userId: userId ?? this.userId,
+      amount: amount ?? this.amount,
+      description: description ?? this.description,
+      createdAt: createdAt ?? this.createdAt,
+    );
   }
 }

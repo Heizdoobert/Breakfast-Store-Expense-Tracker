@@ -1,94 +1,79 @@
-import 'package:extractorapplication/views/shared/loading_indicator.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../Controller/owner/system_controller.dart';
-import '../../../core/utils/date_formatter.dart';
-import '../user_management/user_details_view.dart';
+import '../../shared/loading_indicator.dart';
 
 class OwnerSystemOverviewView extends StatelessWidget {
   const OwnerSystemOverviewView({super.key});
-  static final DateFormatter formatDate = DateFormatter();
 
   @override
   Widget build(BuildContext context) {
-    final controller  = context.watch<SystemController>();
+    final controller = context.watch<SystemController>();
 
-    if(controller.isLoading)
-      {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          controller.loadSystemOverview();
-        });
-      }
-
-    if(controller.isLoading && controller.groups.isEmpty && controller.users.isEmpty)
-      {
-        return const LoadingIndicator(fullscreen: true, message: 'Đang tải danh sách hệ thống...');
-      }
+    if (controller.shouldLoadData) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        controller.loadSystemOverview();
+      });
+    }
 
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: controller.loadSystemOverview,
-        child: SingleChildScrollView( // Dùng SingleChildScrollView để cuộn toàn bộ màn hình
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text('📦 Danh sách nhóm (${controller.groups.length})',
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 8),
-              // ✅ 4. Dùng ListView.builder cho hiệu năng
-              ListView.builder(
-                itemCount: controller.groups.length,
-                shrinkWrap: true, // Cần thiết khi lồng ListView trong Column
-                physics: const NeverScrollableScrollPhysics(), // Tắt cuộn của ListView con
-                itemBuilder: (context, index) {
-                  final group = controller.groups[index];
-                  return Card(
-                    child: ListTile(
-                      title: Text('🧭 ${group.name ?? 'Nhóm không tên'}'),
-                      subtitle: Text('ID: ${group.id ?? 'Không rõ'}'),
-                    ),
-                  );
-                },
-              ),
-              const Divider(height: 32),
-              Text('👥 Thành viên (${controller.users.length})',
-                  style: Theme.of(context).textTheme.titleLarge),
-              const SizedBox(height: 8),
-              // ✅ 4. Dùng ListView.builder cho hiệu năng
-              ListView.builder(
-                itemCount: controller.users.length,
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemBuilder: (context, index) {
-                  final user = controller.users[index];
-                  return Card(
-                    child: ListTile(
-                      leading: const Icon(Icons.person),
-                      title: Text(user.userName ?? 'Không rõ'),
-                      subtitle: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('📧 Email: ${user.email ?? 'Không rõ'}'),
-                          Text('🛡 Vai trò: ${user.role ?? 'Không rõ'}'),
-                        ],
-                      ),
-                      trailing: const Icon(Icons.chevron_right),
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => UserDetailView(user: user, formatDate: formatDate),
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
+      body: _buildBody(context, controller),
+    );
+  }
+
+  Widget _buildBody(BuildContext context, SystemController controller) {
+    if (controller.isLoading && controller.groups.isEmpty) {
+      return const LoadingIndicator(fullscreen: true, message: 'Đang tải dữ liệu hệ thống...');
+    }
+
+    if (controller.groups.isEmpty) {
+      return const Center(child: Text('Chưa có nhóm nào được tạo.'));
+    }
+
+    return RefreshIndicator(
+      onRefresh: controller.loadSystemOverview,
+      child: ListView.builder(
+        itemCount: controller.groups.length,
+        itemBuilder: (context, index) {
+          final group = controller.groups[index];
+          final members = controller.groupMembers[group.id];
+          final isLoadingMembers = controller.loadingGroups.contains(group.id);
+
+          return Card(
+            margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            clipBehavior: Clip.antiAlias,
+            child: ExpansionTile(
+              title: Text('🧭 ${group.name ?? 'Nhóm không tên'}'),
+              subtitle: Text('ID: ${group.id ?? 'Không rõ'}'),
+              onExpansionChanged: (isExpanding) {
+                if (isExpanding) {
+                  controller.loadMembersForGroup(group.id!);
+                }
+              },
+              children: [
+                if (isLoadingMembers)
+                  const Padding(
+                    padding: EdgeInsets.all(16.0),
+                    child: CircularProgressIndicator(),
+                  ),
+                if (members != null)
+                  if (members.isEmpty && !isLoadingMembers)
+                    const ListTile(
+                      leading: Icon(Icons.info_outline, color: Colors.grey),
+                      title: Text('Không có thành viên nào trong nhóm này.'),
+                    )
+                  else
+                    ...members.map((member) => ListTile(
+                      leading: const Icon(Icons.person_outline, color: Colors.blueGrey),
+                      title: Text(member.fullName ?? member.userName ?? 'Không rõ'),
+                      subtitle: Text(member.email ?? 'Không có email'),
+                      dense: true,
+                    )),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

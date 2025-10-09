@@ -51,7 +51,7 @@ class RouteGenerator {
 
         ///financial routes
       case AppRoutes.financialOverviewView:
-        return MaterialPageRoute(builder: (_) => const FinancialOverviewView());
+        return MaterialPageRoute(builder: (_) => const FinancialScreen());
       case AppRoutes.revenueReportView:
         return MaterialPageRoute(builder: (_) => RevenueReportView());
 

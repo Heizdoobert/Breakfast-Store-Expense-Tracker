@@ -53,7 +53,7 @@ class OwnerUserService {
         table: 'users',
         column: 'role',
         value: role,
-        orderBy: 'createdAt',
+        orderBy: 'created_at',
         ascending: false,
         limit: 100,
       );
