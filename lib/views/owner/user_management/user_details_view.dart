@@ -1,6 +1,5 @@
 import 'package:extractorapplication/Model/user_model.dart';
 import 'package:flutter/material.dart';
-
 import '../../../core/utils/date_formatter.dart';
 import '../../../routes/app_route.dart';
 

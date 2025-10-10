@@ -39,6 +39,7 @@ class OwnerUserService {
   Future<List<User>> getAllUsers() async {
     try {
       final response = await db.getAll('users');
+      print('raw user data: $response');
       return response.map((e) => User.fromJson(e)).toList();
     } catch (e) {
       // print('raw user data: $e');
