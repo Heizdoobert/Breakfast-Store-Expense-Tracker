@@ -10,7 +10,7 @@ class DatabaseService {
   ///truy van toan bo bang
   Future<List<Map<String, dynamic>>> getAll(String table) async {
     try {
-      return await supabase.from(table).select();
+      return await supabase.from(table).select('*');
     } catch (e) {
       throw ServerException('Error fetching data from $table: $e');
     }
