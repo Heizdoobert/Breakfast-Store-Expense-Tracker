@@ -1,3 +1,5 @@
+import 'package:extractorapplication/views/owner/add_note_view.dart';
+import 'package:extractorapplication/views/owner/financial/add_revenue_view.dart';
 import 'package:extractorapplication/views/owner/owner_navigation.dart';
 import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/widgets/add_new_user.dart';
@@ -35,27 +37,34 @@ class RouteGenerator {
         return MaterialPageRoute(builder: (_) => const OwnerNavigationShell());
       case AppRoutes.splash:
         return MaterialPageRoute(builder: (_) => const SplashScreen());
+
+      // Universal Add Routes
       case AppRoutes.addUsers:
         return MaterialPageRoute(builder: (_) => const AddNewUser());
+      case AppRoutes.addRevenue:
+        return MaterialPageRoute(builder: (_) => const AddRevenueView());
+      case AppRoutes.addNote:
+        return MaterialPageRoute(builder: (_) => const AddNoteView());
+
       case AppRoutes.editUsers:
         final user = settings.arguments as User;
         return MaterialPageRoute(
           builder: (_) => EditUser(user: user),
         );
 
-        ///user management routes
+      ///user management routes
       case AppRoutes.userListView:
         return MaterialPageRoute(builder: (_) => const UserListView());
       case AppRoutes.userDetailView:
         return MaterialPageRoute(builder: (_) => const UserListView());
 
-        ///financial routes
+      ///financial routes
       case AppRoutes.financialOverviewView:
         return MaterialPageRoute(builder: (_) => const FinancialScreen());
       case AppRoutes.revenueReportView:
         return MaterialPageRoute(builder: (_) => RevenueReportView());
 
-        ///system routes
+      ///system routes
       case AppRoutes.systemLists:
         return MaterialPageRoute(builder: (_) => OwnerSystemOverviewView());
 

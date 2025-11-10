@@ -4,11 +4,12 @@ import 'package:extractorapplication/views/owner/system/system_list_view.dart';
 import 'package:extractorapplication/views/owner/user_management/user_list_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart'; // Import Provider
+
 import '../../Controller/auth_controller.dart';
 import '../../core/theme/app_theme.dart';
 import '../../core/utils/constants.dart';
 import '../shared/custom_button.dart';
-
+import '../shared/widgets/creation_speed_dial.dart'; // Import the new widget
 
 class OwnerNavigationShell extends StatefulWidget {
   const OwnerNavigationShell({super.key});
@@ -69,6 +70,8 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
         index: _currentIndex,
         children: _pages,
       ),
+      // Add the FloatingActionButton
+      floatingActionButton: const CreationSpeedDial(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppPallete.backgroundColor,
         showSelectedLabels: true,
@@ -79,10 +82,14 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
         selectedItemColor: AppPallete.gradient1,
         unselectedItemColor: AppPallete.gradient2,
         items: const [
-          BottomNavigationBarItem(icon: Icon(AppIcons.dashboard), label: 'Dashboard'),
-          BottomNavigationBarItem(icon: Icon(AppIcons.person), label: 'Người dùng'),
-          BottomNavigationBarItem(icon: Icon(AppIcons.money), label: 'Tài chính'),
-          BottomNavigationBarItem(icon: Icon(AppIcons.settings), label: 'Hệ thống'),
+          BottomNavigationBarItem(
+              icon: Icon(AppIcons.dashboard), label: 'Dashboard'),
+          BottomNavigationBarItem(
+              icon: Icon(AppIcons.person), label: 'Người dùng'),
+          BottomNavigationBarItem(
+              icon: Icon(AppIcons.money), label: 'Tài chính'),
+          BottomNavigationBarItem(
+              icon: Icon(AppIcons.settings), label: 'Hệ thống'),
         ],
       ),
     );
