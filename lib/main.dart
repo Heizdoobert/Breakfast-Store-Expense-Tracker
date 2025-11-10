@@ -2,6 +2,7 @@ import 'package:extractorapplication/views/shared/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+
 import 'core/secrets/app_secrets.dart';
 import 'core/theme/theme.dart';
 import 'core/utils/provider.dart';
@@ -19,7 +20,6 @@ void main() async {
   );
 
   runApp(
-    // Bọc toàn bộ app bằng AppProvider
     AppProvider.build(
       child: const MyApp(),
     ),

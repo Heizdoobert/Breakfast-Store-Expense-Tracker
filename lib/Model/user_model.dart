@@ -8,15 +8,16 @@ class User {
   final String role;
   final DateTime createdAt;
   final DateTime updatedAt;
-  //cac truong khong quan trong
+  //cac truong khong quan trong (có thể null)
   final String? userName;
   final String? fullName;
 
+  // SỬA ĐỔI 2: Bỏ 'required' cho các trường nullable
   User({
     required this.id,
     required this.email,
-    required this.userName,
-    required this.fullName,
+    this.userName, // Bỏ required
+    this.fullName, // Bỏ required
     required this.role,
     required this.createdAt,
     required this.updatedAt,
@@ -27,29 +28,30 @@ class User {
     return User(
       id: json['id'] as String? ?? '',
       email: json['email'] as String? ?? 'no-email@example.com',
+      // SỬA ĐỔI 3: Đảm bảo role không bao giờ null trong model
       role: json['role'] as String? ?? 'staff',
       userName: json['user_name'] as String?,
       fullName: json['full_name'] as String?,
       createdAt: json['created_at'] != null
           ? DateTime.parse(json['created_at'])
           : DateTime.now(),
-
       updatedAt: json['updated_at'] != null
           ? DateTime.parse(json['updated_at'])
           : DateTime.now(),
     );
   }
 
-  ///chuyen san json de tao CRUD
+  ///chuyen sang json de tao CRUD
   Map<String, dynamic> toJson() {
+    // SỬA ĐỔI 1 (QUAN TRỌNG NHẤT): Sử dụng snake_case để gửi dữ liệu lên Supabase
     return {
-      'id': id,
+      // 'id' thường không cần gửi khi cập nhật, nhưng để đây cũng không sao
+      // 'email' và 'role' cũng có thể được cập nhật ở đây
+      'user_name': userName,
+      'full_name': fullName,
       'email': email,
-      'userName': userName,
-      'fullName': fullName,
       'role': role,
-      'createdAt': createdAt.toIso8601String(),
-      'updatedAt': updatedAt.toIso8601String(),
+      // created_at và updated_at thường do CSDL tự quản lý, không cần gửi lên
     };
   }
 
