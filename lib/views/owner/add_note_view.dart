@@ -1,4 +1,7 @@
+import 'package:extractorapplication/Controller/owner/note_management_controller.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Correctly added import
 
 class AddNoteView extends StatefulWidget {
   const AddNoteView({super.key});
@@ -19,18 +22,43 @@ class _AddNoteViewState extends State<AddNoteView> {
     super.dispose();
   }
 
-  void _saveNote() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement logic to save the note to the database
+  void _saveNote() async {
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
+
+    final controller = context.read<NoteManagementController>();
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+
+    if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đã lưu ghi chú!')),
+        const SnackBar(
+            content: Text('Lỗi: Không tìm thấy người dùng hiện tại.')),
       );
+      return;
+    }
+
+    // Simplified data payload to only what the user has entered.
+    // Let the database handle defaults for category, priority, etc.
+    final noteData = {
+      'user_id': userId,
+      'title': _titleController.text,
+      'content': _contentController.text,
+    };
+
+    await controller.addNote(noteData);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Đã lưu ghi chú!')));
       Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<NoteManagementController>().isLoading;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Thêm ghi chú'),
@@ -39,8 +67,7 @@ class _AddNoteViewState extends State<AddNoteView> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
               TextFormField(
                 controller: _titleController,
@@ -76,11 +103,13 @@ class _AddNoteViewState extends State<AddNoteView> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _saveNote,
+                  onPressed: isLoading ? null : _saveNote,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Lưu ghi chú'),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Lưu ghi chú'),
                 ),
               ),
             ],

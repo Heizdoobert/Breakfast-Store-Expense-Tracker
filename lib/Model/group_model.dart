@@ -1,9 +1,13 @@
-class Group {
-  final String id;
+// Path: lib/Model/group_model.dart
+
+import 'package:equatable/equatable.dart'; // Thêm equatable để tốt hơn (tùy chọn)
+
+class Group extends Equatable {
+  final int id;
   final String name;
   final DateTime createdAt;
 
-  Group({
+  const Group({
     required this.id,
     required this.name,
     required this.createdAt,
@@ -11,9 +15,11 @@ class Group {
 
   factory Group.fromJson(Map<String, dynamic> json) {
     return Group(
-      id: json['id'].toString(),
-      name: json['name'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
+      id: json['id'] as int,
+      name: json['name'] as String? ?? 'Nhóm không tên',
+      createdAt: json['createdAt'] != null
+          ? DateTime.parse(json['createdAt'] as String)
+          : DateTime.now(),
     );
   }
 
@@ -24,7 +30,7 @@ class Group {
   }
 
   Group copyWith({
-    String? id,
+    int? id,
     String? name,
     DateTime? createdAt,
   }) {
@@ -34,4 +40,7 @@ class Group {
       createdAt: createdAt ?? this.createdAt,
     );
   }
+
+  @override
+  List<Object?> get props => [id, name, createdAt];
 }

@@ -6,7 +6,7 @@ import '../../../Model/expense_model.dart';
 class OwnerFinancialService {
   final DatabaseService db;
   OwnerFinancialService(this.db);
-  
+
   Future<double> getTotalRevenue() async {
     try {
       return await db.getAggregate(table: 'expenses', column: 'amount');
@@ -23,6 +23,17 @@ class OwnerFinancialService {
       throw ServerException('Error call report month: $e');
     }
   }
+
+  /// Creates a new expense record in the database.
+  Future<Expense> createExpense(Map<String, dynamic> expenseData) async {
+    try {
+      final responseData = await db.insert('expenses', expenseData);
+      // The database returns the created record, which we parse into an Expense object.
+      return Expense.fromJson(responseData);
+    } catch (e) {
+      throw ServerException('Error creating expense: $e');
+    }
+  }
 }
 
 class RevenueReportService {
@@ -34,7 +45,12 @@ class RevenueReportService {
       final now = DateTime.now();
       final firstDayOfMonth = DateTime(now.year, now.month, 1).toIso8601String();
       final lastDayOfMonth = DateTime(now.year, now.month + 1, 0).toIso8601String();
-      final response = await db.supabase.from('expenses').select().gte('created_at', firstDayOfMonth).lte('created_at', lastDayOfMonth).order('created_at');
+      final response = await db.supabase
+          .from('expenses')
+          .select()
+          .gte('created_at', firstDayOfMonth)
+          .lte('created_at', lastDayOfMonth)
+          .order('created_at');
       return response.map((e) => Expense.fromJson(e)).toList();
     } catch (e) {
       throw Exception('have a bug: $e');

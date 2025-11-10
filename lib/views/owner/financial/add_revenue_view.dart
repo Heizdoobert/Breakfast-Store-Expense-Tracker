@@ -1,5 +1,8 @@
+import 'package:extractorapplication/Controller/owner/financial_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:supabase_flutter/supabase_flutter.dart'; // Correctly added import
 
 class AddRevenueView extends StatefulWidget {
   const AddRevenueView({super.key});
@@ -12,7 +15,7 @@ class _AddRevenueViewState extends State<AddRevenueView> {
   final _formKey = GlobalKey<FormState>();
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
-  DateTime? _selectedDate = DateTime.now();
+  DateTime _selectedDate = DateTime.now();
 
   @override
   void dispose() {
@@ -24,7 +27,7 @@ class _AddRevenueViewState extends State<AddRevenueView> {
   Future<void> _pickDate() async {
     final pickedDate = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _selectedDate,
       firstDate: DateTime(2000),
       lastDate: DateTime(2101),
     );
@@ -35,18 +38,44 @@ class _AddRevenueViewState extends State<AddRevenueView> {
     }
   }
 
-  void _saveRevenue() {
-    if (_formKey.currentState!.validate()) {
-      // TODO: Implement logic to save revenue to the database
+  void _saveRevenue() async {
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
+
+    final controller = context.read<FinancialController>();
+    final userId = Supabase.instance.client.auth.currentUser?.id;
+
+    if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Đã lưu doanh thu!')),
+        const SnackBar(
+            content: Text('Lỗi: Không tìm thấy người dùng hiện tại.')),
       );
+      return;
+    }
+
+    // Simplified data payload to only send what's necessary.
+    // The database should handle defaults for other columns.
+    final expenseData = {
+      'user_id': userId,
+      'amount': double.parse(_amountController.text),
+      'description': _descriptionController.text,
+      'created_at': _selectedDate.toIso8601String(),
+    };
+
+    await controller.addRevenue(expenseData);
+
+    if (mounted) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text('Đã lưu doanh thu!')));
       Navigator.pop(context);
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<FinancialController>().isLoading;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Thêm doanh thu'),
@@ -55,8 +84,7 @@ class _AddRevenueViewState extends State<AddRevenueView> {
         padding: const EdgeInsets.all(16.0),
         child: Form(
           key: _formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: ListView(
             children: [
               TextFormField(
                 controller: _amountController,
@@ -98,7 +126,7 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                 children: [
                   Expanded(
                     child: Text(
-                      'Ngày: ${_selectedDate == null ? 'Chưa chọn' : DateFormat('dd/MM/yyyy').format(_selectedDate!)}',
+                      'Ngày: ${DateFormat('dd/MM/yyyy').format(_selectedDate)}',
                     ),
                   ),
                   TextButton(
@@ -111,11 +139,13 @@ class _AddRevenueViewState extends State<AddRevenueView> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: _saveRevenue,
+                  onPressed: isLoading ? null : _saveRevenue,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
-                  child: const Text('Lưu doanh thu'),
+                  child: isLoading
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text('Lưu doanh thu'),
                 ),
               ),
             ],
