@@ -7,7 +7,6 @@ import '../../../../Controller/owner/note_management_controller.dart';
 import '../../../../Model/note_model.dart';
 
 class EditNoteView extends StatefulWidget {
-  // Widget này nhận vào đối tượng `Note` cần được chỉnh sửa.
   final Note note;
 
   const EditNoteView({super.key, required this.note});
@@ -19,13 +18,9 @@ class EditNoteView extends StatefulWidget {
 class _EditNoteViewState extends State<EditNoteView> {
   final _formKey = GlobalKey<FormState>();
 
-  // Khai báo các TextEditingController để quản lý dữ liệu trên form.
   late final TextEditingController _titleController;
   late final TextEditingController _contentController;
-  // Bạn có thể thêm các controller cho category, priority nếu muốn chúng cũng có thể được sửa.
 
-  // `initState` được gọi một lần khi widget được tạo.
-  // Chúng ta dùng nó để điền dữ liệu có sẵn của `note` vào các controller.
   @override
   void initState() {
     super.initState();
@@ -33,8 +28,6 @@ class _EditNoteViewState extends State<EditNoteView> {
     _contentController = TextEditingController(text: widget.note.content);
   }
 
-  // `dispose` được gọi khi widget bị hủy.
-  // Rất quan trọng để giải phóng bộ nhớ cho các controller.
   @override
   void dispose() {
     _titleController.dispose();
@@ -42,38 +35,49 @@ class _EditNoteViewState extends State<EditNoteView> {
     super.dispose();
   }
 
-  /// Hàm này được gọi khi người dùng nhấn nút "Lưu Thay Đổi".
   void _submitChanges() async {
-    // 1. Kiểm tra xem form có hợp lệ không.
     if (_formKey.currentState?.validate() != true) {
       return;
     }
 
-    // 2. Lấy controller từ Provider.
     final controller = context.read<NoteManagementController>();
 
-    // 3. Tạo một đối tượng `Note` mới với các thông tin đã được cập nhật từ form.
-    // Sử dụng `copyWith` để giữ lại các trường không thay đổi như `id`, `userId`, `createdAt`,...
     final updatedNote = widget.note.copyWith(
       title: _titleController.text.trim(),
       content: _contentController.text.trim(),
-      // Gán lại updatedAt thành thời gian hiện tại.
       updatedAt: DateTime.now(),
     );
 
-    // 4. Gọi hàm `updateNote` từ controller.
     final success = await controller.updateNote(updatedNote);
+
     if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cập nhật ghi chú thành công!'),
+          backgroundColor: Colors.green,
+        ),
+      );
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+              'Lỗi: ${controller.errorMessage ?? "Không thể cập nhật ghi chú."}'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Lắng nghe trạng thái `isLoading` từ controller để vô hiệu hóa nút bấm khi cần.
     final isLoading = context.watch<NoteManagementController>().isLoading;
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Sửa Ghi Chú'),
+        title: const Text('Sửa Ghi Chú'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,7 +93,6 @@ class _EditNoteViewState extends State<EditNoteView> {
                   prefixIcon: Icon(Icons.title),
                 ),
                 validator: (value) {
-                  // Mặc dù title có thể null, ta vẫn có thể yêu cầu người dùng không để trống khi sửa.
                   if (value == null || value.trim().isEmpty) {
                     return 'Vui lòng nhập tiêu đề';
                   }
@@ -103,10 +106,9 @@ class _EditNoteViewState extends State<EditNoteView> {
                   labelText: 'Nội dung',
                   border: OutlineInputBorder(),
                   prefixIcon: Icon(Icons.text_fields),
-                  alignLabelWithHint:
-                      true, // Căn chỉnh label lên trên khi có nhiều dòng.
+                  alignLabelWithHint: true,
                 ),
-                maxLines: 8, // Cho phép nhập nhiều dòng hơn cho nội dung.
+                maxLines: 8,
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
                     return 'Vui lòng nhập nội dung';
@@ -119,11 +121,10 @@ class _EditNoteViewState extends State<EditNoteView> {
                 onPressed: isLoading ? null : _submitChanges,
                 style: ElevatedButton.styleFrom(
                   padding: const EdgeInsets.symmetric(vertical: 16),
-                  backgroundColor:
-                      Colors.blue, // Màu sắc cho hành động cập nhật.
+                  backgroundColor: Colors.blue,
                 ),
                 icon: isLoading
-                    ? Container() // Ẩn icon khi đang loading
+                    ? Container()
                     : const Icon(Icons.save_as_outlined),
                 label: isLoading
                     ? const CircularProgressIndicator(color: Colors.white)

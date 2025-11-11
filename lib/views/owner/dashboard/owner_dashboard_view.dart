@@ -24,10 +24,8 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
   void initState() {
     super.initState();
     // Gọi hàm tải dữ liệu một lần duy nhất khi widget được khởi tạo.
-    // Sử dụng context.read() bên trong initState.
     final controller = context.read<OwnerDashboardController>();
     if (controller.shouldLoadData) {
-      // Dùng addPostFrameCallback để đảm bảo việc gọi không xảy ra trong lúc build.
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) {
           controller.loadDashboardData();
@@ -38,21 +36,16 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    // Dùng context.watch() trong hàm build để lắng nghe các thay đổi từ controller.
     final controller = context.watch<OwnerDashboardController>();
 
     return Scaffold(
-      // SỬA ĐỔI 2: Cải thiện logic hiển thị trạng thái loading.
-      // Chỉ hiển thị loading toàn màn hình khi chưa có dữ liệu gì.
       body: (controller.isLoading && controller.recentNotes.isEmpty)
           ? const LoadingIndicator(
               fullscreen: true, message: 'Đang tải dữ liệu...')
           : RefreshIndicator(
-              onRefresh:
-                  controller.loadDashboardData, // Cho phép kéo để làm mới
+              onRefresh: controller.loadDashboardData,
               child: SingleChildScrollView(
-                physics:
-                    const AlwaysScrollableScrollPhysics(), // Luôn cho phép cuộn để RefreshIndicator hoạt động
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(16),
                 child: Column(
                   children: [
@@ -62,11 +55,6 @@ class _OwnerDashboardViewState extends State<OwnerDashboardView> {
                       systemHealth: controller.systemHealth,
                     ),
                     const SizedBox(height: 20),
-
-                    // SỬA ĐỔI 3: Cập nhật cách gọi widget hiển thị ghi chú.
-                    // Tên widget là `RecentNotesView`.
-                    // Tham số là `notes` (không phải `activities`).
-                    // Nguồn dữ liệu là `controller.recentNotes` (không phải `controller.recentActivities`).
                     RecentNotesView(notes: controller.recentNotes),
                   ],
                 ),

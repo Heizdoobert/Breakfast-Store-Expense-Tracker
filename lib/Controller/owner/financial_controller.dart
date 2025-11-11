@@ -1,8 +1,12 @@
 import 'package:extractorapplication/Controller/base_controller.dart';
 import 'package:flutter/cupertino.dart';
+
 import '../../Model/expense_model.dart';
 import '../../core/services/owner/owner_financial_service.dart';
 
+///lop controller thuc hien xu ly logic
+///goi service tuong ung de xu ly du lieu ben tren va ben duoi
+///lop nay giup toi uu viec xu ly thay vi lap lai qua trinh goi nhieu lan tu cac lop
 class FinancialController extends BaseController {
   final OwnerFinancialService _service;
   //nhan service thong quan constructor

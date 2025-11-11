@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+///view hien thi bang con trong trang chu
+///lay thong tin so luong nguoi dung dang online, daonh thu va kiem tra he thong online hay offline
 class CreationSpeedDial extends StatefulWidget {
   const CreationSpeedDial({super.key});
 

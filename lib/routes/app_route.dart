@@ -1,3 +1,5 @@
+///noi luu tru cac duong dan
+///tao su nhat quan khi goi duong dan trong app
 class AppRoutes {
   static const String login = '/login';
   static const String register = '/register';

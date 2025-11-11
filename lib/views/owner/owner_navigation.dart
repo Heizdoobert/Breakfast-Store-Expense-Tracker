@@ -19,10 +19,8 @@ class OwnerNavigationShell extends StatefulWidget {
 }
 
 class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
-  // Quản lý state bằng index thay vì String
   int _currentIndex = 0;
 
-  // Tối ưu: Chỉ tạo danh sách các trang một lần
   final List<Widget> _pages = [
     const OwnerDashboardView(),
     const UserListView(),
@@ -38,8 +36,6 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
   ];
 
   void handleLogout() {
-    // Chỉ cần lấy controller và gọi logout.
-    // StreamBuilder sẽ tự động điều hướng.
     Provider.of<AuthController>(context, listen: false).logout();
   }
 
@@ -65,12 +61,10 @@ class _OwnerNavigationShellState extends State<OwnerNavigationShell> {
         ],
         elevation: 2,
       ),
-      // ✅ Tối ưu: Dùng IndexedStack để giữ trạng thái các trang
       body: IndexedStack(
         index: _currentIndex,
         children: _pages,
       ),
-      // Add the FloatingActionButton
       floatingActionButton: const CreationSpeedDial(),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: AppPallete.backgroundColor,

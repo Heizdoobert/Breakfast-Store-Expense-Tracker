@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
+/// Quan ly cac appicons cung apptext mac dinh ma khong can phai goi lai nhieu lan
 class AppText {
   static const String appTitle = 'Quản lý chi tiêu';
   static const String welcomeMessage = 'Chào mừng bạn đến với ứng dụng';
-  static const String errorNetwork = 'Không thể kết nối tới máy chủ. Vui lòng thử lại';
+  static const String errorNetwork =
+      'Không thể kết nối tới máy chủ. Vui lòng thử lại';
 }
 
 class AppIcons {

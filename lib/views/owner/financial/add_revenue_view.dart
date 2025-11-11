@@ -18,19 +18,13 @@ class _AddRevenueViewState extends State<AddRevenueView> {
   final _amountController = TextEditingController();
   final _descriptionController = TextEditingController();
   DateTime _selectedDate = DateTime.now();
-
-  // Biến state để lưu các giá trị được chọn từ form
   String? _selectedCategory;
-  // BƯỚC 1: THÊM BIẾN ĐỂ LƯU TRỮ GROUP ĐÃ CHỌN
-  int? _selectedGroupId; // ID của group là kiểu int
+  int? _selectedGroupId;
 
   @override
   void initState() {
     super.initState();
-    // Ngay khi màn hình được tạo, yêu cầu SystemController tải danh sách nhóm.
-    // Dùng addPostFrameCallback để đảm bảo việc gọi không xảy ra trong lúc build.
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Đảm bảo SystemController đã được cung cấp ở cây widget cha.
       context.read<SystemController>().loadSystemOverview();
     });
   }
@@ -57,7 +51,6 @@ class _AddRevenueViewState extends State<AddRevenueView> {
   }
 
   void _saveRevenue() async {
-    // Kích hoạt validation và kiểm tra form
     if (_formKey.currentState?.validate() != true) {
       return;
     }
@@ -75,20 +68,15 @@ class _AddRevenueViewState extends State<AddRevenueView> {
       return;
     }
 
-    // BƯỚC 2: CẬP NHẬT DỮ LIỆU GỬI ĐI, THÊM 'group_id' VÀO MAP
     final expenseData = {
       'user_id': userId,
       'amount': double.parse(_amountController.text),
       'description': _descriptionController.text,
       'category': _selectedCategory,
-      'group_id': _selectedGroupId, // << Thêm giá trị group_id đã chọn
+      'group_id': _selectedGroupId,
       'created_at': _selectedDate.toIso8601String(),
     };
-
-    // Gọi hàm `addRevenue` và kiểm tra kết quả trả về
     final success = await controller.addRevenue(expenseData);
-
-    // Chỉ thực hiện các hành động tiếp theo nếu widget vẫn còn trên cây UI
     if (!mounted) return;
   }
 
@@ -132,8 +120,6 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // BƯỚC 3: THÊM WIDGET DROPDOWN ĐỂ CHỌN NHÓM
               DropdownButtonFormField<int>(
                 value: _selectedGroupId,
                 decoration: const InputDecoration(
@@ -142,14 +128,12 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                   prefixIcon: Icon(Icons.group_work_outlined),
                 ),
                 hint: const Text('Chọn nhóm liên quan'),
-                // Dữ liệu được lấy từ SystemController,
-                // hiển thị loading nếu chưa có dữ liệu nhóm
                 items: systemController.isLoading
                     ? []
                     : systemController.groups.map((Group group) {
                         return DropdownMenuItem<int>(
-                          value: group.id, // Giá trị là ID của nhóm (int)
-                          child: Text(group.name), // Hiển thị là tên nhóm
+                          value: group.id,
+                          child: Text(group.name),
                         );
                       }).toList(),
                 onChanged: (value) {
@@ -157,14 +141,10 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                     _selectedGroupId = value;
                   });
                 },
-                // Bắt buộc người dùng phải chọn một nhóm
                 validator: (value) =>
                     value == null ? 'Vui lòng chọn một nhóm' : null,
               ),
-
               const SizedBox(height: 16),
-
-              // Widget dropdown để chọn danh mục (đã có từ trước)
               DropdownButtonFormField<String>(
                 value: _selectedCategory,
                 decoration: const InputDecoration(
@@ -190,9 +170,7 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                     ? 'Vui lòng chọn một danh mục'
                     : null,
               ),
-
               const SizedBox(height: 16),
-
               TextFormField(
                 controller: _descriptionController,
                 decoration: const InputDecoration(
@@ -201,10 +179,8 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                   hintText: 'Nhập mô tả cho khoản thu',
                 ),
                 maxLines: 3,
-                // Ghi chú là tùy chọn, không cần validator
               ),
               const SizedBox(height: 16),
-
               Row(
                 children: [
                   Expanded(

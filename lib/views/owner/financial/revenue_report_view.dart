@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../Controller/owner/financial_controller.dart';
 import '../../../core/utils/date_formatter.dart';
 
@@ -10,19 +11,14 @@ class RevenueReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // 1. Lấy và lắng nghe RevenueReportController
     final controller = context.watch<RevenueReportController>();
 
-    // 2. Gọi hàm tải dữ liệu nếu cần
     if (controller.shouldLoadData) {
-      // Gọi hàm đúng của controller này
       controller.loadRevenueReport();
     }
-
-    // 3. Xây dựng UI dựa trên trạng thái của RevenueReportController
     return Scaffold(
       appBar: AppBar(title: const Text('📈 Báo cáo doanh thu theo tháng')),
-      body: _buildBody(controller), // Tách UI ra một hàm riêng cho sạch sẽ
+      body: _buildBody(controller),
     );
   }
 

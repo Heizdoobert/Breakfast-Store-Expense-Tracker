@@ -12,12 +12,11 @@ class User {
   final String? userName;
   final String? fullName;
 
-  // SỬA ĐỔI 2: Bỏ 'required' cho các trường nullable
   User({
     required this.id,
     required this.email,
-    this.userName, // Bỏ required
-    this.fullName, // Bỏ required
+    this.userName,
+    this.fullName,
     required this.role,
     required this.createdAt,
     required this.updatedAt,
@@ -28,7 +27,6 @@ class User {
     return User(
       id: json['id'] as String? ?? '',
       email: json['email'] as String? ?? 'no-email@example.com',
-      // SỬA ĐỔI 3: Đảm bảo role không bao giờ null trong model
       role: json['role'] as String? ?? 'staff',
       userName: json['user_name'] as String?,
       fullName: json['full_name'] as String?,
@@ -43,15 +41,11 @@ class User {
 
   ///chuyen sang json de tao CRUD
   Map<String, dynamic> toJson() {
-    // SỬA ĐỔI 1 (QUAN TRỌNG NHẤT): Sử dụng snake_case để gửi dữ liệu lên Supabase
     return {
-      // 'id' thường không cần gửi khi cập nhật, nhưng để đây cũng không sao
-      // 'email' và 'role' cũng có thể được cập nhật ở đây
       'user_name': userName,
       'full_name': fullName,
       'email': email,
       'role': role,
-      // created_at và updated_at thường do CSDL tự quản lý, không cần gửi lên
     };
   }
 

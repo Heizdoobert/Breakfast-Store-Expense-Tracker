@@ -1,3 +1,5 @@
+///noi kiem tra ngoai le truoc khi dang nhap
+///dam bao cac truong nhap thong tin hop le
 class Validators {
   static String? validateEmail(String? value) {
     if (value == null || value.isEmpty) return 'Vui lòng nhập email';
