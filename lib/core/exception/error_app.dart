@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import '../services/file_service.dart';
 
+/// xu ly ngoai le khi khoi tao app
 class ErrorApp extends StatelessWidget {
   final Object error;
 
@@ -34,7 +36,8 @@ class ErrorApp extends StatelessWidget {
                       Text(
                         'Nội dung file lỗi:\n$fileContent',
                         textAlign: TextAlign.center,
-                        style: const TextStyle(fontSize: 14, color: Colors.grey),
+                        style:
+                            const TextStyle(fontSize: 14, color: Colors.grey),
                       ),
                     ],
                   ),

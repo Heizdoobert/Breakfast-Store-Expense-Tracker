@@ -1,6 +1,4 @@
-// Path: lib/Model/group_model.dart
-
-import 'package:equatable/equatable.dart'; // Thêm equatable để tốt hơn (tùy chọn)
+import 'package:equatable/equatable.dart';
 
 class Group extends Equatable {
   final int id;

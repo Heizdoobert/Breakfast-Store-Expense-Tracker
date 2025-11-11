@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/theme/app_theme.dart';
 
+///man hinh hien thi loading thay cho viec nguoi dung phai ngoi cho
 class LoadingIndicator extends StatelessWidget {
   final double size;
   final Color? color;

@@ -1,6 +1,7 @@
 import 'package:extractorapplication/Model/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../../../../Controller/owner/user_management_controller.dart';
 
 ///chinh sua du lieu nguoi dung theo id
@@ -16,13 +17,11 @@ class EditUser extends StatefulWidget {
 
 class _EditUserState extends State<EditUser> {
   final _formKey = GlobalKey<FormState>();
-  //khai bao controller nhung chua gan gia tri
   late final TextEditingController fullNameController;
   late final TextEditingController emailController;
   late final TextEditingController usernameController;
   late String selectedRole;
 
-  //dien du lieu cu vao form
   @override
   void initState() {
     super.initState();
@@ -45,8 +44,6 @@ class _EditUserState extends State<EditUser> {
       return;
     }
     final controller = context.read<UserManagementController>();
-    //tao mot doi tuong user moi voi du lieu cap nhat
-    //giu lai id va cac truong khong thay doi
     final updatedUser = widget.user.copyWith(
       fullName: fullNameController.text.trim(),
       email: emailController.text.trim(),
@@ -57,7 +54,10 @@ class _EditUserState extends State<EditUser> {
     await controller.updateUser(updatedUser);
     if (mounted) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Sửa thông tin thành công'), backgroundColor: Colors.green,),
+        const SnackBar(
+          content: Text('Sửa thông tin thành công'),
+          backgroundColor: Colors.green,
+        ),
       );
       Navigator.of(context).pop();
     }
@@ -69,7 +69,8 @@ class _EditUserState extends State<EditUser> {
     final isLoading = context.watch<UserManagementController>().isLoading;
 
     return Scaffold(
-      appBar: AppBar(title: Text('Sửa thông tin ${widget.user.fullName ?? ''}')),
+      appBar:
+          AppBar(title: Text('Sửa thông tin ${widget.user.fullName ?? ''}')),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(
@@ -105,10 +106,14 @@ class _EditUserState extends State<EditUser> {
                 value: selectedRole,
                 decoration: const InputDecoration(labelText: 'Vai trò'),
                 items: const [
-                  DropdownMenuItem(value: 'staff', child: Text('Nhân viên (Staff)')),
-                  DropdownMenuItem(value: 'admin', child: Text('Quản trị viên (Admin)')),
-                  DropdownMenuItem(value: 'manager', child: Text('Quản lý (Manager)')),
-                  DropdownMenuItem(value: 'owner', child: Text('Chủ sở hữu (Owner)')),
+                  DropdownMenuItem(
+                      value: 'staff', child: Text('Nhân viên (Staff)')),
+                  DropdownMenuItem(
+                      value: 'admin', child: Text('Quản trị viên (Admin)')),
+                  DropdownMenuItem(
+                      value: 'manager', child: Text('Quản lý (Manager)')),
+                  DropdownMenuItem(
+                      value: 'owner', child: Text('Chủ sở hữu (Owner)')),
                 ],
                 onChanged: (value) {
                   if (value != null) {

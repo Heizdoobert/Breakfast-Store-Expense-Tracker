@@ -17,6 +17,8 @@ import '../views/owner/user_management/user_list_view.dart';
 import '../views/shared/splash_screen.dart';
 import 'app_route.dart';
 
+///luu tru cac route trong app
+///cac route duoc gom thanh cac nhom de tao su nhat quan
 class RouteGenerator {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {

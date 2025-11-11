@@ -1,7 +1,7 @@
 import 'package:extractorapplication/Controller/owner/note_management_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:supabase_flutter/supabase_flutter.dart'; // Correctly added import
+import 'package:supabase_flutter/supabase_flutter.dart';
 
 class AddNoteView extends StatefulWidget {
   const AddNoteView({super.key});
@@ -38,8 +38,6 @@ class _AddNoteViewState extends State<AddNoteView> {
       return;
     }
 
-    // Simplified data payload to only what the user has entered.
-    // Let the database handle defaults for category, priority, etc.
     final noteData = {
       'user_id': userId,
       'title': _titleController.text,
