@@ -5,6 +5,7 @@ class Expense {
   final double amount;
   final String? description;
   final DateTime createdAt;
+  final String category;
 
   Expense({
     required this.id,
@@ -13,6 +14,7 @@ class Expense {
     required this.amount,
     this.description,
     required this.createdAt,
+    required this.category,
   });
 
   factory Expense.fromJson(Map<String, dynamic> json) {
@@ -23,16 +25,18 @@ class Expense {
       amount: (json['amount'] as num).toDouble(),
       description: json['description'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
+      category: json['category'] as String,
     );
   }
 
-
-  Map<String, dynamic> toJson(){
+  Map<String, dynamic> toJson() {
     return {
       'group_id': groupId,
       'user_id': userId,
       'amount': amount,
       'description': description,
+      'created_at': createdAt.toIso8601String(),
+      'category': category,
     };
   }
 
@@ -43,6 +47,7 @@ class Expense {
     double? amount,
     String? description,
     DateTime? createdAt,
+    String? category,
   }) {
     return Expense(
       id: id ?? this.id,
@@ -51,6 +56,7 @@ class Expense {
       amount: amount ?? this.amount,
       description: description ?? this.description,
       createdAt: createdAt ?? this.createdAt,
+      category: category ?? this.category,
     );
   }
 }
