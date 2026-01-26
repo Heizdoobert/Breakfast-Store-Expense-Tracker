@@ -61,9 +61,10 @@ class _AddRevenueViewState extends State<AddRevenueView> {
     if (userId == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-            backgroundColor: Colors.red,
-            content:
-                Text('Lỗi nghiêm trọng: Không tìm thấy người dùng hiện tại.')),
+          backgroundColor: Colors.red,
+          content:
+              Text('Lỗi nghiêm trọng: Không tìm thấy người dùng hiện tại.'),
+        ),
       );
       return;
     }
@@ -76,13 +77,28 @@ class _AddRevenueViewState extends State<AddRevenueView> {
       'group_id': _selectedGroupId,
       'created_at': _selectedDate.toIso8601String(),
     };
+
     final success = await controller.addRevenue(expenseData);
+
     if (!mounted) return;
+
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Thêm doanh thu thành công!")),
+      );
+      Navigator.of(context).pop();
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          backgroundColor: Colors.red,
+          content: Text('Lưu thất bại. Vui lòng thử lại!'),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    // Lắng nghe trạng thái từ cả hai controller
     final financialController = context.watch<FinancialController>();
     final systemController = context.watch<SystemController>();
 
@@ -204,10 +220,17 @@ class _AddRevenueViewState extends State<AddRevenueView> {
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                   icon: financialController.isLoading
-                      ? Container()
+                      ? const SizedBox.shrink()
                       : const Icon(Icons.save),
                   label: financialController.isLoading
-                      ? const CircularProgressIndicator(color: Colors.white)
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            color: Colors.white,
+                            strokeWidth: 2,
+                          ),
+                        )
                       : const Text('Lưu Doanh Thu'),
                 ),
               ),

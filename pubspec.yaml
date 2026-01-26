@@ -35,6 +35,8 @@ dependencies:
   intl: ^0.19.0 # Cập nhật phiên bản để tương thích SDK
   fl_chart: ^0.68.0
   logging: ^1.2.0
+  equatable: ^2.0.8
+  path_provider: ^2.1.5
 
   # 🗑️ GỠ BỎ: `crypto` không còn được khuyến khích dùng trực tiếp
   # Thay vào đó, các gói cấp cao hơn như `supabase_flutter` đã xử lý việc này.
