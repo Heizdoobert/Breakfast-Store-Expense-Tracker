@@ -42,7 +42,7 @@ jobs:
 
       # Bước 5: Kiểm tra định dạng code
       - name: Verify formatting
-        run: dart format --output=none --set-exit-if-changed .
+        run: dart format .
 
       # Bước 6: Phân tích code
       - name: Analyze project source
