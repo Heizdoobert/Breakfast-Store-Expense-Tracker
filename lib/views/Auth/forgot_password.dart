@@ -1,6 +1,7 @@
 import 'package:extractorapplication/views/Auth/widget/auth_field.dart';
 import 'package:extractorapplication/views/Auth/widget/auth_gradient_button.dart';
 import 'package:flutter/material.dart';
+
 import '../../core/theme/app_theme.dart';
 import '../../routes/app_route.dart';
 
@@ -31,40 +32,37 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
         padding: const EdgeInsets.all(15.0),
         child: Form(
           key: formKey,
-          child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('Forgot Password', style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(height: 30),
-                AuthField(hintText: 'Email', controller: emailController),
-                const SizedBox(height: 20),
-                AuthGradientButton(
-                  buttonText: 'Forgot Password',
-                ),
-                const SizedBox(height: 20),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pushNamed(context, AppRoutes.login);
-                  },
-                  child: RichText(
-                      text: TextSpan(
-                          text: 'Already have an account? ',
-                          style: Theme.of(context).textTheme.titleMedium,
-                          children: [
-                            TextSpan(
-                              text: 'Login',
-                              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                                color: AppPallete.gradient2,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            )
-                          ]
-                      )
-                  ),
-                )
-              ]
-          ),
+          child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
+            const Text(
+              'Forgot Password',
+              style: TextStyle(fontSize: 50, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 30),
+            AuthField(hintText: 'Email', controller: emailController),
+            const SizedBox(height: 20),
+            const AuthGradientButton(
+              buttonText: 'Forgot Password',
+            ),
+            const SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                Navigator.pushNamed(context, AppRoutes.login);
+              },
+              child: RichText(
+                  text: TextSpan(
+                      text: 'Already have an account? ',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      children: [
+                    TextSpan(
+                      text: 'Login',
+                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                            color: AppPallete.gradient2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    )
+                  ])),
+            )
+          ]),
         ),
       ),
     );

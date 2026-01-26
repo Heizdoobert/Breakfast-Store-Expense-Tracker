@@ -5,10 +5,6 @@ import '../../../Controller/owner/financial_controller.dart';
 import '../../../core/utils/date_formatter.dart';
 import '../../shared/loading_indicator.dart';
 
-//Cần StatefulWidget để quản lý TabController
-//khoi tao tabcontroller voi 2 tab
-//goi controller tu provider
-//tao ham tai du lieu chi de load 1 lan
 class FinancialScreen extends StatefulWidget {
   const FinancialScreen({super.key});
 
@@ -16,7 +12,8 @@ class FinancialScreen extends StatefulWidget {
   State<FinancialScreen> createState() => _FinancialScreenState();
 }
 
-class _FinancialScreenState extends State<FinancialScreen> with SingleTickerProviderStateMixin {
+class _FinancialScreenState extends State<FinancialScreen>
+    with SingleTickerProviderStateMixin {
   late final TabController _tabController;
   static final DateFormatter _formatDate = DateFormatter();
 
@@ -43,17 +40,18 @@ class _FinancialScreenState extends State<FinancialScreen> with SingleTickerProv
     }
 
     if (controller.isLoading && controller.monthlyReport.isEmpty) {
-      return const LoadingIndicator(fullscreen: true, message: 'Đang tải dữ liệu tài chính...');
+      return const LoadingIndicator(
+          fullscreen: true, message: 'Đang tải dữ liệu tài chính...');
     }
 
     return Scaffold(
       appBar: TabBar(
-          controller: _tabController,
-          tabs: const [
-            Tab(text: 'Tổng quan'),
-            Tab(text: 'Báo cáo chi tiết'),
-          ],
-        ),
+        controller: _tabController,
+        tabs: const [
+          Tab(text: 'Tổng quan'),
+          Tab(text: 'Báo cáo chi tiết'),
+        ],
+      ),
       body: TabBarView(
         controller: _tabController,
         children: [
@@ -64,7 +62,8 @@ class _FinancialScreenState extends State<FinancialScreen> with SingleTickerProv
     );
   }
 
-  Widget _buildOverviewTab(BuildContext context, FinancialController controller) {
+  Widget _buildOverviewTab(
+      BuildContext context, FinancialController controller) {
     return RefreshIndicator(
       onRefresh: controller.loadFinancialData,
       child: Center(
@@ -82,7 +81,8 @@ class _FinancialScreenState extends State<FinancialScreen> with SingleTickerProv
 
   Widget _buildDetailedReportTab(FinancialController controller) {
     if (controller.monthlyReport.isEmpty) {
-      return const Center(child: Text('Không có dữ liệu chi tiêu để hiển thị.'));
+      return const Center(
+          child: Text('Không có dữ liệu chi tiêu để hiển thị.'));
     }
 
     return RefreshIndicator(
@@ -92,11 +92,11 @@ class _FinancialScreenState extends State<FinancialScreen> with SingleTickerProv
         itemBuilder: (context, i) {
           final expense = controller.monthlyReport[i];
           return ListTile(
-            title: Text('🧾 ${expense.description ?? 'Không có mô tả'}'),
+            title: Text('🧾 ${expense.description}'),
             subtitle: Text(
-              '👤 Người dùng: ${expense.userId ?? 'Không rõ'}\n📅 Ngày: ${_formatDate.formatDateTime(expense.createdAt)}',
+              '👤 Người dùng: ${expense.userId}\n📅 Ngày: ${_formatDate.formatDateTime(expense.createdAt)}',
             ),
-            trailing: Text('${expense.amount?.toStringAsFixed(0) ?? '0'} VNĐ'),
+            trailing: Text('${expense.amount.toStringAsFixed(0)} VNĐ'),
           );
         },
       ),

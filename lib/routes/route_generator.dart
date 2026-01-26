@@ -64,11 +64,12 @@ class RouteGenerator {
       case AppRoutes.financialOverviewView:
         return MaterialPageRoute(builder: (_) => const FinancialScreen());
       case AppRoutes.revenueReportView:
-        return MaterialPageRoute(builder: (_) => RevenueReportView());
+        return MaterialPageRoute(builder: (_) => const RevenueReportView());
 
       ///system routes
       case AppRoutes.systemLists:
-        return MaterialPageRoute(builder: (_) => OwnerSystemOverviewView());
+        return MaterialPageRoute(
+            builder: (_) => const OwnerSystemOverviewView());
 
       default:
         return MaterialPageRoute(
