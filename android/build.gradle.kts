@@ -23,18 +23,19 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
-// Đoạn mã đã được sửa sang cú pháp Kotlin DSL chuẩn
 subprojects {
-    afterEvaluate {
-        if (project.extensions.findByName("android") != null) {
-            configure<com.android.build.gradle.BaseExtension> {
-                compileSdkVersion(34)
-                buildToolsVersion("34.0.0")
-                
-                // Sửa lỗi namespace cho các thư viện cũ như app_links
-                if (namespace == null) {
-                    namespace = "com.extractor.application.${project.name.replace("-", "_")}"
+    plugins.withType<com.android.build.gradle.api.AndroidBasePlugin> {
+        configure<com.android.build.gradle.BaseExtension> {
+            compileSdkVersion(34)
+            buildToolsVersion("34.0.0")
+
+            try {
+                if (this is com.android.build.gradle.LibraryExtension || this is com.android.build.gradle.AppExtension) {
+                    if (namespace == null) {
+                        namespace = "com.extractor.application.${project.name.replace("-", "_")}"
+                    }
                 }
+            } catch (e: Exception) {
             }
         }
     }
