@@ -83,9 +83,8 @@ class _OwnerSystemOverviewViewState extends State<OwnerSystemOverviewView> {
                     ...members.map((member) => ListTile(
                           leading: const Icon(Icons.person_outline,
                               color: Colors.blueGrey),
-                          title: Text(member.fullName ??
-                              member.userName ??
-                              'Người dùng không tên'),
+                          // === SỬA ĐỔI: Sử dụng getter displayName mới ===
+                          title: Text(member.displayName),
                           subtitle: Text(member.email ?? 'Không có email'),
                           dense: true,
                         )),

@@ -68,4 +68,8 @@ class User {
       updatedAt: updatedAt ?? this.updatedAt,
     );
   }
+
+  String get displayName {
+    return fullName ?? userName ?? 'Người dùng không tên';
+  }
 }
