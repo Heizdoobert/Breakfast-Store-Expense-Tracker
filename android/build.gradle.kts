@@ -23,19 +23,20 @@ tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
 
+// Cấu hình đồng bộ compileSdk cho tất cả subprojects
 subprojects {
-    plugins.withType<com.android.build.gradle.api.AndroidBasePlugin> {
-        configure<com.android.build.gradle.BaseExtension> {
-            compileSdkVersion(34)
-            buildToolsVersion("34.0.0")
+    // Sử dụng afterEvaluate nhưng thay đổi cách truy cập extension để tránh lỗi "too late"
+    afterEvaluate {
+        val androidExtension = project.extensions.findByName("android")
+        if (androidExtension is com.android.build.gradle.BaseExtension) {
+            androidExtension.apply {
+                compileSdkVersion(34)
+                buildToolsVersion("34.0.0")
 
-            try {
-                if (this is com.android.build.gradle.LibraryExtension || this is com.android.build.gradle.AppExtension) {
-                    if (namespace == null) {
-                        namespace = "com.extractor.application.${project.name.replace("-", "_")}"
-                    }
+                // Xử lý lỗi namespace cho các plugin cũ như app_links
+                if (namespace == null) {
+                    namespace = "com.extractor.application.${project.name.replace("-", "_")}"
                 }
-            } catch (e: Exception) {
             }
         }
     }
