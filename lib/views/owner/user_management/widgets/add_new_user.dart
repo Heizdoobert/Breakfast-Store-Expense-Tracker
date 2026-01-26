@@ -93,7 +93,7 @@ class _AddNewUserState extends State<AddNewUser> {
               ),
               const SizedBox(height: 8),
               DropdownButtonFormField<String>(
-                initialValue: _selectedRole,
+                value: _selectedRole,
                 decoration: const InputDecoration(labelText: 'Vai trò'),
                 items: const [
                   DropdownMenuItem(value: 'staff', child: Text('Nhân viên (Staff)')),
