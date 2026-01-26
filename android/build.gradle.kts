@@ -5,16 +5,16 @@ allprojects {
     }
 }
 
-val newBuildDir: Directory =
-    rootProject.layout.buildDirectory
-        .dir("../../build")
-        .get()
+val newBuildDir: Directory = rootProject.layout.buildDirectory
+    .dir("../../build")
+    .get()
 rootProject.layout.buildDirectory.value(newBuildDir)
 
 subprojects {
     val newSubprojectBuildDir: Directory = newBuildDir.dir(project.name)
     project.layout.buildDirectory.value(newSubprojectBuildDir)
 }
+
 subprojects {
     project.evaluationDependsOn(":app")
 }
@@ -22,15 +22,19 @@ subprojects {
 tasks.register<Delete>("clean") {
     delete(rootProject.layout.buildDirectory)
 }
+
+// Đoạn mã đã được sửa sang cú pháp Kotlin DSL chuẩn
 subprojects {
-    afterEvaluate { project ->
-        if (project.hasProperty('android')) {
-            project.android {
+    afterEvaluate {
+        if (project.extensions.findByName("android") != null) {
+            configure<com.android.build.gradle.BaseExtension> {
+                compileSdkVersion(34)
+                buildToolsVersion("34.0.0")
+                
+                // Sửa lỗi namespace cho các thư viện cũ như app_links
                 if (namespace == null) {
-                    namespace project.group
+                    namespace = "com.extractor.application.${project.name.replace("-", "_")}"
                 }
-                compileSdk 34 
-                buildToolsVersion "34.0.0"
             }
         }
     }
