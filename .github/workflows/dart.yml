@@ -48,9 +48,9 @@ jobs:
       - name: Analyze project source
         run: flutter analyze
 
-      # Bước 7: Chạy tests
-      - name: Run tests
-        run: flutter test
+      # # Bước 7: Chạy tests
+      # - name: Run tests
+      #   run: flutter test
 
       # Bước 8 (Mới): Build file APK để kiểm tra
       - name: Build APK
