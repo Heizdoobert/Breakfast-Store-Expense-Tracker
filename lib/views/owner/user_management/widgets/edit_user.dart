@@ -4,9 +4,6 @@ import 'package:provider/provider.dart';
 
 import '../../../../Controller/owner/user_management_controller.dart';
 
-///chinh sua du lieu nguoi dung theo id
-///su dung luu tru trang thai de truyen du lieu den controller
-///su dung provider lang nghe
 class EditUser extends StatefulWidget {
   final User user;
   const EditUser({super.key, required this.user});
@@ -28,7 +25,8 @@ class _EditUserState extends State<EditUser> {
     fullNameController = TextEditingController(text: widget.user.fullName);
     emailController = TextEditingController(text: widget.user.email);
     usernameController = TextEditingController(text: widget.user.userName);
-    selectedRole = widget.user.role ?? 'staff';
+    // 'role' trong User model đã được đảm bảo là non-nullable
+    selectedRole = widget.user.role;
   }
 
   @override
@@ -65,12 +63,13 @@ class _EditUserState extends State<EditUser> {
 
   @override
   Widget build(BuildContext context) {
-    //lay trang thai tu controller
     final isLoading = context.watch<UserManagementController>().isLoading;
 
     return Scaffold(
-      appBar:
-          AppBar(title: Text('Sửa thông tin ${widget.user.fullName ?? ''}')),
+      appBar: AppBar(
+        // Sử dụng 'displayName' getter từ User model để hiển thị tên một cách an toàn
+        title: Text('Sửa thông tin ${widget.user.displayName}'),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

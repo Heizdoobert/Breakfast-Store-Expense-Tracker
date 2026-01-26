@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
+
 import '../../../core/theme/app_theme.dart';
-import '../../Controller/auth_controller.dart';
-import '../../routes/app_route.dart';
 
 class CustomButton extends StatelessWidget {
   final String label;
@@ -184,10 +183,7 @@ class LogoutButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bgColor = Theme
-        .of(context)
-        .colorScheme
-        .error;
+    final bgColor = Theme.of(context).colorScheme.error;
 
     final button = ElevatedButton(
       onPressed: isLoading ? null : onPressed,
@@ -204,10 +200,11 @@ class LogoutButton extends StatelessWidget {
       ),
       child: isLoading
           ? const SizedBox(
-        width: 16,
-        height: 16,
-        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2),
-      )
+              width: 16,
+              height: 16,
+              child: CircularProgressIndicator(
+                  color: Colors.white, strokeWidth: 2),
+            )
           : const Icon(Icons.logout, color: Colors.white, size: 20),
     );
 
