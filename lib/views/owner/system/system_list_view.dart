@@ -85,7 +85,7 @@ class _OwnerSystemOverviewViewState extends State<OwnerSystemOverviewView> {
                               color: Colors.blueGrey),
                           // === SỬA ĐỔI: Sử dụng getter displayName mới ===
                           title: Text(member.displayName),
-                          subtitle: Text(member.email ?? 'Không có email'),
+                          subtitle: Text(member.email),
                           dense: true,
                         )),
               ],

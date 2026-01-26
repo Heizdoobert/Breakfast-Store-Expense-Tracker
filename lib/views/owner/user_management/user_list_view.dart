@@ -30,52 +30,53 @@ class UserListView extends StatelessWidget {
     return Scaffold(
       body: controller.isLoading && controller.users.isEmpty
           ? const LoadingIndicator(
-        fullscreen: true,
-        message: 'Đang tải danh sách người dùng...',
-      )
+              fullscreen: true,
+              message: 'Đang tải danh sách người dùng...',
+            )
           : RefreshIndicator(
-        onRefresh: controller.loadUsers,
-        child: ListView.builder(
-          itemCount: controller.users.length,
-          itemBuilder: (context, index) {
-            final user = controller.users[index];
-            return Card(
-              elevation: 2,
-              margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                leading: const CircleAvatar(
-                    backgroundColor: AppPallete.backgroundColor,
-                    child: Icon(Icons.person)
-                ),
-                title: Text(
-                  user.fullName ?? 'Không rõ',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                subtitle: Text(
-                  '${user.email ?? 'Không rõ'} • ${user.role ?? 'Không rõ'}',
-                  style: TextStyle(color: Colors.grey[700]),
-                ),
-                trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => UserDetailView(
-                        user: user,
-                        formatDate: _formatDate,
+              onRefresh: controller.loadUsers,
+              child: ListView.builder(
+                itemCount: controller.users.length,
+                itemBuilder: (context, index) {
+                  final user = controller.users[index];
+                  return Card(
+                    elevation: 2,
+                    margin:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      leading: const CircleAvatar(
+                          backgroundColor: AppPallete.backgroundColor,
+                          child: Icon(Icons.person)),
+                      title: Text(
+                        user.fullName ?? 'Không rõ',
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
+                      subtitle: Text(
+                        '${user.email} • ${user.role}',
+                        style: TextStyle(color: Colors.grey[700]),
+                      ),
+                      trailing: const Icon(Icons.arrow_forward_ios, size: 16),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => UserDetailView(
+                              user: user,
+                              formatDate: _formatDate,
+                            ),
+                          ),
+                        );
+                      },
                     ),
                   );
                 },
               ),
-            );
-          },
-        ),
-      ),
+            ),
     );
   }
 }
