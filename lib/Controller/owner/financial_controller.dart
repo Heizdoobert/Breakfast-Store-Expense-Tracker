@@ -27,27 +27,30 @@ class FinancialController extends BaseController {
     await loadData(_fetchData);
   }
 
-  Future<bool> _performAction(Future<void> Function() action) async {
+  Future<T?> _performAction<T>(Future<T> Function() action) async {
     setLoading(true);
     try {
-      await action();
-      return true;
+      final result = await action();
+      return result;
     } catch (e) {
       debugPrint('FinancialController Error: $e');
-      return false;
+      return null;
     } finally {
       setLoading(false);
     }
   }
 
-  Future<void> addRevenue(Map<String, dynamic> expenseData) async {
-    await _performAction(() async {
-      final newExpense = await _service.createExpense(expenseData);
-      // Add to list and recalculate total revenue to update UI instantly
-      monthlyReport.insert(0, newExpense);
-      totalRevenue += newExpense.amount;
-      notifyListeners();
-    });
+  Future<bool> addRevenue(Map<String, dynamic> expenseData) async {
+    return await _performAction(() async {
+          final newExpense = await _service.createExpense(expenseData);
+
+          monthlyReport.insert(0, newExpense);
+          totalRevenue += newExpense.amount;
+          notifyListeners();
+
+          return true;
+        }) ??
+        false;
   }
 }
 

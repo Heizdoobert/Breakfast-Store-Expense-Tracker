@@ -7,7 +7,7 @@ import 'package:extractorapplication/views/owner/user_management/widgets/edit_us
 import 'package:flutter/material.dart';
 
 import '../Model/user_model.dart';
-import '../views/Auth/forgotPassword.dart';
+import '../views/Auth/forgot_password.dart';
 import '../views/Auth/login.dart';
 import '../views/Auth/register.dart';
 import '../views/owner/dashboard/owner_dashboard_view.dart';
