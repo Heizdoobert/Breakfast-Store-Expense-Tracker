@@ -1,4 +1,5 @@
 import 'package:extractorapplication/Model/user_model.dart';
+import 'package:flutter/material.dart';
 
 import '../db_help.dart';
 
@@ -39,7 +40,7 @@ class OwnerUserService {
   Future<List<User>> getAllUsers() async {
     try {
       final response = await db.getAll('users');
-      print('raw user data: $response');
+      debugPrint('raw user data: $response');
       return response.map((e) => User.fromJson(e)).toList();
     } catch (e) {
       // print('raw user data: $e');

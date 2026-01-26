@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../../../Controller/owner/financial_controller.dart';
 import '../../../core/utils/date_formatter.dart';
 
-// View này chỉ cần là StatelessWidget
 class RevenueReportView extends StatelessWidget {
   const RevenueReportView({super.key});
   static final DateFormatter _formatDate = DateFormatter();
@@ -36,11 +35,11 @@ class RevenueReportView extends StatelessWidget {
       itemBuilder: (context, i) {
         final expense = controller.monthlyRevenue[i];
         return ListTile(
-          title: Text('🧾 ${expense.description ?? 'Không có mô tả'}'),
+          title: Text('🧾 ${expense.description}'),
           subtitle: Text(
-            '👤 Người dùng: ${expense.userId ?? 'Không rõ'}\n📅 Ngày: ${_formatDate.formatDateTime(expense.createdAt)}',
+            '👤 Người dùng: ${expense.userId}\n📅 Ngày: ${_formatDate.formatDateTime(expense.createdAt)}',
           ),
-          trailing: Text('${expense.amount?.toStringAsFixed(0) ?? '0'} VNĐ'),
+          trailing: Text('${expense.amount.toStringAsFixed(0)} VNĐ'),
         );
       },
     );

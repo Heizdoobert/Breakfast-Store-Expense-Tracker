@@ -6,7 +6,11 @@ class AuthGradientButton extends StatelessWidget {
   final String buttonText;
   final VoidCallback? onPressed;
   final bool isLoading;
-  const AuthGradientButton({super.key, required this.buttonText, this.onPressed, this.isLoading = false});
+  const AuthGradientButton(
+      {super.key,
+      required this.buttonText,
+      this.onPressed,
+      this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -15,15 +19,15 @@ class AuthGradientButton extends StatelessWidget {
         gradient: const LinearGradient(colors: [
           AppPallete.gradient1,
           AppPallete.gradient2,
-        ],
-        begin: Alignment.centerLeft,
-        end: Alignment.centerRight
-        ),
+        ], begin: Alignment.centerLeft, end: Alignment.centerRight),
         borderRadius: BorderRadius.circular(10),
       ),
       child: ElevatedButton(
-        onPressed: isLoading ?  null : onPressed,
-        style: ElevatedButton.styleFrom(fixedSize: Size(400, 50), backgroundColor: AppPallete.transparentColor, shadowColor: AppPallete.transparentColor),
+        onPressed: isLoading ? null : onPressed,
+        style: ElevatedButton.styleFrom(
+            fixedSize: const Size(400, 50),
+            backgroundColor: AppPallete.transparentColor,
+            shadowColor: AppPallete.transparentColor),
         child: Text(
           buttonText,
           style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w600),
