@@ -22,7 +22,7 @@ jobs:
         uses: subosito/flutter-action@v2
         with:
           # ✅ Luôn dùng phiên bản Flutter khớp với dự án của bạn
-          flutter-version: '3.22.2' # Ví dụ phiên bản Flutter ổn định gần đây
+          flutter-version: '3.24.0' # Ví dụ phiên bản Flutter ổn định gần đây
           channel: 'stable'
           # ✅ Thêm cache để các lần chạy sau nhanh hơn
           cache: true
