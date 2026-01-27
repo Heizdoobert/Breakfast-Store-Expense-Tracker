@@ -56,6 +56,7 @@ class OwnerDashboardController extends BaseController {
     try {
       SharedPreferences prefs = await SharedPreferences.getInstance();
       var status = prefs.getBool('isLoggedIn') ?? false;
+      if(!context.mounted) return;
       if (status) {
         Navigator.pushReplacementNamed(context, AppRoutes.ownerNavigationView);
       } else {
